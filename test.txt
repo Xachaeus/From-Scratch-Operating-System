@@ -1,0 +1,2 @@
+This is an example of a sample text document.
+Here we have a line after a newline.

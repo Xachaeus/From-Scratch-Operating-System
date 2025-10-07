@@ -1,0 +1,162 @@
+Open Watcom Linker Version 2.0 beta Jul 13 2025 02:53:52 (32-bit)
+Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
+Portions Copyright (c) 1985-2002 Sybase, Inc. All Rights Reserved.
+Created on:       25/10/07 16:41:07
+Executable Image: /home/zack/Programming/NanobyteOS/XOS/build/stage2.bin
+creating a RAW Binary Image executable
+
+
+                        +------------+
+                        |   Groups   |
+                        +------------+
+
+Group                           Address              Size
+=====                           =======              ====
+
+DGROUP                          00001a90             0000045c
+
+
+
+                        +--------------+
+                        |   Segments   |
+                        +--------------+
+
+Segment                Class          Group          Address         Size
+=======                =====          =====          =======         ====
+
+_ENTRY                 CODE           AUTO           00000000        00000109
+_TEXT                  CODE           AUTO           00000109        00001987
+CONST                  DATA           DGROUP         00001a90        0000018a
+CONST2                 DATA           DGROUP         00001c1a        00000011
+_DATA                  DATA           DGROUP         00001c2c        00000004
+_GDT                                  AUTO           00001c30        000000d4
+bss                                   AUTO           00001d04        000001e0
+_BSS                   BSS            DGROUP         00001ee4        00000008
+
+
+                        +----------------+
+                        |   Memory Map   |
+                        +----------------+
+
+* = unreferenced symbol
++ = symbol only referenced locally
+
+Address        Symbol
+=======        ======
+
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/asm/main.obj(main.asm)
+00000000       entry
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/asm/x86.obj(x86.asm)
+00000109       __U4D
+00000130       __U4M
+0000014a       _x86_div64_32
+00000178       _x86_Video_WriteCharTeletype
+0000018b       _x86_Disk_Reset
+000001a0       _x86_Disk_Read
+000001d7       _x86_Disk_GetDriveParams
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/ctype.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/ctype.c)
+0000021b+      islower_
+00000259       toupper_
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/disc.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/disc.c)
+000002a1       DISK_Initialize_
+00000317+      DISK_LBA2CHS_
+000003ca       DISK_ReadSectors_
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/fat.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/fat.c)
+00000467+      FAT_ReadBootSector_
+0000049b+      FAT_ReadFat_
+000004df       FAT_Initialize_
+00000725+      FAT_ClusterToLba_
+0000077b+      FAT_OpenEntry_
+00000948+      FAT_NextCluster_
+000009d1       FAT_Read_
+00000d48       FAT_ReadEntry_
+00000da4       FAT_Close_
+00000e1b+      FAT_FindFile_
+00000f55       FAT_Open_
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/main.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/main.c)
+000010d7       _cstart_
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/memory.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/memory.c)
+00001200       memcpy_
+00001274       memset_
+000012d3       memcmp_
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/stdio.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/stdio.c)
+0000134c       putc_
+00001373+      puts_
+000013aa+      puts_f_
+000013e7       _printf
+0000166a+      printf_number_
+00001c1a+      _g_HexChars
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/string.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/string.c)
+000018de       strchr_
+0000193c+      strcpy_
+000019b6       strlen_
+Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/utility.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/utility.c)
+000019f7+      align_
+
+
+                        +---------------------+
+                        |   Module Segments   |
+                        +---------------------+
+
+! = 32-bit segment
+c = initialized communal data
+
+Module          Segment               Class           Address         Size
+======          =======               =====           =======         ====
+
+main.asm        _ENTRY                CODE           00000000         00000109
+                _GDT                                 00001c30         000000d4
+                bss                                  00001d04         000001e0
+x86.asm         _TEXT                 CODE           00000109         00000112
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/ctype.c
+                _TEXT                 CODE           0000021b         00000086
+                CONST                 DATA           00001a90         00000000
+                CONST2                DATA           00001c1a         00000000
+                _DATA                 DATA           00001c2c         00000000
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/disc.c
+                _TEXT                 CODE           000002a1         000001c6
+                CONST                 DATA           00001a90         00000000
+                CONST2                DATA           00001c1a         00000000
+                _DATA                 DATA           00001c2c         00000000
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/fat.c
+                _TEXT                 CODE           00000467         00000c70
+                CONST                 DATA           00001a90         00000107
+                CONST2                DATA           00001c1a         00000000
+                _DATA                 DATA           00001c2c         00000004
+                _BSS                  BSS            00001ee4         00000008
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/main.c
+                _TEXT                 CODE           000010d7         00000129
+                CONST                 DATA           00001b98         00000082
+                CONST2                DATA           00001c1a         00000000
+                _DATA                 DATA           00001c30         00000000
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/memory.c
+                _TEXT                 CODE           00001200         0000014c
+                CONST                 DATA           00001c1a         00000000
+                CONST2                DATA           00001c1a         00000000
+                _DATA                 DATA           00001c30         00000000
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/stdio.c
+                _TEXT                 CODE           0000134c         00000592
+                CONST                 DATA           00001c1a         00000000
+                CONST2                DATA           00001c1a         00000011
+                _DATA                 DATA           00001c30         00000000
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/string.c
+                _TEXT                 CODE           000018de         00000119
+                CONST                 DATA           00001c1a         00000000
+                CONST2                DATA           00001c2c         00000000
+                _DATA                 DATA           00001c30         00000000
+/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/utility.c
+                _TEXT                 CODE           000019f7         00000099
+                CONST                 DATA           00001c1a         00000000
+                CONST2                DATA           00001c2c         00000000
+                _DATA                 DATA           00001c30         00000000
+Warning! W1014: stack segment not found
+
+
+                        +-----------------------+
+                        |   Linker Statistics   |
+                        +-----------------------+
+
+Stack size:  0200 (512.)
+Memory size:  1eec (7916.)
+Entry point address: 00000000
+Link time: 00:00.00
