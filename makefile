@@ -79,7 +79,7 @@ run_debug: clean floppy_image
 	qemu-system-i386 -d int -no-shutdown -no-reboot -monitor stdio -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
 
 run: floppy_image
-	qemu-system-i386 -m 512M -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
+	qemu-system-i386 -m 4G -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
 
 run64: floppy_image
 	qemu-system-x86_64 -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy

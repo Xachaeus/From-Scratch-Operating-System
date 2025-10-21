@@ -17,7 +17,7 @@ Linker script and memory map
 
                 0x00030000                        . = 0x30000
 
-.text           0x00030000     0x4bd6
+.text           0x00030000     0x5416
  *(.text)
  .text          0x00030000       0x28 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/main.o
                 0x00030000                kernel_start
@@ -292,198 +292,214 @@ Linker script and memory map
  *fill*         0x00030ae1        0x3 
  .text          0x00030ae4       0x14 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/PIT8254.o
                 0x00030ae4                i686_PIT_Initialize
- .text          0x00030af8      0x11e /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
+ .text          0x00030af8      0x195 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
                 0x00030af8                setup_timer
                 0x00030afe                timer
                 0x00030b17                kernel_main
- .text          0x00030c16       0xf5 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
-                0x00030c16                memcpy
-                0x00030c68                memset
-                0x00030cab                memcmp
- .text          0x00030d0b      0xe70 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
-                0x00030d0b                initialize_stdio
-                0x00030d5d                GetActiveContext
-                0x00030d67                GetSTDOUT
-                0x00030d71                GetSTDIN
-                0x00030d7b                GetSTDERR
-                0x00030d85                STD_PutBuffer
-                0x00030dba                STD_GetBuffer
-                0x00030dfb                STD_FlushSTDOUT
-                0x00030e44                STD_FlushSTDIN
-                0x00030e77                STD_FlushSTDERR
-                0x00030eaa                ActiveContextTimerCursorHook
-                0x00030ec7                ActiveContextKeyboardHook
-                0x00030f90                CFG_EnableCursorBlinking
-                0x00030f9f                CFG_DisableCursorBlinking
-                0x00030fae                CFG_SetCursorChar
-                0x00030fc9                __STD_Putc
-                0x00030ffc                __STD_Puts
-                0x00031025                printf_unsigned
-                0x000310d8                printf_signed
-                0x00031132                printf
-                0x0003143f                hex_to_dec
-                0x000314d7                scanf
-                0x00031ac3                getline
- .text          0x00031b7b      0xb9e /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
-                0x00031b7b                KI_VGACoordTransform
-                0x00031bfc                KI_DrawCursor
-                0x00031cb6                KI_CursorHook
-                0x00031cf1                KI_Initialize
-                0x00031e2f                KI_Clear
-                0x00031ec5                KI_DrawBorder
-                0x0003226d                KI_UpdateLineScrolling
-                0x000323cb                KI_Putc
-                0x00032699                KI_Puts
-                0x000326cb                KI_BadSizeError
-                0x00032702                KI_TextOverflowError
- .text          0x00032719      0x276 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/VGA.o
-                0x00032719                VGA_ColorData
-                0x0003272b                VGA_Initialize
-                0x00032771                VGA_ClearScreen
-                0x000327f2                VGA_SetChar
-                0x00032852                VGA_SetCursorPos
-                0x00032887                VGA_Print
-                0x0003290b                VGA_Write
- .text          0x0003298f       0x22 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/HAL/hal.o
-                0x0003298f                HAL_Initialize
- .text          0x000329b1       0x1b /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
-                0x000329b1                i686_iowait
- .text          0x000329cc      0x1a2 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
-                0x000329cc                GetQWERTYCTRLMakeKeyCode
-                0x00032a29                GetQWERTYCTRLClearKeyCode
-                0x00032a96                Keyboard_Handler
- .text          0x00032b6e       0x16 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
-                0x00032b6e                FMM_Initialize
- .text          0x00032b84      0x37b /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
-                0x00032b84                PMM_Initialize
-                0x00032e7b                PMM_PrintUsableRegionInfo
- .text          0x00032eff       0x1d /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
-                0x00032eff                i686_GDT_Initialize
- .text          0x00032f1c       0xba /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
-                0x00032f1c                i686_IDT_SetGate
-                0x00032f7d                i686_IDT_EnableGate
-                0x00032f9d                i686_IDT_DisableGate
-                0x00032fbd                i686_IDT_Initialize
- .text          0x00032fd6       0xcc /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
-                0x00032fd6                i686_IRQ_Handler
-                0x00033048                i686_IRQ_Initialize
-                0x0003308f                i686_IRQ_RegisterHandler
- .text          0x000330a2     0x1628 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
-                0x000330a2                i686_ISR_Initialize
-                0x0003455f                i686_ISR_RegisterHandler
-                0x00034583                i686_ISR_Handler
- .text          0x000346ca      0x2b6 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
-                0x000346ca                i686_PIC_Configure
-                0x000347bc                i686_PIC_SendEndOfInterrupt
-                0x000347ec                i686_PIC_Disable
-                0x00034826                i686_PIC_Mask
-                0x0003487a                i686_PIC_Unmask
-                0x000348d0                i686_PIC_ReadIrqRequestRegister
-                0x00034928                i686_PIC_ReadInServiceRegister
- .text          0x00034980      0x11a /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
-                0x00034980                __udivdi3
- *fill*         0x00034a9a        0x6 
- .text          0x00034aa0      0x136 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
-                0x00034aa0                __umoddi3
+ .text          0x00030c8d       0xf5 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
+                0x00030c8d                memcpy
+                0x00030cdf                memset
+                0x00030d22                memcmp
+ .text          0x00030d82      0xe70 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
+                0x00030d82                initialize_stdio
+                0x00030dd4                GetActiveContext
+                0x00030dde                GetSTDOUT
+                0x00030de8                GetSTDIN
+                0x00030df2                GetSTDERR
+                0x00030dfc                STD_PutBuffer
+                0x00030e31                STD_GetBuffer
+                0x00030e72                STD_FlushSTDOUT
+                0x00030ebb                STD_FlushSTDIN
+                0x00030eee                STD_FlushSTDERR
+                0x00030f21                ActiveContextTimerCursorHook
+                0x00030f3e                ActiveContextKeyboardHook
+                0x00031007                CFG_EnableCursorBlinking
+                0x00031016                CFG_DisableCursorBlinking
+                0x00031025                CFG_SetCursorChar
+                0x00031040                __STD_Putc
+                0x00031073                __STD_Puts
+                0x0003109c                printf_unsigned
+                0x0003114f                printf_signed
+                0x000311a9                printf
+                0x000314b6                hex_to_dec
+                0x0003154e                scanf
+                0x00031b3a                getline
+ .text          0x00031bf2      0xb9e /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
+                0x00031bf2                KI_VGACoordTransform
+                0x00031c73                KI_DrawCursor
+                0x00031d2d                KI_CursorHook
+                0x00031d68                KI_Initialize
+                0x00031ea6                KI_Clear
+                0x00031f3c                KI_DrawBorder
+                0x000322e4                KI_UpdateLineScrolling
+                0x00032442                KI_Putc
+                0x00032710                KI_Puts
+                0x00032742                KI_BadSizeError
+                0x00032779                KI_TextOverflowError
+ .text          0x00032790      0x276 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/VGA.o
+                0x00032790                VGA_ColorData
+                0x000327a2                VGA_Initialize
+                0x000327e8                VGA_ClearScreen
+                0x00032869                VGA_SetChar
+                0x000328c9                VGA_SetCursorPos
+                0x000328fe                VGA_Print
+                0x00032982                VGA_Write
+ .text          0x00032a06       0x22 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/HAL/hal.o
+                0x00032a06                HAL_Initialize
+ .text          0x00032a28       0x1b /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
+                0x00032a28                i686_iowait
+ .text          0x00032a43      0x1a2 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
+                0x00032a43                GetQWERTYCTRLMakeKeyCode
+                0x00032aa0                GetQWERTYCTRLClearKeyCode
+                0x00032b0d                Keyboard_Handler
+ .text          0x00032be5       0x16 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
+                0x00032be5                FMM_Initialize
+ .text          0x00032bfb      0xb36 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
+                0x00032bfb                PMM_Initialize
+                0x00032f6f                PMM_GetBitmapData
+                0x00032f93                PMM_SetBitmapData
+                0x00032ff0                PMM_PrintUsableRegionInfo
+                0x00033074                PMM_BlockIndex2PhysicalAddress
+                0x0003315b                PMM_PhysicalAddress2BlockIndex
+                0x00033234                PMM_DEBUG_PrintWedges
+                0x000332ba                PMM_FirstFitSearch
+                0x00033394                PMM_AllocateBlocks
+                0x000334dc                PMM_FreeBlocks
+                0x00033667                PMM_ForceFreeBlocks
+ .text          0x00033731        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/VMM.o
+ .text          0x00033731       0x1d /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
+                0x00033731                i686_GDT_Initialize
+ .text          0x0003374e       0xba /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
+                0x0003374e                i686_IDT_SetGate
+                0x000337af                i686_IDT_EnableGate
+                0x000337cf                i686_IDT_DisableGate
+                0x000337ef                i686_IDT_Initialize
+ .text          0x00033808       0xcc /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
+                0x00033808                i686_IRQ_Handler
+                0x0003387a                i686_IRQ_Initialize
+                0x000338c1                i686_IRQ_RegisterHandler
+ .text          0x000338d4     0x1628 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
+                0x000338d4                i686_ISR_Initialize
+                0x00034d91                i686_ISR_RegisterHandler
+                0x00034db5                i686_ISR_Handler
+ .text          0x00034efc      0x2b6 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
+                0x00034efc                i686_PIC_Configure
+                0x00034fee                i686_PIC_SendEndOfInterrupt
+                0x0003501e                i686_PIC_Disable
+                0x00035058                i686_PIC_Mask
+                0x000350ac                i686_PIC_Unmask
+                0x00035102                i686_PIC_ReadIrqRequestRegister
+                0x0003515a                i686_PIC_ReadInServiceRegister
+ *fill*         0x000351b2        0xe 
+ .text          0x000351c0      0x11a /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+                0x000351c0                __udivdi3
+ *fill*         0x000352da        0x6 
+ .text          0x000352e0      0x136 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+                0x000352e0                __umoddi3
 
-.rodata         0x00034be0      0x7e8
+.rodata         0x00035420      0x848
  *(.rodata)
- .rodata        0x00034be0       0xc3 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
- *fill*         0x00034ca3        0x1 
- .rodata        0x00034ca4      0x2e8 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
-                0x00034cb4                g_HexChars
- .rodata        0x00034f8c       0x37 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
- *fill*         0x00034fc3        0x1 
- .rodata        0x00034fc4       0x48 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
- .rodata        0x0003500c       0x25 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
- *fill*         0x00035031        0xf 
- .rodata        0x00035040      0x388 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
+ .rodata        0x00035420       0xdb /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
+ *fill*         0x000354fb        0x1 
+ .rodata        0x000354fc      0x2e8 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
+                0x0003550c                g_HexChars
+ .rodata        0x000357e4       0x37 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
+ *fill*         0x0003581b        0x1 
+ .rodata        0x0003581c       0x80 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
+ .rodata        0x0003589c       0x25 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
+ *fill*         0x000358c1       0x1f 
+ .rodata        0x000358e0      0x388 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
 
-.eh_frame       0x000353c8       0xd8
- .eh_frame      0x000353c8       0x64 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .eh_frame      0x0003542c       0x74 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+.eh_frame       0x00035c68       0xd8
+ .eh_frame      0x00035c68       0x64 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .eh_frame      0x00035ccc       0x74 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
-.data           0x000354a0      0x102
+.data           0x00035d40      0x102
  *(.data)
- .data          0x000354a0       0x4b /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/main.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/hardware-io/io.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/gdt.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/idt.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/isr.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/PIT8254.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/VGA.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/HAL/hal.o
- .data          0x000354eb        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
- *fill*         0x000354eb       0x15 
- .data          0x00035500       0x7a /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
-                0x00035500                g_QWERTY_make_scancodes_shifted
-                0x00035540                g_QWERTY_make_scancodes_unshifted
- .data          0x0003557a        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
- .data          0x0003557a        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
- *fill*         0x0003557a        0x2 
- .data          0x0003557c       0x1e /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
-                0x0003557c                g_GDT
-                0x00035594                g_GDT_Descriptor
- *fill*         0x0003559a        0x2 
- .data          0x0003559c        0x6 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
-                0x0003559c                g_IDTDescriptor
- .data          0x000355a2        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
- .data          0x000355a2        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
- .data          0x000355a2        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
- .data          0x000355a2        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .data          0x000355a2        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .data          0x00035d40       0x4b /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/main.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/hardware-io/io.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/gdt.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/idt.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/isr.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/PIT8254.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/VGA.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/HAL/hal.o
+ .data          0x00035d8b        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
+ *fill*         0x00035d8b       0x15 
+ .data          0x00035da0       0x7a /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
+                0x00035da0                g_QWERTY_make_scancodes_shifted
+                0x00035de0                g_QWERTY_make_scancodes_unshifted
+ .data          0x00035e1a        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
+ .data          0x00035e1a        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
+ .data          0x00035e1a        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/VMM.o
+ *fill*         0x00035e1a        0x2 
+ .data          0x00035e1c       0x1e /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
+                0x00035e1c                g_GDT
+                0x00035e34                g_GDT_Descriptor
+ *fill*         0x00035e3a        0x2 
+ .data          0x00035e3c        0x6 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
+                0x00035e3c                g_IDTDescriptor
+ .data          0x00035e42        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
+ .data          0x00035e42        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
+ .data          0x00035e42        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
+ .data          0x00035e42        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .data          0x00035e42        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
-.bss            0x000355c0     0x182c
+.bss            0x00035e60    0x2182c
  *(COMMON)
  *(.bss)
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/main.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/hardware-io/io.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/gdt.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/idt.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/isr.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/PIT8254.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
- .bss           0x000355c0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
- .bss           0x000355c0      0x586 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
-                0x000355c0                g_VGA_Display
-                0x000355e0                g_Root_Terminal
-                0x00035708                g_ActiveContext
-                0x00035720                g_STDOUT
-                0x00035920                g_STDIN
-                0x00035940                g_STDERR
-                0x00035b40                g_STDOUT_TAIL
-                0x00035b42                g_STDIN_TAIL
-                0x00035b44                g_STDERR_TAIL
- .bss           0x00035b46        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
- .bss           0x00035b46        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/VGA.o
- .bss           0x00035b46        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/HAL/hal.o
- .bss           0x00035b46        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
- *fill*         0x00035b46        0x2 
- .bss           0x00035b48        0x5 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
-                0x00035b48                g_ControlKeyStates
-                0x00035b4c                g_E0_Received
- .bss           0x00035b4d        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
- *fill*         0x00035b4d       0x13 
- .bss           0x00035b60      0x640 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
-                0x00035b60                g_MemoryMap
-                0x00035e80                g_UsableMemoryMap
- .bss           0x000361a0        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
- .bss           0x000361a0      0x800 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
-                0x000361a0                g_IDT
- .bss           0x000369a0       0x40 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
-                0x000369a0                g_IRQHandlers
- .bss           0x000369e0      0x400 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
-                0x000369e0                g_ISRHandlers
- .bss           0x00036de0        0xc /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
-                0x00036de0                PIC_ICW1
-                0x00036de4                PIC_ICW4
-                0x00036de8                PIC_CMD
- .bss           0x00036dec        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .bss           0x00036dec        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/main.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/hardware-io/io.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/gdt.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/idt.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/isr.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/PIT8254.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
+ .bss           0x00035e60        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
+ .bss           0x00035e60      0x586 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
+                0x00035e60                g_VGA_Display
+                0x00035e80                g_Root_Terminal
+                0x00035fa8                g_ActiveContext
+                0x00035fc0                g_STDOUT
+                0x000361c0                g_STDIN
+                0x000361e0                g_STDERR
+                0x000363e0                g_STDOUT_TAIL
+                0x000363e2                g_STDIN_TAIL
+                0x000363e4                g_STDERR_TAIL
+ .bss           0x000363e6        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/kinter.o
+ .bss           0x000363e6        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/display/VGA.o
+ .bss           0x000363e6        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/HAL/hal.o
+ .bss           0x000363e6        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
+ *fill*         0x000363e6        0x2 
+ .bss           0x000363e8        0x5 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
+                0x000363e8                g_ControlKeyStates
+                0x000363ec                g_E0_Received
+ .bss           0x000363ed        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
+ *fill*         0x000363ed       0x13 
+ .bss           0x00036400    0x2063c /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
+                0x00036400                g_MemoryMap
+                0x00036720                g_UsableMemoryMap
+                0x00036a40                g_BitmapWedges
+                0x00036a60                g_Bitmap
+ .bss           0x00056a3c        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/VMM.o
+ .bss           0x00056a3c        0x0 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
+ *fill*         0x00056a3c        0x4 
+ .bss           0x00056a40      0x800 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
+                0x00056a40                g_IDT
+ .bss           0x00057240       0x40 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
+                0x00057240                g_IRQHandlers
+ .bss           0x00057280      0x400 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
+                0x00057280                g_ISRHandlers
+ .bss           0x00057680        0xc /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
+                0x00057680                PIC_ICW1
+                0x00057684                PIC_ICW4
+                0x00057688                PIC_CMD
+ .bss           0x0005768c        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .bss           0x0005768c        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/main.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/hardware-io/io.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/s/arch/x86/gdt.o
@@ -500,6 +516,7 @@ LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/hardware-io/io.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
+LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/VMM.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
 LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
@@ -508,7 +525,7 @@ LOAD /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
 LOAD /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a
 OUTPUT(/home/zack/Programming/NanobyteOS/XOS/build/kernel.bin binary)
 
-.comment        0x00000000      0x143
+.comment        0x00000000      0x156
  .comment       0x00000000       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/kernel.o
  .comment       0x00000013       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory.o
  .comment       0x00000026       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/stdio.o
@@ -519,13 +536,14 @@ OUTPUT(/home/zack/Programming/NanobyteOS/XOS/build/kernel.bin binary)
  .comment       0x00000085       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/keyboard/keyboard.o
  .comment       0x00000098       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/FMM.o
  .comment       0x000000ab       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/PMM.o
- .comment       0x000000be       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
- .comment       0x000000d1       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
- .comment       0x000000e4       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
- .comment       0x000000f7       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
- .comment       0x0000010a       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
- .comment       0x0000011d       0x13 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .comment       0x00000130       0x13 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .comment       0x000000be       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/memory-manager/VMM.o
+ .comment       0x000000d1       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/gdt.o
+ .comment       0x000000e4       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/idt.o
+ .comment       0x000000f7       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/irq.o
+ .comment       0x0000010a       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/isr.o
+ .comment       0x0000011d       0x13 /home/zack/Programming/NanobyteOS/XOS/build/kernel/c/arch/x86/PIC8259.o
+ .comment       0x00000130       0x13 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .comment       0x00000143       0x13 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
 .debug_info     0x00000000      0x66b
  .debug_info    0x00000000      0x326 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)

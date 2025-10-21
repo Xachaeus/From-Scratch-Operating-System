@@ -150,6 +150,11 @@ entry:
 
 .p_done:
     std
+    pop edx ; Pop drive number
+    pop ecx ; Pop memory map address
+    mov esp, 0x2FFFF ; Byte just below where kernel is located
+    push ecx ; Setup stack arguments for kernel start
+    push edx
     jmp dword 0x8:0x30000 ; Kernel start
     cli
 .p_halt: 

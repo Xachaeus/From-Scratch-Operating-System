@@ -24,11 +24,11 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
 
     initialize_stdio(STD_HACKER_COLOR);
 
-    printf("Kernel I/O Initialization Complete!\n");
+    printf("Kernel I/O Initialization Complete!\nBooted from drive: %lu\n", boot_drive);
     printf("Initializing HAL... ");
     i686_IRQ_RegisterHandler(0, setup_timer); // Do this so any initial timer interrupts are ignored
     HAL_Initialize();
-    printf("Done!\nInitializing Memory Manager... ");
+    printf("Done!\nInitializing Memory Manager...\n");
     uint64_t usable_ram = FMM_Initialize((AddressRangeDescriptor*)OriginalMemoryMapPtr);
     printf("Done!\nUsable Ram: %llu blocks, %llu bytes\nSystem initialization complete!\n", usable_ram/4096, usable_ram);
 
@@ -38,17 +38,34 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
     CFG_EnableCursorBlinking();
     CFG_SetCursorChar(0xDB);
 
+
+
+    uint32_t t1 = PMM_AllocateBlocks(10);
+
+    uint32_t t2 = PMM_AllocateBlocks(7);
+
+    uint32_t t3 = PMM_AllocateBlocks(5);
+
+    PMM_DEBUG_PrintWedges();
+
+    PMM_FreeBlocks(t2, 7);
+    PMM_DEBUG_PrintWedges();
+
+    PMM_FreeBlocks(t3, 5);
+    PMM_DEBUG_PrintWedges();
+
+    t2 = PMM_AllocateBlocks(8);
+    PMM_DEBUG_PrintWedges();
+
     int index;
+    int block_index;
 
     while(true) {
         printf("user@machine:/$ ");
+        //scanf("%d %d", &index, &block_index);
         scanf("%d", &index);
         PMM_PrintUsableRegionInfo(index);
+        //printf("Start address of block %d: 0x%llx\n", block_index, PMM_BlockIndex2PhysicalAddress(block_index));
     }
 
-    /*
-    __asm("cli");
-    __asm("hlt");
-    for(;;);
-    */
 }
