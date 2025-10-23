@@ -321,3 +321,10 @@ i686_common:
 
     // Lastly, exit interrupt
     iret
+
+.global i686_DisablePaging
+i686_DisablePaging:
+    mov eax, cr0
+    and eax, 0b01111111111111111111111111111110
+    mov cr0, eax
+    ret

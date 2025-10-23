@@ -3,6 +3,7 @@
 #define FMM_H
 
 #include <stdint.h>
+#include <HAL/hal.h>
 
 typedef struct {
     uint64_t BaseAddress;
@@ -12,4 +13,5 @@ typedef struct {
 } AddressRangeDescriptor;
 
 uint64_t FMM_Initialize(AddressRangeDescriptor* mem);
+void PageFaultHandler(Registers* saved_state);
 #endif

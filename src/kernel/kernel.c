@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <HAL/hal.h>
-#include <arch/x86/irq.h>
 #include <hardware-io/io.h>
 #include <keyboard/keyboard.h>
 #include <memory-manager/FMM.h>
@@ -37,26 +36,11 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
 
     CFG_EnableCursorBlinking();
     CFG_SetCursorChar(0xDB);
-
-
-
-    uint32_t t1 = PMM_AllocateBlocks(10);
-
-    uint32_t t2 = PMM_AllocateBlocks(7);
-
-    uint32_t t3 = PMM_AllocateBlocks(5);
-
-    PMM_DEBUG_PrintWedges();
-
-    PMM_FreeBlocks(t2, 7);
-    PMM_DEBUG_PrintWedges();
-
-    PMM_FreeBlocks(t3, 5);
-    PMM_DEBUG_PrintWedges();
-
-    t2 = PMM_AllocateBlocks(8);
-    PMM_DEBUG_PrintWedges();
-
+    
+    printf("Attempting to access 0x102000...\n");
+    int test = *((uint8_t*)0x102000);
+    printf("Success!\n");
+    
     int index;
     int block_index;
 

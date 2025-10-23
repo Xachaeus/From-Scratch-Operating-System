@@ -590,17 +590,18 @@ void __attribute__((cdecl)) i686_ISR_Handler(Registers* saved_state){
         printf("Unhandled interrupt received: %d!\n", saved_state->interrupt);
     }
     else {
+        i686_DisablePaging();
         printf("Unhandled exception received!\n");
         printf("Interrupt 0x%x: %s\n", saved_state->interrupt, g_Exceptions[saved_state->interrupt]);
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
         printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
         printf("  kernel_esp=%d  ebp=%d  eip=%d  cs=%d\n  eflags=%d  esp=%d  ss=%d  ", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
         printf("\nKERNEL PANIC!\n");
-        /*
+        
         __asm("cli");
         __asm("hlt");
         for(;;);
-        */
+        
     }
     
 }

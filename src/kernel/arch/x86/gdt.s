@@ -44,3 +44,5 @@ i686_GDT_Load:
     pop ebp
     ret
 
+
+Message: .asciz "This is a test message!"
