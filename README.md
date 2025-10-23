@@ -9,10 +9,9 @@ To run the existing image without building, you can navigate to the project dire
 
 ```qemu-system-i386 -m 512M -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy```
 
-This project was inspired by the Nanobyte OS video tutorial available on Youtube.
+This project was inspired by the Nanobyte OS video tutorial available on Youtube. While this OS uses some code directly from the tutorial's example OS (particularly for the bootloader), the kernel for this OS is almost entirely original (the only copied code is for the interrupt service routines, which would have required 256 identical functions regardless).
 
-
-Notes for future changes:
+### Notes for future changes:
 
 Physical Memory Allocation via bitmap with Available Spots Optimization
 Explanation: Initialize an array of N wedges, where each wedge contains a pointer to some block index, and a number representing
