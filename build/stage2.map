@@ -1,8 +1,8 @@
 Open Watcom Linker Version 2.0 beta Jul 13 2025 02:53:52 (32-bit)
 Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 Portions Copyright (c) 1985-2002 Sybase, Inc. All Rights Reserved.
-Created on:       25/10/23 16:44:56
-Executable Image: /home/zack/Programming/NanobyteOS/XOS/build/stage2.bin
+Created on:       25/10/31 11:35:16
+Executable Image: /home/zack/Programming/NanobyteOS/SolOS/build/stage2.bin
 creating a RAW Binary Image executable
 
 
@@ -44,9 +44,9 @@ _BSS                   BSS            DGROUP         00001eee        00000008
 Address        Symbol
 =======        ======
 
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/asm/main.obj(main.asm)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/asm/main.obj(main.asm)
 00000000       entry
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/asm/x86.obj(x86.asm)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/asm/x86.obj(x86.asm)
 00000112       __U4D
 00000139       __U4M
 00000153       _x86_div64_32
@@ -54,14 +54,14 @@ Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/asm/x86.obj(x86.asm)
 00000194       _x86_Disk_Reset
 000001a9       _x86_Disk_Read
 000001e0       _x86_Disk_GetDriveParams
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/ctype.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/ctype.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/ctype.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/ctype.c)
 00000224+      islower_
 00000262       toupper_
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/disc.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/disc.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/disc.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/disc.c)
 000002aa       DISK_Initialize_
 00000320+      DISK_LBA2CHS_
 000003d3       DISK_ReadSectors_
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/fat.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/fat.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/fat.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/fat.c)
 00000470+      FAT_ReadBootSector_
 000004a4+      FAT_ReadFat_
 000004e8       FAT_Initialize_
@@ -73,24 +73,24 @@ Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/fat.obj(/home/zack/
 00000dad       FAT_Close_
 00000e24+      FAT_FindFile_
 00000f5e       FAT_Open_
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/main.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/main.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/main.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/main.c)
 000010e0       _cstart_
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/memory.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/memory.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/memory.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/memory.c)
 00001209       memcpy_
 0000127d       memset_
 000012dc       memcmp_
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/stdio.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/stdio.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/stdio.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/stdio.c)
 00001355       putc_
 0000137c+      puts_
 000013b3+      puts_f_
 000013f0       _printf
 00001673+      printf_number_
 00001c24+      _g_HexChars
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/string.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/string.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/string.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/string.c)
 000018e7       strchr_
 00001945+      strcpy_
 000019bf       strlen_
-Module: /home/zack/Programming/NanobyteOS/XOS/build/stage2/c/utility.obj(/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/utility.c)
+Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/utility.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/utility.c)
 00001a00+      align_
 
 
@@ -108,43 +108,43 @@ main.asm        _ENTRY                CODE           00000000         00000112
                 _GDT                                 00001c3a         000000d4
                 bss                                  00001d0e         000001e0
 x86.asm         _TEXT                 CODE           00000112         00000112
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/ctype.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/ctype.c
                 _TEXT                 CODE           00000224         00000086
                 CONST                 DATA           00001a9a         00000000
                 CONST2                DATA           00001c24         00000000
                 _DATA                 DATA           00001c36         00000000
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/disc.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/disc.c
                 _TEXT                 CODE           000002aa         000001c6
                 CONST                 DATA           00001a9a         00000000
                 CONST2                DATA           00001c24         00000000
                 _DATA                 DATA           00001c36         00000000
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/fat.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/fat.c
                 _TEXT                 CODE           00000470         00000c70
                 CONST                 DATA           00001a9a         00000107
                 CONST2                DATA           00001c24         00000000
                 _DATA                 DATA           00001c36         00000004
                 _BSS                  BSS            00001eee         00000008
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/main.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/main.c
                 _TEXT                 CODE           000010e0         00000129
                 CONST                 DATA           00001ba2         00000082
                 CONST2                DATA           00001c24         00000000
                 _DATA                 DATA           00001c3a         00000000
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/memory.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/memory.c
                 _TEXT                 CODE           00001209         0000014c
                 CONST                 DATA           00001c24         00000000
                 CONST2                DATA           00001c24         00000000
                 _DATA                 DATA           00001c3a         00000000
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/stdio.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/stdio.c
                 _TEXT                 CODE           00001355         00000592
                 CONST                 DATA           00001c24         00000000
                 CONST2                DATA           00001c24         00000011
                 _DATA                 DATA           00001c3a         00000000
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/string.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/string.c
                 _TEXT                 CODE           000018e7         00000119
                 CONST                 DATA           00001c24         00000000
                 CONST2                DATA           00001c36         00000000
                 _DATA                 DATA           00001c3a         00000000
-/home/zack/Programming/NanobyteOS/XOS/src/bootloader/stage2/utility.c
+/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/utility.c
                 _TEXT                 CODE           00001a00         00000099
                 CONST                 DATA           00001c24         00000000
                 CONST2                DATA           00001c36         00000000

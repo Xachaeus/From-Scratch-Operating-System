@@ -13,5 +13,7 @@ typedef struct {
 } AddressRangeDescriptor;
 
 uint64_t FMM_Initialize(AddressRangeDescriptor* mem);
+void FMM_FreeBlocksAt(uint32_t virtual_address, uint32_t num_blocks);
+int FMM_AllocateBlocksAt(uint32_t virtual_address, uint32_t num_blocks);
 void PageFaultHandler(Registers* saved_state);
 #endif

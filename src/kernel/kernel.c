@@ -36,10 +36,16 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
 
     CFG_EnableCursorBlinking();
     CFG_SetCursorChar(0xDB);
-    
-    printf("Attempting to access 0x102000...\n");
-    int test = *((uint8_t*)0x102000);
+
+    printf("Allocating block at 0x400000...\n");
+    FMM_AllocateBlocksAt(0x400000, 1);
+    printf("Done!\n");
+
+    printf("Attempting to access 0x400000...\n");
+    int test = *((uint8_t*)0x400000);
     printf("Success!\n");
+
+    FMM_FreeBlocksAt(0x400000,1);
     
     int index;
     int block_index;

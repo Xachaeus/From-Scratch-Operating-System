@@ -48,9 +48,19 @@ typedef struct {
 
 void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableBlocks);
 
+uint32_t VMM_GetPageTableHandler();
+
 void VMM_CreatePageDirectoryEntry(VMM_PageDirectoryEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor);
 void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor, uint8_t global);
 
 void __attribute__((cdecl)) VMM_EnablePaging(uint32_t page_directory);
+void __attribute__((cdecl)) VMM_InvalidatePage(uint32_t virtual_address);
+void __attribute__((cdecl)) VMM_InvalidateTLB();
+
+int VMM_GetTableForAddress(uint32_t virtual_address, VMM_PageTableEntry** entry);
+void VMM_CreateTableForAddress(uint32_t virtual_address, uint32_t physical_address);
+int VMM_GetPageForAddress(uint32_t virtual_address, VMM_PageTableEntry* entry);
+int VMM_CreatePageForAddress(uint32_t virtual_address, uint32_t physical_address);
+void VMM_ClearMappingForAddress(uint32_t virtual_address);
 
 #endif

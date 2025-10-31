@@ -80,7 +80,7 @@ uint32_t PMM_PhysicalAddress2BlockIndex(uint32_t address) {
     int prev_blocks = 0;
     for (int i=0; i<MAX_ADDRESS_REGIONS; i++) {
         if (g_UsableMemoryMap[i].StartAddress <= address && address <= g_UsableMemoryMap[i].EndAddress) {
-            return (address - g_UsableMemoryMap[i].StartAddress) * 4096 + prev_blocks;
+            return ((address - g_UsableMemoryMap[i].StartAddress) / 4096) + prev_blocks;
         }
         prev_blocks += g_UsableMemoryMap[i].Limit/4096;
     }
@@ -285,36 +285,36 @@ int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
     for (int wedge = NUM_WEDGES-1; wedge >= 0; wedge--) {
         // Case 1: Wedge is before free region
         if (g_BitmapWedges[wedge].position <= index) {
-            printf("%d:1;", wedge);
+            //printf("%d:1;", wedge);
             position = g_BitmapWedges[wedge].position;
             free_blocks = g_BitmapWedges[wedge].free_blocks;
         }
 
         // Case 2: Wedge is within free region
         else if (g_BitmapWedges[wedge].position < index+num_blocks) {
-            printf("%d:error;", wedge);
+            //printf("%d:error;", wedge);
             return -1; // This can only happen on an invalid free
         }
         // Case 3: Wedge ends free region
         else if (g_BitmapWedges[wedge].position == index+num_blocks) {
             if (!PMM_GetBitmapData(index-1)){
-                printf("%d:2;", wedge);
+                //printf("%d:2;", wedge);
                 g_BitmapWedges[wedge].position = position;
                 g_BitmapWedges[wedge].free_blocks = free_blocks;
             }
             else {
-                printf("%d:3;");
+                //printf("%d:3;");
                 g_BitmapWedges[wedge].position = index;
             }
         }
 
         // Case 4: Wedge contains free region
         else {
-            printf("%d:4;", wedge);
+            //printf("%d:4;", wedge);
             g_BitmapWedges[wedge].free_blocks += num_blocks;
         }
     }
-    printf("\n");
+    //printf("\n");
 
     for (int i = index; i<index+num_blocks; i++) { PMM_SetBitmapData(i, 0); }
     return 0;

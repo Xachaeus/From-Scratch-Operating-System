@@ -15,3 +15,16 @@ VMM_EnablePaging:
     mov cr0, eax
 
     ret
+
+
+.global VMM_InvalidatePage
+VMM_InvalidatePage:
+    mov eax, [esp+4]
+    invlpg [eax]
+    ret
+
+.global VMM_InvalidateTLB
+VMM_InvalidateTLB:
+    mov eax, cr3
+    mov cr3, eax
+    ret
