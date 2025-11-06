@@ -8,6 +8,14 @@ i686_outb:
     out dx, al
     ret
 
+.global i686_outw
+i686_outw:
+    .code32
+    mov dx, [esp + 4]
+    mov ax, [esp + 8]
+    out dx, ax
+    ret
+
 .global i686_inb
 i686_inb:
     .code32

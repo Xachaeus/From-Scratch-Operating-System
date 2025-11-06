@@ -6,13 +6,31 @@
 #include "PMM.h"
 #include "VMM.h"
 
+
+uint32_t g_KernelDMAAddress;
+uint32_t g_KernelDMAPhysicalAddress;
+
+
+uint32_t FMM_GetDMAAddress() {
+    return g_KernelDMAAddress;
+}
+
+uint32_t FMM_GetDMAPhysAddress() {
+    return g_KernelDMAPhysicalAddress;
+}
+
+
 uint64_t FMM_Initialize(AddressRangeDescriptor* mem) {
     uint64_t available_memory = PMM_Initialize(mem);
     uint32_t kernel_page_directory_block = PMM_AllocateBlocks(1);
     uint32_t kernel_page_table_block = PMM_AllocateBlocks(1);
-    VMM_Initialize(kernel_page_directory_block, kernel_page_table_block);
+    uint32_t kernel_DMA_blocks = PMM_AllocateBlocks(2);
+    VMM_Initialize(kernel_page_directory_block, kernel_page_table_block, kernel_DMA_blocks);
 
     i686_ISR_RegisterHandler(0xe, PageFaultHandler);
+
+    g_KernelDMAPhysicalAddress = PMM_BlockIndex2PhysicalAddress(kernel_DMA_blocks);
+    g_KernelDMAAddress = VMM_GetDMAAddress();
 
     return available_memory;
 }
@@ -41,7 +59,7 @@ void FMM_FreeBlocksAt(uint32_t virtual_address, uint32_t num_blocks) {
         if (!VMM_GetPageForAddress(effective_address, &entry)) {continue;}
 
         uint32_t physical_address = PMM_PhysicalAddress2BlockIndex(entry.data & 0xFFFFF000);
-        printf("Physical address: 0x%x, Index: 0x%x\n", entry.data & 0xFFFFF000, physical_address);
+        //printf("Physical address: 0x%x, Index: 0x%x\n", entry.data & 0xFFFFF000, physical_address);
         PMM_FreeBlocks(physical_address, 1);
         VMM_ClearMappingForAddress(effective_address);
     }
@@ -52,7 +70,7 @@ int FMM_AllocateBlocksAt(uint32_t virtual_address, uint32_t num_blocks) {
     virtual_address &= 0xFFFFF000;
     for (uint32_t effective_address = virtual_address; effective_address < virtual_address + (num_blocks*4096); effective_address += 4096) {
         if (!VMM_GetTableForAddress(effective_address, &table)) {
-            printf("MM: Table not found for address 0x%x!\n", effective_address);
+            //printf("MM: Table not found for address 0x%x!\n", effective_address);
             uint32_t physical_table_address = PMM_BlockIndex2PhysicalAddress(PMM_AllocateBlocks(1));
             VMM_CreateTableForAddress(effective_address, physical_table_address);
         }

@@ -9,6 +9,12 @@
 VMM_PageDirectoryEntry* g_PageDirectoryAddress;
 VMM_PageTableEntry* g_PageTableAddress;
 
+uint32_t g_KernelDMAVirtualAddress;
+
+uint32_t VMM_GetDMAAddress() {
+    return g_KernelDMAVirtualAddress;
+}
+
 
 uint32_t VMM_GetPageTableHandler() {
     // Returns the address of the working page table; only necessary for external modules
@@ -38,7 +44,7 @@ void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8
 
 
 
-void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableBlock) {
+void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableBlock, uint32_t KernelDMABlocks) {
 
     #define VMM_IDENTITY_END_BLOCK 256
     // The first 256 entries in the first page table covers 256*4096=1048576 bytes, or the first megabyte (up to address 0x100000)
@@ -81,8 +87,24 @@ void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableB
         1           // Global; maintain across page directory changes (since we'll never remove this mapping)
     ); 
 
+    VMM_CreatePageTableEntry(
+        &(((VMM_PageTableEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock))[VMM_IDENTITY_END_BLOCK+2]),
+        PMM_BlockIndex2PhysicalAddress(KernelDMABlocks),   // Start address of DMA Address
+        0,          // No information in the avl for now
+        1,          // Supervisor; should only be available to the kernel
+        1           // Global; maintain across page directory changes (since we'll never remove this mapping)
+    ); 
+
+    VMM_CreatePageTableEntry(
+        &(((VMM_PageTableEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock))[VMM_IDENTITY_END_BLOCK+3]),
+        PMM_BlockIndex2PhysicalAddress(KernelDMABlocks+1),   // Start address of second DMA Address block
+        0,          // No information in the avl for now
+        1,          // Supervisor; should only be available to the kernel
+        1           // Global; maintain across page directory changes (since we'll never remove this mapping)
+    ); 
+
     // Ensure the rest of the page table entries are clear
-    for (int i = VMM_IDENTITY_END_BLOCK+2; i<1024; i++) {
+    for (int i = VMM_IDENTITY_END_BLOCK+4; i<1024; i++) {
         ((uint32_t*)PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock))[i] = 0x0;
     }
 
@@ -97,6 +119,7 @@ void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableB
 
     g_PageDirectoryAddress = (VMM_PageDirectoryEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageDirectoryBlock);
     g_PageTableAddress = (VMM_PageTableEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock);
+    g_KernelDMAVirtualAddress = (VMM_IDENTITY_END_BLOCK+2)*4096;
 }
 
 
@@ -107,7 +130,7 @@ void VMM_SetWorkingPageTable(uint32_t table_physical_address) {
     VMM_VirtualAddress2PageIndices((uint32_t)g_PageTableAddress, &directory_index, &table_index);
     VMM_PageTableEntry* kernel_page_table = (VMM_PageTableEntry*)(g_PageDirectoryAddress[directory_index].data & 0xFFFFF000);
     VMM_CreatePageTableEntry(&(kernel_page_table[table_index]), table_physical_address, 0, 1, 1);
-    VMM_InvalidatePage(g_PageTableAddress);
+    VMM_InvalidatePage((uint32_t)g_PageTableAddress);
 }
 
 int VMM_LoadTableForAddress(uint32_t virtual_address) {
@@ -137,7 +160,7 @@ void VMM_CreateTableForAddress(uint32_t virtual_address, uint32_t table_physical
     // Given a virtual address and an available physical address block, create a table at that address and create an entry to that table at the right position within the page directory
     uint32_t directory_index, table_index;
     VMM_VirtualAddress2PageIndices(virtual_address, &directory_index, &table_index);
-    printf("Creating table at index %d for address 0x%x\n", directory_index, virtual_address);
+    //printf("Creating table at index %d for address 0x%x\n", directory_index, virtual_address);
     VMM_CreatePageDirectoryEntry(&(g_PageDirectoryAddress[directory_index]), table_physical_address, 0, 1);
 }
 
@@ -169,7 +192,7 @@ int VMM_CreatePageForAddress(uint32_t virtual_address, uint32_t physical_address
 
     VMM_InvalidatePage(virtual_address);
 
-    printf("Relevant page table entry: 0x%x\n", g_PageTableAddress[table_index]);
+    //printf("Relevant page table entry: 0x%x\n", g_PageTableAddress[table_index]);
     return 1;
 }
 

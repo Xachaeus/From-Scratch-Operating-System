@@ -46,9 +46,10 @@ typedef struct {
 } VMM_PageTableEntry;
 
 
-void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableBlocks);
+void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableBlocks, uint32_t KernelDMABlocks);
 
 uint32_t VMM_GetPageTableHandler();
+uint32_t VMM_GetDMAAddress();
 
 void VMM_CreatePageDirectoryEntry(VMM_PageDirectoryEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor);
 void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor, uint8_t global);

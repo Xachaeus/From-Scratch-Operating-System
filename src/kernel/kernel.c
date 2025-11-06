@@ -6,6 +6,8 @@
 #include <keyboard/keyboard.h>
 #include <memory-manager/FMM.h>
 #include <memory-manager/PMM.h>
+#include <disk/floppy.h>
+#include <delay.h>
 
 // Set the PIC timer delay to the number of microseconds between timer calls
 #define PIC_TIMER_DELAY 500
@@ -17,6 +19,7 @@ void setup_timer(Registers* regs) {
 
 void timer(Registers* regs) {
     ActiveContextTimerCursorHook(PIC_TIMER_DELAY);
+    ActiveContextTimerSleepHook(PIC_TIMER_DELAY);
 }
 
 void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMemoryMapPtr){
@@ -27,34 +30,37 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
     printf("Initializing HAL... ");
     i686_IRQ_RegisterHandler(0, setup_timer); // Do this so any initial timer interrupts are ignored
     HAL_Initialize();
-    printf("Done!\nInitializing Memory Manager...\n");
+    printf("Done!\nInitializing Memory Manager...");
     uint64_t usable_ram = FMM_Initialize((AddressRangeDescriptor*)OriginalMemoryMapPtr);
-    printf("Done!\nUsable Ram: %llu blocks, %llu bytes\nSystem initialization complete!\n", usable_ram/4096, usable_ram);
-
+    printf("Done!\nUsable Ram: %llu blocks, %llu bytes\n", usable_ram/4096, usable_ram);
     i686_IRQ_RegisterHandler(0, timer);
     i686_IRQ_RegisterHandler(1, Keyboard_Handler);
+    printf("Initializing Floppy Disk Controller...");
+    i686_IRQ_RegisterHandler(6, DISK_Floppy_IRQ6Handler);
+    DISK_Floppy_Initialize(boot_drive);
+    printf("Done!\n");
+
+    printf("System initialization complete!\n");
 
     CFG_EnableCursorBlinking();
     CFG_SetCursorChar(0xDB);
 
-    printf("Allocating block at 0x400000...\n");
-    FMM_AllocateBlocksAt(0x400000, 1);
-    printf("Done!\n");
-
-    printf("Attempting to access 0x400000...\n");
-    int test = *((uint8_t*)0x400000);
-    printf("Success!\n");
-
-    FMM_FreeBlocksAt(0x400000,1);
+    DISK_Floppy_ReadSector(0);
     
     int index;
     int block_index;
 
     while(true) {
         printf("user@machine:/$ ");
-        //scanf("%d %d", &index, &block_index);
-        scanf("%d", &index);
-        PMM_PrintUsableRegionInfo(index);
+        scanf("");
+        printf("Memory contents after read: ");
+        /*
+        for (int i = 0; i<0xFF; i++) {
+            printf("%x ", ((uint8_t*)FMM_GetDMAAddress())[i]);
+        }
+        */
+        printf((const char*)(FMM_GetDMAAddress()));
+        printf("\n");
         //printf("Start address of block %d: 0x%llx\n", block_index, PMM_BlockIndex2PhysicalAddress(block_index));
     }
 
