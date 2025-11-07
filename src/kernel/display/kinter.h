@@ -33,6 +33,9 @@ void KI_DrawBorder();
 void KI_Putc(KI_Terminal* terminal, char c);
 void KI_Puts(KI_Terminal* terminal, const char* msg);
 
+void KI_DisableBlinking();
+void KI_EnableBlinking();
+
 
 void KI_BadSizeError(KI_Terminal* terminal);
 void KI_Clear(KI_Terminal* terminal);

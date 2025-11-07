@@ -96,6 +96,9 @@ int GetCommandReturnCount(int command) {
     }
 }
 
+uint8_t* DISK_Floppy_GetSectorAddr(uint8_t sector) {
+    return (uint8_t*)(FMM_GetDMAAddress() + 512*sector);
+}
 
 
 

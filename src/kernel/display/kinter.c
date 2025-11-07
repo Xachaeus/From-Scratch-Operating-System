@@ -10,6 +10,9 @@
 #define CURSOR_CHAR '<'
 #define CURSOR_TIME_PERIOD 700000
 
+
+uint8_t volatile g_BlinkDisable = 0;
+
 uint16_t KI_VGACoordTransform(KI_Terminal* terminal, uint16_t x, uint16_t y) {
     x = x%terminal->inner_width;
     y = y%terminal->inner_height;
@@ -19,7 +22,17 @@ uint16_t KI_VGACoordTransform(KI_Terminal* terminal, uint16_t x, uint16_t y) {
 }
 
 
+void KI_DisableBlinking() {
+    g_BlinkDisable = 1;
+}
+
+void KI_EnableBlinking() {
+    g_BlinkDisable = 0;
+}
+
 void KI_DrawCursor(KI_Terminal* terminal) {
+
+    if (g_BlinkDisable) {return;}
 
     uint16_t offset = KI_VGACoordTransform(terminal, terminal->cursorx, terminal->cursory);
     // If within first half of second of cursor usage
@@ -158,6 +171,7 @@ void KI_Putc(KI_Terminal* terminal, char c) {
     uint16_t offset = KI_VGACoordTransform(terminal, terminal->cursorx, terminal->cursory);
     ((uint8_t*)0xB8000)[offset*2] = '\0';
     ((uint8_t*)0xB8000)[offset*2+1] = terminal->color_data;
+    terminal->cursor_timer = 0;
 
     if (c=='\n') {
         terminal->cursorx = 0;

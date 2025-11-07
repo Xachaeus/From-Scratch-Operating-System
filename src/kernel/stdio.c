@@ -173,6 +173,9 @@ void printf_signed(long long number, int radix)
 
 void __attribute__((cdecl)) printf(const char* fmt, ...)
 {
+
+    KI_DisableBlinking();
+
     va_list args;
     va_start(args, fmt);
 
@@ -310,6 +313,8 @@ void __attribute__((cdecl)) printf(const char* fmt, ...)
 
     va_end(args);
     STD_FlushSTDOUT();
+
+    KI_EnableBlinking();
 }
 
 
