@@ -4,6 +4,8 @@
 
 .section .text
 
+.set divisor, 60
+
 .global i686_PIT_Initialize
 i686_PIT_Initialize:
     // Set the programmable system timer to fire every 500 microseconds. This requires a divisor of 597.
@@ -13,7 +15,7 @@ i686_PIT_Initialize:
     out dx, al
 
     mov dx, 0x40 // Channel 0
-    mov ax, 597   // Value for divisor
+    mov ax, divisor   // Value for divisor
     out dx, al   // Send the low byte first
     mov al, ah   // Move the high byte into al
     out dx, al   // Send the high byte next

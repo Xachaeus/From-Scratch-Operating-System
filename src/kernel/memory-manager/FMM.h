@@ -12,12 +12,22 @@ typedef struct {
     uint32_t ExtendedACPI;
 } AddressRangeDescriptor;
 
+typedef struct {
+    uint32_t BaseAddress;
+    uint32_t Limit;
+} MemoryRegion;
+
 uint64_t FMM_Initialize(AddressRangeDescriptor* mem);
 
 uint32_t FMM_GetDMAAddress();
 uint32_t FMM_GetDMAPhysAddress();
 
+void FMM_FreeBlocks(uint32_t block_idx, uint32_t num_blocks);
 void FMM_FreeBlocksAt(uint32_t virtual_address, uint32_t num_blocks);
-int FMM_AllocateBlocksAt(uint32_t virtual_address, uint32_t num_blocks);
+uint32_t FMM_ClearMapping(uint32_t virtual_address, uint32_t num_blocks);
+
+uint32_t FMM_AllocateBlocks(uint32_t num_blocks);
+int FMM_CreateMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virtual_address);
+
 void PageFaultHandler(Registers* saved_state);
 #endif

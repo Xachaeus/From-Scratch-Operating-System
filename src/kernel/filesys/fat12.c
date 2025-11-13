@@ -176,16 +176,24 @@ bool FAT12_FindFile(FAT12_File* file, const char* name, FAT12_DirectoryEntry* en
     FAT12_DirectoryEntry entry;
     memset(fat_name, ' ', sizeof(fat_name));
     fat_name[11] = '\0';
-    const char* ext = strchr(name, '.');
-    if (ext == NULL) {ext = name+11;}
-
-    for (int i = 0; i < 8 && name[i] && name + i < ext; i++) {
-        fat_name[i] = toupper(name[i]);
+    if (memcmp(name, "..", 2) == 0) {
+        fat_name[0] = '.'; fat_name[1] = '.';
     }
+    else if (memcmp(name, ".", 1) == 0) {
+        fat_name[0] = '.';
+    }
+    else {
+        const char* ext = strchr(name, '.');
+        if (ext == NULL) {ext = name+11;}
 
-    if (ext != NULL) {
-        for (int i = 0; i < 3 && ext[i + 1]; i++) {
-            fat_name[i + 8] = toupper(ext[i + 1]);
+        for (int i = 0; i < 8 && name[i] && name + i < ext; i++) {
+            fat_name[i] = toupper(name[i]);
+        }
+
+        if (ext != NULL) {
+            for (int i = 0; i < 3 && ext[i + 1]; i++) {
+                fat_name[i + 8] = toupper(ext[i + 1]);
+            }
         }
     }
     // Step 2: Search for name in file

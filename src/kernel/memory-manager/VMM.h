@@ -52,7 +52,12 @@ uint32_t VMM_GetPageTableHandler();
 uint32_t VMM_GetDMAAddress();
 
 void VMM_CreatePageDirectoryEntry(VMM_PageDirectoryEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor);
+uint8_t VMM_GetPageDirectoryEntryAVL(VMM_PageDirectoryEntry* entry);
+void VMM_SetPageDirectoryEntryAVL(VMM_PageDirectoryEntry* entry, uint8_t avl);
+
 void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor, uint8_t global);
+uint8_t VMM_GetPageTableEntryAVL(VMM_PageTableEntry* entry);
+void VMM_SetPageTableEntryAVL(VMM_PageTableEntry* entry, uint8_t avl);
 
 void __attribute__((cdecl)) VMM_EnablePaging(uint32_t page_directory);
 void __attribute__((cdecl)) VMM_InvalidatePage(uint32_t virtual_address);

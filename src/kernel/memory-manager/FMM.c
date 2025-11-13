@@ -65,21 +65,48 @@ void FMM_FreeBlocksAt(uint32_t virtual_address, uint32_t num_blocks) {
     }
 }
 
-int FMM_AllocateBlocksAt(uint32_t virtual_address, uint32_t num_blocks) {
+uint32_t FMM_ClearMapping(uint32_t virtual_address, uint32_t num_blocks) {
     VMM_PageTableEntry* table; VMM_PageTableEntry entry;
     virtual_address &= 0xFFFFF000;
+    uint32_t starting_block;
+    for (uint32_t effective_address = virtual_address; effective_address < virtual_address + (num_blocks*4096); effective_address += 4096) {
+
+        if (!VMM_GetTableForAddress(effective_address, &table)) {continue;}
+        if (!VMM_GetPageForAddress(effective_address, &entry)) {continue;}
+
+        //printf("Physical address: 0x%x, Index: 0x%x\n", entry.data & 0xFFFFF000, physical_address);
+        if (effective_address == virtual_address) {
+            starting_block = PMM_PhysicalAddress2BlockIndex(entry.data & 0xFFFFF000);
+        }
+        VMM_ClearMappingForAddress(effective_address);
+    }
+    return starting_block;
+}
+
+void FMM_FreeBlocks(uint32_t block_idx, uint32_t num_blocks) {
+    PMM_FreeBlocks(block_idx, num_blocks);
+}
+
+uint32_t FMM_AllocateBlocks(uint32_t num_blocks) {
+    return PMM_AllocateBlocks(num_blocks);
+}
+
+int FMM_CreateMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virtual_address) {
+    VMM_PageTableEntry* table; VMM_PageTableEntry entry;
+    virtual_address &= 0xFFFFF000;
+    uint32_t curr_phys_block = phys_block_id;
     for (uint32_t effective_address = virtual_address; effective_address < virtual_address + (num_blocks*4096); effective_address += 4096) {
         if (!VMM_GetTableForAddress(effective_address, &table)) {
             //printf("MM: Table not found for address 0x%x!\n", effective_address);
             uint32_t physical_table_address = PMM_BlockIndex2PhysicalAddress(PMM_AllocateBlocks(1));
             VMM_CreateTableForAddress(effective_address, physical_table_address);
         }
-        int block_idx = PMM_AllocateBlocks(1);
-        if (!VMM_CreatePageForAddress(effective_address, PMM_BlockIndex2PhysicalAddress(block_idx))) {
+        if (!VMM_CreatePageForAddress(effective_address, PMM_BlockIndex2PhysicalAddress(curr_phys_block))) {
             printf("MM: Page allocation failed!\n");
-            PMM_FreeBlocks(block_idx, 1);
+            PMM_FreeBlocks(curr_phys_block, 1);
             return 0;
         }
+        curr_phys_block++;
     }
     return 1;
 }
