@@ -46,7 +46,7 @@ void PageFaultHandler(Registers* saved_state) {
     }
     printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
     printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
-    printf("  kernel_esp=%d  ebp=%d  eip=%d  cs=%d\n  eflags=%d  esp=%d  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+    printf("  kernel_esp=0x%x  ebp=0x%x  eip=0x%x  cs=%d\n  eflags=%d  esp=0x%x  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
     for (;;);
 }
 
@@ -91,6 +91,26 @@ uint32_t FMM_AllocateBlocks(uint32_t num_blocks) {
     return PMM_AllocateBlocks(num_blocks);
 }
 
+int FMM_CreateUserMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virtual_address) {
+    VMM_PageTableEntry* table; VMM_PageTableEntry entry;
+    virtual_address &= 0xFFFFF000;
+    uint32_t curr_phys_block = phys_block_id;
+    for (uint32_t effective_address = virtual_address; effective_address < virtual_address + (num_blocks*4096); effective_address += 4096) {
+        if (!VMM_GetTableForAddress(effective_address, &table)) {
+            //printf("MM: Table not found for address 0x%x!\n", effective_address);
+            uint32_t physical_table_address = PMM_BlockIndex2PhysicalAddress(PMM_AllocateBlocks(1));
+            VMM_CreateTableForAddress(effective_address, physical_table_address);
+        }
+        if (!VMM_CreatePageForAddress(effective_address, PMM_BlockIndex2PhysicalAddress(curr_phys_block))) {
+            printf("MM: Page allocation failed!\n");
+            PMM_FreeBlocks(curr_phys_block, 1);
+            return 0;
+        }
+        curr_phys_block++;
+    }
+    return 1;
+}
+
 int FMM_CreateMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virtual_address) {
     VMM_PageTableEntry* table; VMM_PageTableEntry entry;
     virtual_address &= 0xFFFFF000;
@@ -101,6 +121,7 @@ int FMM_CreateMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virt
             uint32_t physical_table_address = PMM_BlockIndex2PhysicalAddress(PMM_AllocateBlocks(1));
             VMM_CreateTableForAddress(effective_address, physical_table_address);
         }
+        //printf("Eff. Addr: 0x%x | 0x%x\n", effective_address, (num_blocks*4096));
         if (!VMM_CreatePageForAddress(effective_address, PMM_BlockIndex2PhysicalAddress(curr_phys_block))) {
             printf("MM: Page allocation failed!\n");
             PMM_FreeBlocks(curr_phys_block, 1);

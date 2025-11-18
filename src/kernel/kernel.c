@@ -18,8 +18,14 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include <proc/proc.h>
+#include <proc/load.h>
+
 // Set the PIC timer delay to the number of microseconds between timer calls
 #define PIC_TIMER_DELAY 100
+
+
+uint32_t CurrentAvailablePID = 0;
 
 
 void setup_timer(Registers* regs) {
@@ -29,6 +35,8 @@ void setup_timer(Registers* regs) {
 void timer(Registers* regs) {
     ActiveContextTimerCursorHook(PIC_TIMER_DELAY);
     ActiveContextTimerSleepHook(PIC_TIMER_DELAY);
+
+    SchedulerHook(PIC_TIMER_DELAY, (Context*)regs);
 }
 
 void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMemoryMapPtr){
@@ -51,7 +59,7 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
     i686_IRQ_RegisterHandler(6, DISK_Floppy_IRQ6Handler);
     DISK_Floppy_Initialize(boot_drive);
     printf("Done!\n");
-    
+
     printf("Initializing filesystem... ");
     FAT12_Initialize();
     printf("Done!\n");
@@ -60,6 +68,16 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
 
     CFG_EnableCursorBlinking();
     CFG_SetCursorChar(0xDB);
+
+    ProcessControlBlock test;
+    test.pid = CurrentAvailablePID++;
+    LoadProc("/cross/hello", &test);
+    //printf("DEBUG: state of proc: 0x%x\n", test.proc_state);
+    //printf("DEBUG: Text virtual address: 0x%x\n", test.text_section.BaseAddress);
+    //printf("DEBUG: Text section active: %d\n", test.text_section.isActive);
+
+    printf("Executing process...\n");
+    ExecProc(&test);
 
     CLI_Mainloop();
 

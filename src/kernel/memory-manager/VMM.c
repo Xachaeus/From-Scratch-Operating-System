@@ -250,13 +250,14 @@ void VMM_ClearMappingForAddress(uint32_t virtual_address) {
 
     uint16_t table_entry_count = VMM_GetActivePageTableEntryCount() - 1;
     if (table_entry_count == 0) {
-        g_PageDirectoryAddress[directory_index].data &= 0xFFFFFFFE;
-        PMM_FreeBlocks(PMM_PhysicalAddress2BlockIndex(table_address), 1);
+        //g_PageDirectoryAddress[directory_index].data = 0x0;
+        //PMM_FreeBlocks(PMM_PhysicalAddress2BlockIndex(table_address), 1);
+        //VMM_InvalidateTLB();
+        printf("VMM: Page table is empty!\n");
     }
     else {
-        g_PageTableAddress[table_index].data &= 0xFFFFFFFE;
         VMM_SetActivePageTableEntryCount(table_entry_count);
+        g_PageTableAddress[table_index].data &= 0xFFFFFFFE;
+        VMM_InvalidatePage(virtual_address);
     }
-
-    VMM_InvalidatePage(virtual_address);
 }
