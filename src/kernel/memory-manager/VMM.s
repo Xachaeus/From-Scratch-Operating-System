@@ -6,6 +6,10 @@
 
 .global VMM_EnablePaging
 VMM_EnablePaging:
+
+    mov eax, cr4
+    and eax, 0xFFFFFF7F // Unset bit 7 so global pages are ignored
+    mov cr4, eax
     
     mov eax, [esp+4]
     mov cr3, eax        // Page directory now in cr3

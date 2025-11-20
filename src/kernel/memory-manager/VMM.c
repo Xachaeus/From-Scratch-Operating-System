@@ -7,7 +7,8 @@
 
 
 VMM_PageDirectoryEntry* g_PageDirectoryAddress;
-VMM_PageTableEntry* g_PageTableAddress;
+VMM_PageTableEntry* g_WorkingPageTable;
+VMM_PageTableEntry* g_KernelPageTable;
 
 uint32_t g_KernelDMAVirtualAddress;
 
@@ -16,9 +17,9 @@ uint32_t VMM_GetDMAAddress() {
 }
 
 
-uint32_t VMM_GetPageTableHandler() {
+uint32_t VMM_GetWorkingPageTableAddr() {
     // Returns the address of the working page table; only necessary for external modules
-    return (uint32_t)g_PageTableAddress;
+    return (uint32_t)g_WorkingPageTable;
 }
 
 void VMM_VirtualAddress2PageIndices(uint32_t address, uint32_t* PD_Index, uint32_t* PT_Index) {
@@ -32,6 +33,12 @@ uint32_t VMM_PageIndices2VirtualAddress(uint32_t PD_Index, uint32_t PT_Index) {
     return ((PD_Index*1024) + (PT_Index)) * 4096;
 }
 
+uint32_t VMM_VirtualAddress2PhysicalAddress(uint32_t virtual_address) {
+    uint32_t directory_index, table_index;
+    VMM_VirtualAddress2PageIndices(virtual_address, &directory_index, &table_index);
+    VMM_SetWorkingPageTable(g_PageDirectoryAddress[directory_index].data & 0xFFFFF000);
+    return g_WorkingPageTable[table_index].data & 0xFFFFF000;
+}
 
 
 void VMM_CreatePageDirectoryEntry(VMM_PageDirectoryEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor) {
@@ -39,33 +46,38 @@ void VMM_CreatePageDirectoryEntry(VMM_PageDirectoryEntry* entry, uint32_t addres
 }
 
 uint8_t VMM_GetPageDirectoryEntryAVL(VMM_PageDirectoryEntry* entry) {
+    return 0;
     return (entry->data & 0x00000F00) >> 8;
 }
 
 void VMM_SetPageDirectoryEntryAVL(VMM_PageDirectoryEntry* entry, uint8_t avl) {
+    return;
     entry->data = (entry->data & 0xFFFFF0FF) | ((avl << 8) & 0x00000F00);
 }
 
 
+
 void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor, uint8_t global) {
-    entry->data = (address & 0xFFFFF000) | ((uint32_t)(avl & 0x07) << 9) | (global? PT_Glob_M : 0) | (supervisor? PT_US_FM : 0) | 1;
+    entry->data = (address & 0xFFFFF000) | ((uint32_t)(avl & 0x07) << 9) | ((global && 0)? PT_Glob_M : 0) | (supervisor? PT_US_FM : 0) | 1;
 }
 
 uint8_t VMM_GetPageTableEntryAVL(VMM_PageTableEntry* entry) {
+    return 0;
     return (entry->data & 0x00000E00) >> 9;
 }
 
 void VMM_SetPageTableEntryAVL(VMM_PageTableEntry* entry, uint8_t avl) {
+    return;
     entry->data = (entry->data & 0xFFFFF1FF) | ((avl << 9) & 0x00000E00);
 }
 
 
 
 uint16_t VMM_GetActivePageTableEntryCount() {
-    uint8_t index0_avl = VMM_GetPageTableEntryAVL(&(g_PageTableAddress[0]));
-    uint8_t index1_avl = VMM_GetPageTableEntryAVL(&(g_PageTableAddress[1]));
-    uint8_t index2_avl = VMM_GetPageTableEntryAVL(&(g_PageTableAddress[2]));
-    uint8_t index3_avl = VMM_GetPageTableEntryAVL(&(g_PageTableAddress[3]));
+    uint8_t index0_avl = VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[0]));
+    uint8_t index1_avl = VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[1]));
+    uint8_t index2_avl = VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[2]));
+    uint8_t index3_avl = VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[3]));
     return (index3_avl<<9) | (index2_avl<<6) | (index1_avl<<3) | (index0_avl);
 }
 
@@ -74,10 +86,10 @@ void VMM_SetActivePageTableEntryCount(uint16_t value) {
     uint8_t index1_avl = (value&0x00000038) >> 3;
     uint8_t index2_avl = (value&0x000001C0) >> 6;
     uint8_t index3_avl = (value&0x00000E00) >> 9;
-    VMM_SetPageTableEntryAVL(&(g_PageTableAddress[0]), index0_avl);
-    VMM_SetPageTableEntryAVL(&(g_PageTableAddress[1]), index1_avl);
-    VMM_SetPageTableEntryAVL(&(g_PageTableAddress[2]), index2_avl);
-    VMM_SetPageTableEntryAVL(&(g_PageTableAddress[3]), index3_avl);
+    VMM_SetPageTableEntryAVL(&(g_WorkingPageTable[0]), index0_avl);
+    VMM_SetPageTableEntryAVL(&(g_WorkingPageTable[1]), index1_avl);
+    VMM_SetPageTableEntryAVL(&(g_WorkingPageTable[2]), index2_avl);
+    VMM_SetPageTableEntryAVL(&(g_WorkingPageTable[3]), index3_avl);
 }
 
 
@@ -121,7 +133,7 @@ void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableB
         PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock),   // Start address of Page Table
         0,          // No information in the avl for now
         1,          // Supervisor; should only be available to the kernel
-        1           // Global; maintain across page directory changes (since we'll never remove this mapping)
+        0           // Non-Global; do NOT maintain across page directory changes
     ); 
 
     VMM_CreatePageTableEntry(
@@ -155,7 +167,8 @@ void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableB
     VMM_EnablePaging((uint32_t)PMM_BlockIndex2PhysicalAddress(KernelPageDirectoryBlock));
 
     g_PageDirectoryAddress = (VMM_PageDirectoryEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageDirectoryBlock);
-    g_PageTableAddress = (VMM_PageTableEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock);
+    g_KernelPageTable = (VMM_PageTableEntry*)PMM_BlockIndex2PhysicalAddress(KernelPageTableBlock);
+    g_WorkingPageTable = (VMM_PageTableEntry*)(0x104000);
     g_KernelDMAVirtualAddress = (VMM_IDENTITY_END_BLOCK+2)*4096;
 }
 
@@ -164,10 +177,12 @@ void VMM_Initialize(uint32_t KernelPageDirectoryBlock, uint32_t KernelPageTableB
 void VMM_SetWorkingPageTable(uint32_t table_physical_address) {
     // Re-maps the address in g_PageTableAddress to the physical address of a page table
     uint32_t directory_index, table_index;
-    VMM_VirtualAddress2PageIndices((uint32_t)g_PageTableAddress, &directory_index, &table_index);
-    VMM_PageTableEntry* kernel_page_table = (VMM_PageTableEntry*)(g_PageDirectoryAddress[directory_index].data & 0xFFFFF000);
-    VMM_CreatePageTableEntry(&(kernel_page_table[table_index]), table_physical_address, VMM_GetPageTableEntryAVL(&(kernel_page_table[table_index])), 1, 1);
-    VMM_InvalidatePage((uint32_t)g_PageTableAddress);
+    VMM_VirtualAddress2PageIndices((uint32_t)g_WorkingPageTable, &directory_index, &table_index);
+    /* Set create a mapping at virtual address g_WorkingPageTable (currently defined explicitly as 0x104000) to the physical page specified */
+    VMM_CreatePageTableEntry(&(g_KernelPageTable[table_index]), table_physical_address, VMM_GetPageTableEntryAVL(&(g_KernelPageTable[table_index])), 1, 0);
+    //VMM_InvalidatePage((uint32_t)g_PageTableAddress);
+    VMM_InvalidateTLB();
+    ///printf("Set %d:%d (0x%x) to 0x%x\n", directory_index, table_index, VMM_PageIndices2VirtualAddress(directory_index, table_index), table_physical_address);
 }
 
 int VMM_LoadTableForAddress(uint32_t virtual_address) {
@@ -194,12 +209,14 @@ int VMM_GetTableForAddress(uint32_t virtual_address, VMM_PageTableEntry** physic
 
 
 void VMM_CreateTableForAddress(uint32_t virtual_address, uint32_t table_physical_address) {
+    //printf("Creating new table for address 0x%x\n", virtual_address);
     // Given a virtual address and an available physical address block, create a table at that address and create an entry to that table at the right position within the page directory
     uint32_t directory_index, table_index;
     VMM_VirtualAddress2PageIndices(virtual_address, &directory_index, &table_index);
     //printf("Creating table at index %d for address 0x%x\n", directory_index, virtual_address);
     VMM_CreatePageDirectoryEntry(&(g_PageDirectoryAddress[directory_index]), table_physical_address, VMM_GetPageDirectoryEntryAVL(&(g_PageDirectoryAddress[directory_index])), 1);
-    VMM_SetWorkingPageTable((uint32_t)table_physical_address);
+    VMM_InvalidateTLB();
+    VMM_SetWorkingPageTable(table_physical_address);
     VMM_SetActivePageTableEntryCount(0);
 }
 
@@ -213,7 +230,7 @@ int VMM_GetPageForAddress(uint32_t virtual_address, VMM_PageTableEntry* entry) {
 
     uint32_t table_address = d_entry.data & 0xFFFFF000;
     VMM_SetWorkingPageTable(table_address);
-    VMM_PageTableEntry t_entry = g_PageTableAddress[table_index];
+    VMM_PageTableEntry t_entry = g_WorkingPageTable[table_index];
     if (!(t_entry.data & 0x1)) {return 0;}
     *entry = t_entry;
     return 1;
@@ -221,6 +238,7 @@ int VMM_GetPageForAddress(uint32_t virtual_address, VMM_PageTableEntry* entry) {
 
 int VMM_CreatePageForAddress(uint32_t virtual_address, uint32_t physical_address) {
     // Given a virtual address, creates an entry in the right page table to map that address to the provided physical address.
+
     uint32_t directory_index, table_index;
     VMM_PageTableEntry* table_address;
     VMM_VirtualAddress2PageIndices(virtual_address, &directory_index, &table_index);
@@ -228,12 +246,19 @@ int VMM_CreatePageForAddress(uint32_t virtual_address, uint32_t physical_address
 
     VMM_SetWorkingPageTable((uint32_t)table_address);
     uint16_t table_entry_count = VMM_GetActivePageTableEntryCount() + 1;
-    VMM_CreatePageTableEntry(&(g_PageTableAddress[table_index]), physical_address, VMM_GetPageTableEntryAVL(&(g_PageTableAddress[table_index])), 1, 1);
+    VMM_CreatePageTableEntry(&(g_WorkingPageTable[table_index]), physical_address, VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[table_index])), 1, 0);
     VMM_SetActivePageTableEntryCount(table_entry_count);
 
-    VMM_InvalidatePage(virtual_address);
+    //VMM_InvalidatePage(virtual_address);
+    VMM_InvalidateTLB();
 
-    //printf("Relevant page table entry: 0x%x\n", g_PageTableAddress[table_index]);
+    //printf("Set %d:%d (0x%x) to 0x%x\n", directory_index, table_index, VMM_PageIndices2VirtualAddress(directory_index, table_index), physical_address);
+    //printf("DE: 0x%x | TE: 0x%x\n", g_PageDirectoryAddress[directory_index], g_WorkingPageTable[table_index]);
+
+    //printf("Verifying mapping...\n");
+    //*((uint8_t*)(virtual_address)) = 7;
+    //printf("Done! Mapping valid!\n");
+
     return 1;
 }
 
@@ -252,12 +277,14 @@ void VMM_ClearMappingForAddress(uint32_t virtual_address) {
     if (table_entry_count == 0) {
         //g_PageDirectoryAddress[directory_index].data = 0x0;
         //PMM_FreeBlocks(PMM_PhysicalAddress2BlockIndex(table_address), 1);
-        //VMM_InvalidateTLB();
+        g_WorkingPageTable[table_index].data &= 0xFFFFFFFE;
+        VMM_InvalidateTLB();
         printf("VMM: Page table is empty!\n");
     }
     else {
         VMM_SetActivePageTableEntryCount(table_entry_count);
-        g_PageTableAddress[table_index].data &= 0xFFFFFFFE;
-        VMM_InvalidatePage(virtual_address);
+        g_WorkingPageTable[table_index].data &= 0xFFFFFFFE;
+        //VMM_InvalidatePage(virtual_address);
+        VMM_InvalidateTLB();
     }
 }

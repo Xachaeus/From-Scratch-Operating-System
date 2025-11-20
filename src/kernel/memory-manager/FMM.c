@@ -115,9 +115,8 @@ int FMM_CreateMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virt
     VMM_PageTableEntry* table; VMM_PageTableEntry entry;
     virtual_address &= 0xFFFFF000;
     uint32_t curr_phys_block = phys_block_id;
-    for (uint32_t effective_address = virtual_address; effective_address < virtual_address + (num_blocks*4096); effective_address += 4096) {
+    for (uint64_t effective_address = virtual_address; effective_address < (uint64_t)virtual_address + (uint64_t)(num_blocks*4096); effective_address += 4096) {
         if (!VMM_GetTableForAddress(effective_address, &table)) {
-            //printf("MM: Table not found for address 0x%x!\n", effective_address);
             uint32_t physical_table_address = PMM_BlockIndex2PhysicalAddress(PMM_AllocateBlocks(1));
             VMM_CreateTableForAddress(effective_address, physical_table_address);
         }
@@ -129,5 +128,6 @@ int FMM_CreateMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virt
         }
         curr_phys_block++;
     }
+    VMM_InvalidateTLB();
     return 1;
 }

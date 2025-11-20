@@ -4,6 +4,7 @@
 #include <keyboard/keyboard.h>
 #include <memory-manager/FMM.h>
 #include <memory-manager/PMM.h>
+#include <memory-manager/VMM.h>
 #include <disk/floppy.h>
 #include <filesys/fat12.h>
 #include <syscall.h>
@@ -69,6 +70,24 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
     CFG_EnableCursorBlinking();
     CFG_SetCursorChar(0xDB);
 
+    /*
+    printf("Testing memory 1...\n");
+    uint32_t block1 = FMM_AllocateBlocks(1);
+    FMM_CreateMapping(block1, 1, 0xFFFFF000);
+    printf("Physical address: 0x%x\n", VMM_VirtualAddress2PhysicalAddress(0xFFFFF000));
+    *((uint32_t*)(0xFFFFFFFC)) = 7;
+
+    printf("Testing memory 2...\n");
+    uint32_t block2 = FMM_AllocateBlocks(1);
+    FMM_CreateMapping(block2, 1, 0xF000E000);
+    printf("Physical address: 0x%x\n", VMM_VirtualAddress2PhysicalAddress(0xFFFFE000));
+    *((uint32_t*)(0xF000EFFC)) = 7;
+
+    //FMM_ClearMapping(0xFFFFFFFC, 1);
+    //FMM_FreeBlocks(block, 1);
+    printf("Success!\n");
+    
+
     ProcessControlBlock test;
     test.pid = CurrentAvailablePID++;
     LoadProc("/cross/hello", &test);
@@ -78,6 +97,7 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
 
     printf("Executing process...\n");
     ExecProc(&test);
+    */
 
     CLI_Mainloop();
 

@@ -5,11 +5,14 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <filesys/fat12.h>
+#include <proc/load.h>
+#include <proc/proc.h>
 
 #define ERROR_ID 0xFFFFFFFF
 #define LS_ID 0
 #define CD_ID 1
 #define CAT_ID 2
+#define EXEC_ID 3
 
 CMDHandler g_CMDHandlers[256];
 char CurrentPath[256];
@@ -26,6 +29,9 @@ int GetCMD(const char* command) {
         case 3:
             if (memcmp(command, "cat", 3) == 0) {return CAT_ID;}
             break;
+        case 4:
+            if (memcmp(command, "exec", 4) == 0) {return EXEC_ID;}
+            break;
         default:
             return ERROR_ID;
     }
@@ -40,6 +46,24 @@ void RegisterCMDHandler(int id, CMDHandler handler) {
 
 
 
+void EXEC(int argc, const char** argv) {
+    if (argc > 1) {
+        const char* new_path = argv[1];
+        char absolute_path[256];
+        if (new_path[0] != '/') { // Relative, non-absolute path
+            strcpy(absolute_path, CurrentPath);
+            absolute_path[strlen(CurrentPath)] = '/';
+            strcpy(absolute_path+strlen(CurrentPath)+1, new_path);
+        }
+        else {
+            strcpy(absolute_path, new_path);
+        }
+        ProcessControlBlock proc;
+        proc.pid = 0x69;
+        LoadProc(absolute_path, &proc);
+        ExecProc(&proc);
+    }
+}
 
 void LS(int argc, const char** argv) {
     if (argc == 1) {
@@ -150,6 +174,7 @@ int CLI_Mainloop() {
     RegisterCMDHandler(LS_ID, LS);
     RegisterCMDHandler(CD_ID, CD);
     RegisterCMDHandler(CAT_ID, CAT);
+    RegisterCMDHandler(EXEC_ID, EXEC);
 
     char DriveLetter = 'A';
     char CommandBuffer[256];
