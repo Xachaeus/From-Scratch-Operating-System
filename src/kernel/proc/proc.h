@@ -9,15 +9,24 @@
 typedef enum {
     FILE_PATH_ERROR = 0xFF,
     EXE_FORMAT_ERROR = 0x7F,
-    READY = 0x0
+    BLOCKED = 0x0,
+    READY = 0x1,
+    RUNNING = 0x2,
+    COMPLETE = 0x3
 } PROC_STATES;
 
 typedef struct {
     uint32_t ds;
-    uint32_t edi, esi, ebp, kernel_esp, ebx, edx, ecx, eax;
+    uint32_t edi, esi, ebp, context_esp, ebx, edx, ecx, eax;
     uint32_t interrupt, error;
     uint32_t eip, cs, eflags, esp, ss;
 } __attribute__((packed)) Context;
+
+
+typedef struct {
+    uint32_t old_stack_pointer;
+    Context context;
+} __attribute__((packed)) StackContext;
 
 
 typedef struct {
@@ -42,9 +51,14 @@ typedef struct {
 
 
 
-int ExecProc(ProcessControlBlock* proc);
+int GetAvailablePID();
+ProcessControlBlock* GetPCB(int pid);
 
+int ExecProc(int pid);
+
+void TerminateRunningProcess(Context* context);
 void SchedulerHook(uint32_t delta_time, Context* context);
+void SwitchToKernel();
 
 void __attribute__((cdecl)) i686_call(uint32_t addr);
 

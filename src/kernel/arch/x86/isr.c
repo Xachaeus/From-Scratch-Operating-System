@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <hardware-io/io.h>
 
 
 
@@ -582,12 +583,15 @@ void i686_ISR_RegisterHandler(int interrupt, ISRHandler handler) {
 
 
 
-void __attribute__((cdecl)) i686_ISR_Handler(Registers* saved_state){
+uint32_t __attribute__((cdecl)) i686_ISR_Handler(Registers* saved_state){
     if (g_ISRHandlers[saved_state->interrupt] != NULL){
+        saved_state->kernel_esp = (uint32_t)saved_state;
         g_ISRHandlers[saved_state->interrupt](saved_state);
+        return saved_state->kernel_esp;
     }
     else if (saved_state->interrupt >= 32) {
         printf("Unhandled interrupt received: %d!\n", saved_state->interrupt);
+        return saved_state->kernel_esp;
     }
     else {
         i686_DisablePaging();

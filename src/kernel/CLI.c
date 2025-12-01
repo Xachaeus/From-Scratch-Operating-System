@@ -58,10 +58,16 @@ void EXEC(int argc, const char** argv) {
         else {
             strcpy(absolute_path, new_path);
         }
-        ProcessControlBlock proc;
-        proc.pid = 0x69;
-        LoadProc(absolute_path, &proc);
-        ExecProc(&proc);
+        int pid = GetAvailablePID();
+        if (!LoadProc(absolute_path, GetPCB(pid))) {printf("Error: exe file not found!\n"); return;}
+        ExecProc(pid);
+        ProcessControlBlock* proc = GetPCB(pid);
+        if (argc > 2) {
+            if (argv[2][0] == '&') {
+                return;
+            }
+        }
+        while (proc->proc_state != COMPLETE) {};
     }
 }
 
@@ -195,6 +201,8 @@ int CLI_Mainloop() {
         int command_len = strlen(CommandBuffer);
         int argc = 0;
         bool inArg = false;
+
+        if (command_len == 0) {continue;}
 
         for (int i = 0; i < command_len; i++) {
             // Case 1: Found a value while not already in a value

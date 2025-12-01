@@ -13,7 +13,7 @@ typedef struct {
 
 typedef void (*ISRHandler)(Registers* saved_state);
 
-void __attribute__((cdecl)) i686_ISR_Handler(Registers* saved_state);
+uint32_t __attribute__((cdecl)) i686_ISR_Handler(Registers* saved_state);
 void __attribute__((cdecl)) i686_ISR_Initialize();
 void __attribute__((cdecl)) i686_DisablePaging();
 void i686_ISR_RegisterHandler(int interrupt, ISRHandler handler);

@@ -118,7 +118,7 @@ run_debug: clean floppy_image cross
 	qemu-system-i386 -d int -monitor stdio -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
 
 run: floppy_image cross
-	sudo nice -n -20 qemu-system-i386 -m 2G -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
+	qemu-system-i386 -m 2G -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
 
 run64: floppy_image
 	qemu-system-x86_64 -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy

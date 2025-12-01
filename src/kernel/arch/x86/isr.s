@@ -304,7 +304,7 @@ i686_common:
     // Call C handler for given interrupt
     push esp // Give C function a pointer to collected interrupt information
     call i686_ISR_Handler
-    add esp, 4
+    mov esp, eax // The ISR handler returns the new context stack pointer, put this into ESP
 
     // Return to saved data segment
     pop eax

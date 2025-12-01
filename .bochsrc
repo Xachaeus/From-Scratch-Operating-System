@@ -2,6 +2,6 @@ boot: floppy
 floppya: 1_44=build/main_floppy.img, status=inserted
 mouse: enabled=0
 display_library: sdl2, options="gui_debug"
-megs: 128
+megs: 512
 romimage: file=/usr/share/bochs/BIOS-bochs-latest
 vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest

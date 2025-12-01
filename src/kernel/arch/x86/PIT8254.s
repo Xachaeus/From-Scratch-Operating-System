@@ -4,6 +4,7 @@
 
 .section .text
 
+//.set divisor, 60
 .set divisor, 60
 
 .global i686_PIT_Initialize
