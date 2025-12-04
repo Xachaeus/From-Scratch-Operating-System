@@ -27,6 +27,13 @@ i686_GDT_Load:
 
     retf
 
+.global i686_TSS_Load
+i686_TSS_Load:
+
+    mov eax, [esp+4] // Fetch offset for TSS
+    ltr ax
+    ret
+
 .reload_cs:
 
 

@@ -579,6 +579,11 @@ void i686_ISR_RegisterHandler(int interrupt, ISRHandler handler) {
     i686_IDT_EnableGate(interrupt);
 }
 
+void i686_ISR_RegisterUserHandler(int interrupt, ISRHandler handler) {
+    g_ISRHandlers[interrupt] = handler;
+    i686_IDT_EnableUserGate(interrupt);
+}
+
 
 
 

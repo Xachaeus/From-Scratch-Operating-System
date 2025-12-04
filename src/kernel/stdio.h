@@ -27,6 +27,7 @@ void STD_PutBuffer(char* buffer, char* src);
 int STD_GetBuffer(char* buffer, char* dest);
 void __attribute__((cdecl)) printf(const char* fmt, ...);
 int __attribute__((cdecl)) scanf(const char* fmt, ...);
+int __attribute__((cdecl)) sscanf(const char* buffer, const char* fmt, ...);
 void __attribute__((cdecl)) getline(char* dest, int max_len);
 
 #endif

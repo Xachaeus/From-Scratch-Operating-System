@@ -602,3 +602,224 @@ void __attribute__((cdecl)) getline(char* dest, int max_len) {
     return;
 }
 
+
+
+
+
+int __attribute__((cdecl)) sscanf(const char* buffer, const char* fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    int count = 0; // Count how many values are read
+
+    const char* input = buffer;
+    int SCANF_FORMAT_STATE = 0;
+
+    uint8_t long_modifier_count = 0;
+    uint8_t short_modifier_count = 0;
+
+    uint64_t value;
+    uint8_t length_modifier_amount;
+    int sign;
+
+    while(*fmt) {
+        switch (SCANF_FORMAT_STATE) {
+
+            case 0: // No special character detected
+
+                long_modifier_count = 0;
+                short_modifier_count = 0;
+
+                if (*fmt == '%') { // Locate format specifiers
+                    SCANF_FORMAT_STATE = 1;
+                }
+                else { // If no format specifier is given, make sure input string matches format string exactly
+                    if (*input != *fmt) { // Check for mismatch
+                        goto SCANF_BAD_INPUT_ERROR;
+                    }
+                    else { // Otherwise, update position within input
+                        input++;
+                    }
+                }
+                break;
+            
+            case 1: // Format specifier has been found, now need to parse exact type
+                switch (*fmt) {
+
+                    case 'l': // At least one "long" modifier
+                        long_modifier_count++;
+                        break;
+
+
+                    case 'h': // At least one "short" modifier
+                        short_modifier_count++;
+                        break;
+
+
+                    case 'i': // Signed integer
+                    case 'd':
+
+                        length_modifier_amount = 2 + long_modifier_count - short_modifier_count; // Get a single value to represent intended length
+                        if (length_modifier_amount > 4 || length_modifier_amount < 0) {
+                            goto SCANF_BAD_FORMAT_ERROR;
+                        }
+                        if (*input == '-') {sign = 1; input++;}  // Is input number negative?
+                        else {sign = 0;}                         // Is input number positive?
+                        if (*input < '0' || *input > '9') {goto SCANF_BAD_INPUT_ERROR;} // If the current character of input is not a number, exit
+
+                        // Get the numeric value from STDIN
+                        value = 0;
+                        while (*input != ' ' && *input != '\0' && *input != '\t') { // Run until a valid stop character is found
+                            if (*input < '0' || *input > '9') {goto SCANF_BAD_INPUT_ERROR;} // If the current character of input is not a number, exit
+                            value = (value * 10) + (*input - '0'); // Shift value over one decimal place and add number value
+                            input++;
+                        }
+                        if (sign) {value = ~value + 1;} // Get the two's complement if negative
+
+                        switch (length_modifier_amount) {
+                            case 0: // Short Short  (1 byte)
+                                *((uint8_t*)(va_arg(args, uint8_t*))) = 0x00000000000000FF & value;
+                                break;
+                            case 1: // Short        (2 bytes) 
+                                *((uint16_t*)(va_arg(args, uint16_t*))) = 0x000000000000FFFF & value;
+                                break;
+                            case 2: // Normal       (4 bytes)
+                            case 3: // Long         (4 bytes)
+                                *((uint32_t*)(va_arg(args, uint32_t*))) = 0x00000000FFFFFFFF & value;
+                                break;
+                            case 4: // Long Long    (8 bytes)
+                                *((uint64_t*)(va_arg(args, uint64_t*))) = 0xFFFFFFFFFFFFFFFF & value;
+                                break;
+                        }
+                        count += 1; // Record a value found
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    case 'u': // Unsigned integer
+
+                        length_modifier_amount = 2 + long_modifier_count - short_modifier_count; // Get a single value to represent intended length
+                        if (length_modifier_amount > 4 || length_modifier_amount < 0) {
+                            goto SCANF_BAD_FORMAT_ERROR;
+                        }
+                        if (*input < '0' || *input > '9') {goto SCANF_BAD_INPUT_ERROR;} // If the current character of input is not a number, exit
+
+                        // Get the numeric value from STDIN
+                        value = 0;
+                        while (*input != ' ' && *input != '\0' && *input != '\t') { // Run until a valid stop character is found
+                            if ((*input > '0' && *input < '9') || (*input > 'a')) {goto SCANF_BAD_INPUT_ERROR;} // If the current character of input is not a number, exit
+                            value = (value * 10) + (*input - '0'); // Shift value over one decimal place and add number value
+                            input++;
+                        }
+
+                        switch (length_modifier_amount) {
+                            case 0: // Short Short  (1 byte)
+                                *((uint8_t*)(va_arg(args, uint8_t*))) = 0x00000000000000FF & value;
+                                break;
+                            case 1: // Short        (2 bytes) 
+                                *((uint16_t*)(va_arg(args, uint16_t*))) = 0x000000000000FFFF & value;
+                                break;
+                            case 2: // Normal       (4 bytes)
+                            case 3: // Long         (4 bytes)
+                                *((uint32_t*)(va_arg(args, uint32_t*))) = 0x00000000FFFFFFFF & value;
+                                break;
+                            case 4: // Long Long    (8 bytes)
+                                *((uint64_t*)(va_arg(args, uint64_t*))) = 0xFFFFFFFFFFFFFFFF & value;
+                                break;
+                        }
+                        count += 1; // Record a value found
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    case 'X': // Unsigned integer in hex
+                    case 'p':
+                    case 'x':
+                        
+                        length_modifier_amount = 2 + long_modifier_count - short_modifier_count; // Get a single value to represent intended length
+                        if (length_modifier_amount > 4 || length_modifier_amount < 0) {
+                            goto SCANF_BAD_FORMAT_ERROR;
+                        }
+
+                        if (hex_to_dec(*input) < 0) {goto SCANF_BAD_INPUT_ERROR;} // If the current character of input is not a number, exit
+
+                        // Get the numeric value from the buffer
+                        value = 0;
+                        while (*input != ' ' && *input != '\0' && *input != '\t') { // Run until a valid stop character is found
+                            if (hex_to_dec(*input) < 0) {goto SCANF_BAD_INPUT_ERROR;} // If the current character of input is not a number, exit
+                            value = (value * 16) + (hex_to_dec(*input)); // Shift value over one decimal place and add number value
+                            input++;
+                        }
+
+                        switch (length_modifier_amount) {
+                            case 0: // Short Short  (1 byte)
+                                *((uint8_t*)(va_arg(args, uint8_t*))) = 0x00000000000000FF & value;
+                                break;
+                            case 1: // Short        (2 bytes) 
+                                *((uint16_t*)(va_arg(args, uint16_t*))) = 0x000000000000FFFF & value;
+                                break;
+                            case 2: // Normal       (4 bytes)
+                            case 3: // Long         (4 bytes)
+                                *((uint32_t*)(va_arg(args, uint32_t*))) = 0x00000000FFFFFFFF & value;
+                                break;
+                            case 4: // Long Long    (8 bytes)
+                                *((uint64_t*)(va_arg(args, uint64_t*))) = 0xFFFFFFFFFFFFFFFF & value;
+                                break;
+                        }
+                        count += 1; // Record a value found
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    case 'o': // Unsigned integer in octal
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    case 'c': // Char
+                        *((char*)(va_arg(args, char*))) = *input;
+                        input++;
+                        count += 1;
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    case 's': // String
+                        char* s = (char*)(va_arg(args, char*));
+                        while (*input != ' ' && *input != '\0' && *input != '\t') {
+                            *s = *input;
+                            s++; input++;
+                        }
+                        count += 1;
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    case '%': // Percent
+                        if (*input != '%') {
+                            goto SCANF_BAD_INPUT_ERROR;
+                        }
+                        else {
+                            input++;
+                            count += 1;
+                        }
+                        SCANF_FORMAT_STATE = 0;
+                        break;
+
+
+                    default: // Invalid character
+                        goto SCANF_BAD_FORMAT_ERROR;
+                }
+ 
+        }
+        fmt++;
+    }
+
+    SCANF_BAD_INPUT_ERROR:
+    SCANF_VALID_INPUT:
+    return count;
+
+    SCANF_BAD_FORMAT_ERROR:
+    return -1;
+}
+

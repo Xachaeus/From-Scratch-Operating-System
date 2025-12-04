@@ -17,7 +17,7 @@ Linker script and memory map
 
                 0x00030000                        . = 0x30000
 
-.text           0x00030000     0x8736
+.text           0x00030000     0x9906
  *(.text)
  .text          0x00030000       0x28 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
                 0x00030000                kernel_start
@@ -37,648 +37,673 @@ Linker script and memory map
  .text          0x00030084        0x6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
                 0x00030084                i686_call
  *fill*         0x0003008a        0x2 
- .text          0x0003008c       0x3f /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
+ .text          0x0003008c       0x47 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
                 0x0003008c                i686_GDT_Load
- *fill*         0x000300cb        0x1 
- .text          0x000300cc        0xd /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
-                0x000300cc                i686_IDT_Load
- *fill*         0x000300d9        0x3 
- .text          0x000300dc      0xa74 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
-                0x000300dc                i686_ISR0
-                0x000300e5                i686_ISR1
-                0x000300ee                i686_ISR2
-                0x000300f7                i686_ISR3
-                0x00030100                i686_ISR4
-                0x00030109                i686_ISR5
-                0x00030112                i686_ISR6
-                0x0003011b                i686_ISR7
-                0x00030124                i686_ISR8
-                0x0003012b                i686_ISR9
-                0x00030134                i686_ISR10
-                0x0003013b                i686_ISR11
-                0x00030142                i686_ISR12
-                0x00030149                i686_ISR13
-                0x00030150                i686_ISR14
-                0x00030157                i686_ISR15
-                0x00030160                i686_ISR16
-                0x00030169                i686_ISR17
-                0x00030170                i686_ISR18
-                0x00030179                i686_ISR19
-                0x00030182                i686_ISR20
-                0x0003018b                i686_ISR21
-                0x00030192                i686_ISR22
-                0x0003019b                i686_ISR23
-                0x000301a4                i686_ISR24
-                0x000301ad                i686_ISR25
-                0x000301b6                i686_ISR26
-                0x000301bf                i686_ISR27
-                0x000301c8                i686_ISR28
-                0x000301d1                i686_ISR29
-                0x000301d8                i686_ISR30
-                0x000301df                i686_ISR31
-                0x000301e8                i686_ISR32
-                0x000301f1                i686_ISR33
-                0x000301fa                i686_ISR34
-                0x00030203                i686_ISR35
-                0x0003020c                i686_ISR36
-                0x00030215                i686_ISR37
-                0x0003021e                i686_ISR38
-                0x00030227                i686_ISR39
-                0x00030230                i686_ISR40
-                0x00030239                i686_ISR41
-                0x00030242                i686_ISR42
-                0x0003024b                i686_ISR43
-                0x00030254                i686_ISR44
-                0x0003025d                i686_ISR45
-                0x00030266                i686_ISR46
-                0x0003026f                i686_ISR47
-                0x00030278                i686_ISR48
-                0x00030281                i686_ISR49
-                0x0003028a                i686_ISR50
-                0x00030293                i686_ISR51
-                0x0003029c                i686_ISR52
-                0x000302a5                i686_ISR53
-                0x000302ae                i686_ISR54
-                0x000302b7                i686_ISR55
-                0x000302c0                i686_ISR56
-                0x000302c9                i686_ISR57
-                0x000302d2                i686_ISR58
-                0x000302db                i686_ISR59
-                0x000302e4                i686_ISR60
-                0x000302ed                i686_ISR61
-                0x000302f6                i686_ISR62
-                0x000302ff                i686_ISR63
-                0x00030308                i686_ISR64
-                0x00030311                i686_ISR65
-                0x0003031a                i686_ISR66
-                0x00030323                i686_ISR67
-                0x0003032c                i686_ISR68
-                0x00030335                i686_ISR69
-                0x0003033e                i686_ISR70
-                0x00030347                i686_ISR71
-                0x00030350                i686_ISR72
-                0x00030359                i686_ISR73
-                0x00030362                i686_ISR74
-                0x0003036b                i686_ISR75
-                0x00030374                i686_ISR76
-                0x0003037d                i686_ISR77
-                0x00030386                i686_ISR78
-                0x0003038f                i686_ISR79
-                0x00030398                i686_ISR80
-                0x000303a1                i686_ISR81
-                0x000303aa                i686_ISR82
-                0x000303b3                i686_ISR83
-                0x000303bc                i686_ISR84
-                0x000303c5                i686_ISR85
-                0x000303ce                i686_ISR86
-                0x000303d7                i686_ISR87
-                0x000303e0                i686_ISR88
-                0x000303e9                i686_ISR89
-                0x000303f2                i686_ISR90
-                0x000303fb                i686_ISR91
-                0x00030404                i686_ISR92
-                0x0003040d                i686_ISR93
-                0x00030416                i686_ISR94
-                0x0003041f                i686_ISR95
-                0x00030428                i686_ISR96
-                0x00030431                i686_ISR97
-                0x0003043a                i686_ISR98
-                0x00030443                i686_ISR99
-                0x0003044c                i686_ISR100
-                0x00030455                i686_ISR101
-                0x0003045e                i686_ISR102
-                0x00030467                i686_ISR103
-                0x00030470                i686_ISR104
-                0x00030479                i686_ISR105
-                0x00030482                i686_ISR106
-                0x0003048b                i686_ISR107
-                0x00030494                i686_ISR108
-                0x0003049d                i686_ISR109
-                0x000304a6                i686_ISR110
-                0x000304af                i686_ISR111
-                0x000304b8                i686_ISR112
-                0x000304c1                i686_ISR113
-                0x000304ca                i686_ISR114
-                0x000304d3                i686_ISR115
-                0x000304dc                i686_ISR116
-                0x000304e5                i686_ISR117
-                0x000304ee                i686_ISR118
-                0x000304f7                i686_ISR119
-                0x00030500                i686_ISR120
-                0x00030509                i686_ISR121
-                0x00030512                i686_ISR122
-                0x0003051b                i686_ISR123
-                0x00030524                i686_ISR124
-                0x0003052d                i686_ISR125
-                0x00030536                i686_ISR126
-                0x0003053f                i686_ISR127
-                0x00030548                i686_ISR128
-                0x00030554                i686_ISR129
-                0x00030560                i686_ISR130
-                0x0003056c                i686_ISR131
-                0x00030578                i686_ISR132
-                0x00030584                i686_ISR133
-                0x00030590                i686_ISR134
-                0x0003059c                i686_ISR135
-                0x000305a8                i686_ISR136
-                0x000305b4                i686_ISR137
-                0x000305c0                i686_ISR138
-                0x000305cc                i686_ISR139
-                0x000305d8                i686_ISR140
-                0x000305e4                i686_ISR141
-                0x000305f0                i686_ISR142
-                0x000305fc                i686_ISR143
-                0x00030608                i686_ISR144
-                0x00030614                i686_ISR145
-                0x00030620                i686_ISR146
-                0x0003062c                i686_ISR147
-                0x00030638                i686_ISR148
-                0x00030644                i686_ISR149
-                0x00030650                i686_ISR150
-                0x0003065c                i686_ISR151
-                0x00030668                i686_ISR152
-                0x00030674                i686_ISR153
-                0x00030680                i686_ISR154
-                0x0003068c                i686_ISR155
-                0x00030698                i686_ISR156
-                0x000306a4                i686_ISR157
-                0x000306b0                i686_ISR158
-                0x000306bc                i686_ISR159
-                0x000306c8                i686_ISR160
-                0x000306d4                i686_ISR161
-                0x000306e0                i686_ISR162
-                0x000306ec                i686_ISR163
-                0x000306f8                i686_ISR164
-                0x00030704                i686_ISR165
-                0x00030710                i686_ISR166
-                0x0003071c                i686_ISR167
-                0x00030728                i686_ISR168
-                0x00030734                i686_ISR169
-                0x00030740                i686_ISR170
-                0x0003074c                i686_ISR171
-                0x00030758                i686_ISR172
-                0x00030764                i686_ISR173
-                0x00030770                i686_ISR174
-                0x0003077c                i686_ISR175
-                0x00030788                i686_ISR176
-                0x00030794                i686_ISR177
-                0x000307a0                i686_ISR178
-                0x000307ac                i686_ISR179
-                0x000307b8                i686_ISR180
-                0x000307c4                i686_ISR181
-                0x000307d0                i686_ISR182
-                0x000307dc                i686_ISR183
-                0x000307e8                i686_ISR184
-                0x000307f4                i686_ISR185
-                0x00030800                i686_ISR186
-                0x0003080c                i686_ISR187
-                0x00030818                i686_ISR188
-                0x00030824                i686_ISR189
-                0x00030830                i686_ISR190
-                0x0003083c                i686_ISR191
-                0x00030848                i686_ISR192
-                0x00030854                i686_ISR193
-                0x00030860                i686_ISR194
-                0x0003086c                i686_ISR195
-                0x00030878                i686_ISR196
-                0x00030884                i686_ISR197
-                0x00030890                i686_ISR198
-                0x0003089c                i686_ISR199
-                0x000308a8                i686_ISR200
-                0x000308b4                i686_ISR201
-                0x000308c0                i686_ISR202
-                0x000308cc                i686_ISR203
-                0x000308d8                i686_ISR204
-                0x000308e4                i686_ISR205
-                0x000308f0                i686_ISR206
-                0x000308fc                i686_ISR207
-                0x00030908                i686_ISR208
-                0x00030914                i686_ISR209
-                0x00030920                i686_ISR210
-                0x0003092c                i686_ISR211
-                0x00030938                i686_ISR212
-                0x00030944                i686_ISR213
-                0x00030950                i686_ISR214
-                0x0003095c                i686_ISR215
-                0x00030968                i686_ISR216
-                0x00030974                i686_ISR217
-                0x00030980                i686_ISR218
-                0x0003098c                i686_ISR219
-                0x00030998                i686_ISR220
-                0x000309a4                i686_ISR221
-                0x000309b0                i686_ISR222
-                0x000309bc                i686_ISR223
-                0x000309c8                i686_ISR224
-                0x000309d4                i686_ISR225
-                0x000309e0                i686_ISR226
-                0x000309ec                i686_ISR227
-                0x000309f8                i686_ISR228
-                0x00030a04                i686_ISR229
-                0x00030a10                i686_ISR230
-                0x00030a1c                i686_ISR231
-                0x00030a28                i686_ISR232
-                0x00030a34                i686_ISR233
-                0x00030a40                i686_ISR234
-                0x00030a4c                i686_ISR235
-                0x00030a58                i686_ISR236
-                0x00030a64                i686_ISR237
-                0x00030a70                i686_ISR238
-                0x00030a7c                i686_ISR239
-                0x00030a88                i686_ISR240
-                0x00030a94                i686_ISR241
-                0x00030a9d                i686_ISR242
-                0x00030aa6                i686_ISR243
-                0x00030aaf                i686_ISR244
-                0x00030ab8                i686_ISR245
-                0x00030ac1                i686_ISR246
-                0x00030aca                i686_ISR247
-                0x00030ad3                i686_ISR248
-                0x00030adc                i686_ISR249
-                0x00030ae5                i686_ISR250
-                0x00030aee                i686_ISR251
-                0x00030af7                i686_ISR252
-                0x00030b00                i686_ISR253
-                0x00030b09                i686_ISR254
-                0x00030b12                i686_ISR255
-                0x00030b44                i686_DisablePaging
- .text          0x00030b50       0x14 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
-                0x00030b50                i686_PIT_Initialize
- .text          0x00030b64      0x826 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
-                0x00030b64                GetCMD
-                0x00030c31                RegisterCMDHandler
-                0x00030c44                EXEC
-                0x00030d5e                LS
-                0x00030df7                CD
-                0x00031009                CAT
-                0x0003116c                CLI_Mainloop
- .text          0x0003138a       0x55 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
-                0x0003138a                islower
-                0x000313b3                toupper
- .text          0x000313df       0x67 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
-                0x000313df                ActiveContextTimerSleepHook
-                0x0003140b                sleep
- .text          0x00031446      0x199 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
-                0x00031446                setup_timer
-                0x0003144c                timer
-                0x0003147f                kernel_main
- .text          0x000315df       0xf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
-                0x000315df                memcpy
-                0x00031631                memset
-                0x00031674                memcmp
- .text          0x000316d4      0xe86 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
-                0x000316d4                initialize_stdio
-                0x00031726                GetActiveContext
-                0x00031730                GetSTDOUT
-                0x0003173a                GetSTDIN
-                0x00031744                GetSTDERR
-                0x0003174e                STD_PutBuffer
-                0x00031783                STD_GetBuffer
-                0x000317c4                STD_FlushSTDOUT
-                0x0003180d                STD_FlushSTDIN
-                0x00031840                STD_FlushSTDERR
-                0x00031873                ActiveContextTimerCursorHook
-                0x00031890                ActiveContextKeyboardHook
-                0x00031959                CFG_EnableCursorBlinking
-                0x00031968                CFG_DisableCursorBlinking
-                0x00031977                CFG_SetCursorChar
-                0x00031992                __STD_Putc
-                0x000319c5                __STD_Puts
-                0x000319ee                printf_unsigned
-                0x00031aa1                printf_signed
-                0x00031afb                printf
-                0x00031e1e                hex_to_dec
-                0x00031eb6                scanf
-                0x000324a2                getline
- .text          0x0003255a       0xb6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
-                0x0003255a                strchr
-                0x00032598                strcpy
-                0x000325ea                strlen
- .text          0x00032610       0x53 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
-                0x00032610                SyscallEntrypoint
- .text          0x00032663      0xabb /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
-                0x00032663                GetCommandParamCount
-                0x000326bc                GetCommandAwaitIRQ6
-                0x00032715                GetCommandReturnCount
-                0x0003276e                DISK_Floppy_GetSectorAddr
-                0x0003278a                DISK_Floppy_IRQ6Handler
-                0x00032797                lba2chs
-                0x0003280b                WaitForIRQ6
-                0x00032835                WaitForFIFO
-                0x00032871                PrepareDMAForTransfer
-                0x0003293b                PrepareDMAForWrite
-                0x0003298b                PrepareDMAForRead
-                0x00032a64                FDC_SetBit
-                0x00032ad7                DISK_Floppy_Reset
-                0x00032b64                DISK_Floppy_Initialize
-                0x00032c37                DISK_Floppy_IssueCommand
-                0x00032e22                DISK_Floppy_ReadSector
-                0x00032f03                DISK_Floppy_ReadSectors
-                0x00033000                DISK_Floppy_ReadSectorsTo
- .text          0x0003311e      0xbd3 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
-                0x0003311e                KI_VGACoordTransform
-                0x0003319f                KI_DisableBlinking
-                0x000331ac                KI_EnableBlinking
-                0x000331b9                KI_DrawCursor
-                0x00033284                KI_CursorHook
-                0x000332bf                KI_Initialize
-                0x000333fd                KI_Clear
-                0x00033493                KI_DrawBorder
-                0x0003383b                KI_UpdateLineScrolling
-                0x00033999                KI_Putc
-                0x00033c71                KI_Puts
-                0x00033ca3                KI_BadSizeError
-                0x00033cda                KI_TextOverflowError
- .text          0x00033cf1      0x276 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
-                0x00033cf1                VGA_ColorData
-                0x00033d03                VGA_Initialize
-                0x00033d49                VGA_ClearScreen
-                0x00033dca                VGA_SetChar
-                0x00033e2a                VGA_SetCursorPos
-                0x00033e5f                VGA_Print
-                0x00033ee3                VGA_Write
- .text          0x00033f67      0x7dd /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
-                0x00033f67                FAT12_ReadSector
-                0x00033f9f                FAT12_LoadFATSector
-                0x00033fdf                FAT12_Initialize
-                0x0003410a                FAT12_OpenEntry
-                0x000341ef                FAT12_Cluster2Sector
-                0x00034202                FAT12_NextCluster
-                0x00034276                FAT12_Read
-                0x000343f7                FAT12_ReadEntry
-                0x00034418                FAT12_Close
-                0x0003444e                FAT12_FindFile
-                0x000345fe                FAT12_Open
- .text          0x00034744       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
-                0x00034744                HAL_Initialize
- .text          0x00034766       0x1b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
-                0x00034766                i686_iowait
- .text          0x00034781      0x1a2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
-                0x00034781                GetQWERTYCTRLMakeKeyCode
-                0x000347de                GetQWERTYCTRLClearKeyCode
-                0x0003484b                Keyboard_Handler
- .text          0x00034923      0x4ad /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
-                0x00034923                FMM_GetDMAAddress
-                0x0003492d                FMM_GetDMAPhysAddress
-                0x00034937                FMM_Initialize
-                0x000349cc                PageFaultHandler
-                0x00034aad                FMM_FreeBlocksAt
-                0x00034b46                FMM_ClearMapping
-                0x00034bd8                FMM_FreeBlocks
-                0x00034bf2                FMM_AllocateBlocks
-                0x00034c08                FMM_CreateUserMapping
-                0x00034cd9                FMM_CreateMapping
- .text          0x00034dd0      0xac8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
-                0x00034dd0                PMM_Initialize
-                0x00035144                PMM_GetBitmapData
-                0x00035168                PMM_SetBitmapData
-                0x000351c5                PMM_PrintUsableRegionInfo
-                0x00035249                PMM_BlockIndex2PhysicalAddress
-                0x00035330                PMM_PhysicalAddress2BlockIndex
-                0x0003540d                PMM_DEBUG_PrintWedges
-                0x00035493                PMM_FirstFitSearch
-                0x0003556d                PMM_AllocateBlocks
-                0x000356b5                PMM_FreeBlocks
-                0x000357ce                PMM_ForceFreeBlocks
- .text          0x00035898      0x81d /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
-                0x00035898                VMM_GetDMAAddress
-                0x000358a2                VMM_GetWorkingPageTableAddr
-                0x000358ac                VMM_VirtualAddress2PageIndices
-                0x000358d1                VMM_PageIndices2VirtualAddress
-                0x000358e6                VMM_VirtualAddress2PhysicalAddress
-                0x00035935                VMM_CreatePageDirectoryEntry
-                0x00035980                VMM_GetPageDirectoryEntryAVL
-                0x0003598a                VMM_SetPageDirectoryEntryAVL
-                0x00035999                VMM_CreatePageTableEntry
-                0x000359ea                VMM_GetPageTableEntryAVL
-                0x000359f4                VMM_SetPageTableEntryAVL
-                0x00035a03                VMM_GetActivePageTableEntryCount
-                0x00035a79                VMM_SetActivePageTableEntryCount
-                0x00035b12                VMM_Initialize
-                0x00035d35                VMM_SetWorkingPageTable
-                0x00035d93                VMM_LoadTableForAddress
-                0x00035dea                VMM_GetTableForAddress
-                0x00035e3c                VMM_CreateTableForAddress
-                0x00035eae                VMM_GetPageForAddress
-                0x00035f35                VMM_CreatePageForAddress
-                0x00035fdd                VMM_ClearMappingForAddress
- .text          0x000360b5      0x49b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
-                0x000360b5                LoadProc
- .text          0x00036550      0x4ee /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
-                0x00036550                GetAvailablePID
-                0x0003655a                GetPCB
-                0x0003656d                SwitchToKernel
-                0x0003657a                ExitHandler
-                0x000365a0                SetContext
-                0x000365b9                CreateMappingForRegion
-                0x00036606                RemoveMappingForRegion
-                0x00036632                FreeRegion
-                0x00036677                AllocateMemoryRegion
-                0x000366ac                CreateMappingsForProcess
-                0x000366fa                RemoveMappingsForProcess
-                0x00036748                TerminateProcess
-                0x000367b4                ExecProc
-                0x00036907                SchedulerHook
- .text          0x00036a3e       0x1d /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
-                0x00036a3e                i686_GDT_Initialize
- .text          0x00036a5b       0xba /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
-                0x00036a5b                i686_IDT_SetGate
-                0x00036abc                i686_IDT_EnableGate
-                0x00036adc                i686_IDT_DisableGate
-                0x00036afc                i686_IDT_Initialize
- .text          0x00036b15       0xcc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
-                0x00036b15                i686_IRQ_Handler
-                0x00036b87                i686_IRQ_Initialize
-                0x00036bce                i686_IRQ_RegisterHandler
- .text          0x00036be1     0x1645 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
-                0x00036be1                i686_ISR_Initialize
-                0x0003809e                i686_ISR_RegisterHandler
-                0x000380c2                i686_ISR_Handler
- .text          0x00038226      0x2b6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
-                0x00038226                i686_PIC_Configure
-                0x00038318                i686_PIC_SendEndOfInterrupt
-                0x00038348                i686_PIC_Disable
-                0x00038382                i686_PIC_Mask
-                0x000383d6                i686_PIC_Unmask
-                0x0003842c                i686_PIC_ReadIrqRequestRegister
-                0x00038484                i686_PIC_ReadInServiceRegister
- *fill*         0x000384dc        0x4 
- .text          0x000384e0      0x11a /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
-                0x000384e0                __udivdi3
- *fill*         0x000385fa        0x6 
- .text          0x00038600      0x136 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
-                0x00038600                __umoddi3
+                0x000300a1                i686_TSS_Load
+ *fill*         0x000300d3        0x1 
+ .text          0x000300d4        0xd /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
+                0x000300d4                i686_IDT_Load
+ *fill*         0x000300e1        0x3 
+ .text          0x000300e4      0xa74 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
+                0x000300e4                i686_ISR0
+                0x000300ed                i686_ISR1
+                0x000300f6                i686_ISR2
+                0x000300ff                i686_ISR3
+                0x00030108                i686_ISR4
+                0x00030111                i686_ISR5
+                0x0003011a                i686_ISR6
+                0x00030123                i686_ISR7
+                0x0003012c                i686_ISR8
+                0x00030133                i686_ISR9
+                0x0003013c                i686_ISR10
+                0x00030143                i686_ISR11
+                0x0003014a                i686_ISR12
+                0x00030151                i686_ISR13
+                0x00030158                i686_ISR14
+                0x0003015f                i686_ISR15
+                0x00030168                i686_ISR16
+                0x00030171                i686_ISR17
+                0x00030178                i686_ISR18
+                0x00030181                i686_ISR19
+                0x0003018a                i686_ISR20
+                0x00030193                i686_ISR21
+                0x0003019a                i686_ISR22
+                0x000301a3                i686_ISR23
+                0x000301ac                i686_ISR24
+                0x000301b5                i686_ISR25
+                0x000301be                i686_ISR26
+                0x000301c7                i686_ISR27
+                0x000301d0                i686_ISR28
+                0x000301d9                i686_ISR29
+                0x000301e0                i686_ISR30
+                0x000301e7                i686_ISR31
+                0x000301f0                i686_ISR32
+                0x000301f9                i686_ISR33
+                0x00030202                i686_ISR34
+                0x0003020b                i686_ISR35
+                0x00030214                i686_ISR36
+                0x0003021d                i686_ISR37
+                0x00030226                i686_ISR38
+                0x0003022f                i686_ISR39
+                0x00030238                i686_ISR40
+                0x00030241                i686_ISR41
+                0x0003024a                i686_ISR42
+                0x00030253                i686_ISR43
+                0x0003025c                i686_ISR44
+                0x00030265                i686_ISR45
+                0x0003026e                i686_ISR46
+                0x00030277                i686_ISR47
+                0x00030280                i686_ISR48
+                0x00030289                i686_ISR49
+                0x00030292                i686_ISR50
+                0x0003029b                i686_ISR51
+                0x000302a4                i686_ISR52
+                0x000302ad                i686_ISR53
+                0x000302b6                i686_ISR54
+                0x000302bf                i686_ISR55
+                0x000302c8                i686_ISR56
+                0x000302d1                i686_ISR57
+                0x000302da                i686_ISR58
+                0x000302e3                i686_ISR59
+                0x000302ec                i686_ISR60
+                0x000302f5                i686_ISR61
+                0x000302fe                i686_ISR62
+                0x00030307                i686_ISR63
+                0x00030310                i686_ISR64
+                0x00030319                i686_ISR65
+                0x00030322                i686_ISR66
+                0x0003032b                i686_ISR67
+                0x00030334                i686_ISR68
+                0x0003033d                i686_ISR69
+                0x00030346                i686_ISR70
+                0x0003034f                i686_ISR71
+                0x00030358                i686_ISR72
+                0x00030361                i686_ISR73
+                0x0003036a                i686_ISR74
+                0x00030373                i686_ISR75
+                0x0003037c                i686_ISR76
+                0x00030385                i686_ISR77
+                0x0003038e                i686_ISR78
+                0x00030397                i686_ISR79
+                0x000303a0                i686_ISR80
+                0x000303a9                i686_ISR81
+                0x000303b2                i686_ISR82
+                0x000303bb                i686_ISR83
+                0x000303c4                i686_ISR84
+                0x000303cd                i686_ISR85
+                0x000303d6                i686_ISR86
+                0x000303df                i686_ISR87
+                0x000303e8                i686_ISR88
+                0x000303f1                i686_ISR89
+                0x000303fa                i686_ISR90
+                0x00030403                i686_ISR91
+                0x0003040c                i686_ISR92
+                0x00030415                i686_ISR93
+                0x0003041e                i686_ISR94
+                0x00030427                i686_ISR95
+                0x00030430                i686_ISR96
+                0x00030439                i686_ISR97
+                0x00030442                i686_ISR98
+                0x0003044b                i686_ISR99
+                0x00030454                i686_ISR100
+                0x0003045d                i686_ISR101
+                0x00030466                i686_ISR102
+                0x0003046f                i686_ISR103
+                0x00030478                i686_ISR104
+                0x00030481                i686_ISR105
+                0x0003048a                i686_ISR106
+                0x00030493                i686_ISR107
+                0x0003049c                i686_ISR108
+                0x000304a5                i686_ISR109
+                0x000304ae                i686_ISR110
+                0x000304b7                i686_ISR111
+                0x000304c0                i686_ISR112
+                0x000304c9                i686_ISR113
+                0x000304d2                i686_ISR114
+                0x000304db                i686_ISR115
+                0x000304e4                i686_ISR116
+                0x000304ed                i686_ISR117
+                0x000304f6                i686_ISR118
+                0x000304ff                i686_ISR119
+                0x00030508                i686_ISR120
+                0x00030511                i686_ISR121
+                0x0003051a                i686_ISR122
+                0x00030523                i686_ISR123
+                0x0003052c                i686_ISR124
+                0x00030535                i686_ISR125
+                0x0003053e                i686_ISR126
+                0x00030547                i686_ISR127
+                0x00030550                i686_ISR128
+                0x0003055c                i686_ISR129
+                0x00030568                i686_ISR130
+                0x00030574                i686_ISR131
+                0x00030580                i686_ISR132
+                0x0003058c                i686_ISR133
+                0x00030598                i686_ISR134
+                0x000305a4                i686_ISR135
+                0x000305b0                i686_ISR136
+                0x000305bc                i686_ISR137
+                0x000305c8                i686_ISR138
+                0x000305d4                i686_ISR139
+                0x000305e0                i686_ISR140
+                0x000305ec                i686_ISR141
+                0x000305f8                i686_ISR142
+                0x00030604                i686_ISR143
+                0x00030610                i686_ISR144
+                0x0003061c                i686_ISR145
+                0x00030628                i686_ISR146
+                0x00030634                i686_ISR147
+                0x00030640                i686_ISR148
+                0x0003064c                i686_ISR149
+                0x00030658                i686_ISR150
+                0x00030664                i686_ISR151
+                0x00030670                i686_ISR152
+                0x0003067c                i686_ISR153
+                0x00030688                i686_ISR154
+                0x00030694                i686_ISR155
+                0x000306a0                i686_ISR156
+                0x000306ac                i686_ISR157
+                0x000306b8                i686_ISR158
+                0x000306c4                i686_ISR159
+                0x000306d0                i686_ISR160
+                0x000306dc                i686_ISR161
+                0x000306e8                i686_ISR162
+                0x000306f4                i686_ISR163
+                0x00030700                i686_ISR164
+                0x0003070c                i686_ISR165
+                0x00030718                i686_ISR166
+                0x00030724                i686_ISR167
+                0x00030730                i686_ISR168
+                0x0003073c                i686_ISR169
+                0x00030748                i686_ISR170
+                0x00030754                i686_ISR171
+                0x00030760                i686_ISR172
+                0x0003076c                i686_ISR173
+                0x00030778                i686_ISR174
+                0x00030784                i686_ISR175
+                0x00030790                i686_ISR176
+                0x0003079c                i686_ISR177
+                0x000307a8                i686_ISR178
+                0x000307b4                i686_ISR179
+                0x000307c0                i686_ISR180
+                0x000307cc                i686_ISR181
+                0x000307d8                i686_ISR182
+                0x000307e4                i686_ISR183
+                0x000307f0                i686_ISR184
+                0x000307fc                i686_ISR185
+                0x00030808                i686_ISR186
+                0x00030814                i686_ISR187
+                0x00030820                i686_ISR188
+                0x0003082c                i686_ISR189
+                0x00030838                i686_ISR190
+                0x00030844                i686_ISR191
+                0x00030850                i686_ISR192
+                0x0003085c                i686_ISR193
+                0x00030868                i686_ISR194
+                0x00030874                i686_ISR195
+                0x00030880                i686_ISR196
+                0x0003088c                i686_ISR197
+                0x00030898                i686_ISR198
+                0x000308a4                i686_ISR199
+                0x000308b0                i686_ISR200
+                0x000308bc                i686_ISR201
+                0x000308c8                i686_ISR202
+                0x000308d4                i686_ISR203
+                0x000308e0                i686_ISR204
+                0x000308ec                i686_ISR205
+                0x000308f8                i686_ISR206
+                0x00030904                i686_ISR207
+                0x00030910                i686_ISR208
+                0x0003091c                i686_ISR209
+                0x00030928                i686_ISR210
+                0x00030934                i686_ISR211
+                0x00030940                i686_ISR212
+                0x0003094c                i686_ISR213
+                0x00030958                i686_ISR214
+                0x00030964                i686_ISR215
+                0x00030970                i686_ISR216
+                0x0003097c                i686_ISR217
+                0x00030988                i686_ISR218
+                0x00030994                i686_ISR219
+                0x000309a0                i686_ISR220
+                0x000309ac                i686_ISR221
+                0x000309b8                i686_ISR222
+                0x000309c4                i686_ISR223
+                0x000309d0                i686_ISR224
+                0x000309dc                i686_ISR225
+                0x000309e8                i686_ISR226
+                0x000309f4                i686_ISR227
+                0x00030a00                i686_ISR228
+                0x00030a0c                i686_ISR229
+                0x00030a18                i686_ISR230
+                0x00030a24                i686_ISR231
+                0x00030a30                i686_ISR232
+                0x00030a3c                i686_ISR233
+                0x00030a48                i686_ISR234
+                0x00030a54                i686_ISR235
+                0x00030a60                i686_ISR236
+                0x00030a6c                i686_ISR237
+                0x00030a78                i686_ISR238
+                0x00030a84                i686_ISR239
+                0x00030a90                i686_ISR240
+                0x00030a9c                i686_ISR241
+                0x00030aa5                i686_ISR242
+                0x00030aae                i686_ISR243
+                0x00030ab7                i686_ISR244
+                0x00030ac0                i686_ISR245
+                0x00030ac9                i686_ISR246
+                0x00030ad2                i686_ISR247
+                0x00030adb                i686_ISR248
+                0x00030ae4                i686_ISR249
+                0x00030aed                i686_ISR250
+                0x00030af6                i686_ISR251
+                0x00030aff                i686_ISR252
+                0x00030b08                i686_ISR253
+                0x00030b11                i686_ISR254
+                0x00030b1a                i686_ISR255
+                0x00030b4c                i686_DisablePaging
+ .text          0x00030b58       0x14 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
+                0x00030b58                i686_PIT_Initialize
+ .text          0x00030b6c      0x99e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+                0x00030b6c                GetCMD
+                0x00030c60                RegisterCMDHandler
+                0x00030c73                EXEC
+                0x00030e60                LS
+                0x00030ef9                CD
+                0x0003110b                CAT
+                0x0003126e                PS
+                0x000312dd                CLI_Mainloop
+ .text          0x0003150a       0x55 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
+                0x0003150a                islower
+                0x00031533                toupper
+ .text          0x0003155f       0x93 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
+                0x0003155f                ActiveContextTimerSleepHook
+                0x0003158b                sleep
+                0x000315c6                MaskTimerInterrupt
+                0x000315dc                UnmaskTimerInterrupt
+ .text          0x000315f2      0x1a7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+                0x000315f2                setup_timer
+                0x000315f8                timer
+                0x00031634                kernel_main
+ .text          0x00031799       0xf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
+                0x00031799                memcpy
+                0x000317eb                memset
+                0x0003182e                memcmp
+ .text          0x0003188e     0x13f0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+                0x0003188e                initialize_stdio
+                0x000318e0                GetActiveContext
+                0x000318ea                GetSTDOUT
+                0x000318f4                GetSTDIN
+                0x000318fe                GetSTDERR
+                0x00031908                STD_PutBuffer
+                0x0003193d                STD_GetBuffer
+                0x0003197e                STD_FlushSTDOUT
+                0x000319c7                STD_FlushSTDIN
+                0x000319fa                STD_FlushSTDERR
+                0x00031a2d                ActiveContextTimerCursorHook
+                0x00031a4a                ActiveContextKeyboardHook
+                0x00031b13                CFG_EnableCursorBlinking
+                0x00031b22                CFG_DisableCursorBlinking
+                0x00031b31                CFG_SetCursorChar
+                0x00031b4c                __STD_Putc
+                0x00031b7f                __STD_Puts
+                0x00031ba8                printf_unsigned
+                0x00031c5b                printf_signed
+                0x00031cb5                printf
+                0x00031fd8                hex_to_dec
+                0x00032070                scanf
+                0x0003265c                getline
+                0x00032714                sscanf
+ .text          0x00032c7e       0xb6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
+                0x00032c7e                strchr
+                0x00032cbc                strcpy
+                0x00032d0e                strlen
+ .text          0x00032d34       0x92 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+                0x00032d34                SyscallEntrypoint
+ .text          0x00032dc6      0xabb /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+                0x00032dc6                GetCommandParamCount
+                0x00032e1f                GetCommandAwaitIRQ6
+                0x00032e78                GetCommandReturnCount
+                0x00032ed1                DISK_Floppy_GetSectorAddr
+                0x00032eed                DISK_Floppy_IRQ6Handler
+                0x00032efa                lba2chs
+                0x00032f6e                WaitForIRQ6
+                0x00032f98                WaitForFIFO
+                0x00032fd4                PrepareDMAForTransfer
+                0x0003309e                PrepareDMAForWrite
+                0x000330ee                PrepareDMAForRead
+                0x000331c7                FDC_SetBit
+                0x0003323a                DISK_Floppy_Reset
+                0x000332c7                DISK_Floppy_Initialize
+                0x0003339a                DISK_Floppy_IssueCommand
+                0x00033585                DISK_Floppy_ReadSector
+                0x00033666                DISK_Floppy_ReadSectors
+                0x00033763                DISK_Floppy_ReadSectorsTo
+ .text          0x00033881      0xbd3 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+                0x00033881                KI_VGACoordTransform
+                0x00033902                KI_DisableBlinking
+                0x0003390f                KI_EnableBlinking
+                0x0003391c                KI_DrawCursor
+                0x000339e7                KI_CursorHook
+                0x00033a22                KI_Initialize
+                0x00033b60                KI_Clear
+                0x00033bf6                KI_DrawBorder
+                0x00033f9e                KI_UpdateLineScrolling
+                0x000340fc                KI_Putc
+                0x000343d4                KI_Puts
+                0x00034406                KI_BadSizeError
+                0x0003443d                KI_TextOverflowError
+ .text          0x00034454      0x276 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
+                0x00034454                VGA_ColorData
+                0x00034466                VGA_Initialize
+                0x000344ac                VGA_ClearScreen
+                0x0003452d                VGA_SetChar
+                0x0003458d                VGA_SetCursorPos
+                0x000345c2                VGA_Print
+                0x00034646                VGA_Write
+ .text          0x000346ca      0x7dd /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+                0x000346ca                FAT12_ReadSector
+                0x00034702                FAT12_LoadFATSector
+                0x00034742                FAT12_Initialize
+                0x0003486d                FAT12_OpenEntry
+                0x00034952                FAT12_Cluster2Sector
+                0x00034965                FAT12_NextCluster
+                0x000349d9                FAT12_Read
+                0x00034b5a                FAT12_ReadEntry
+                0x00034b7b                FAT12_Close
+                0x00034bb1                FAT12_FindFile
+                0x00034d61                FAT12_Open
+ .text          0x00034ea7       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
+                0x00034ea7                HAL_Initialize
+ .text          0x00034ec9       0x1b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
+                0x00034ec9                i686_iowait
+ .text          0x00034ee4      0x1a2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
+                0x00034ee4                GetQWERTYCTRLMakeKeyCode
+                0x00034f41                GetQWERTYCTRLClearKeyCode
+                0x00034fae                Keyboard_Handler
+ .text          0x00035086      0x6c4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+                0x00035086                FMM_GetDMAAddress
+                0x00035090                FMM_GetDMAPhysAddress
+                0x0003509a                FMM_Initialize
+                0x0003512f                PageFaultHandler
+                0x00035303                GeneralProtectionxFaultHandler
+                0x00035309                FMM_FreeBlocksAt
+                0x000353a2                FMM_ClearMapping
+                0x00035435                FMM_FreeBlocks
+                0x0003544f                FMM_AllocateBlocks
+                0x00035465                FMM_CreateUserCodeMapping
+                0x0003555c                FMM_CreateUserDataMapping
+                0x00035653                FMM_CreateMapping
+ .text          0x0003574a      0xac8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+                0x0003574a                PMM_Initialize
+                0x00035abe                PMM_GetBitmapData
+                0x00035ae2                PMM_SetBitmapData
+                0x00035b3f                PMM_PrintUsableRegionInfo
+                0x00035bc3                PMM_BlockIndex2PhysicalAddress
+                0x00035caa                PMM_PhysicalAddress2BlockIndex
+                0x00035d87                PMM_DEBUG_PrintWedges
+                0x00035e0d                PMM_FirstFitSearch
+                0x00035ee7                PMM_AllocateBlocks
+                0x0003602f                PMM_FreeBlocks
+                0x00036148                PMM_ForceFreeBlocks
+ .text          0x00036212      0xaf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+                0x00036212                VMM_GetDMAAddress
+                0x0003621c                VMM_GetWorkingPageTableAddr
+                0x00036226                VMM_VirtualAddress2PageIndices
+                0x0003624b                VMM_PageIndices2VirtualAddress
+                0x00036260                VMM_VirtualAddress2PhysicalAddress
+                0x000362af                VMM_CreatePageDirectoryEntry
+                0x000362fa                VMM_GetPageDirectoryEntryAVL
+                0x00036304                VMM_SetPageDirectoryEntryAVL
+                0x00036313                VMM_CreatePageTableEntry
+                0x00036382                VMM_GetPageTableEntryAVL
+                0x0003638c                VMM_SetPageTableEntryAVL
+                0x0003639b                VMM_GetActivePageTableEntryCount
+                0x00036411                VMM_SetActivePageTableEntryCount
+                0x000364aa                VMM_Initialize
+                0x000366d7                VMM_SetWorkingPageTable
+                0x00036737                VMM_LoadTableForAddress
+                0x0003678e                VMM_GetTableForAddress
+                0x000367e0                VMM_FetchTableForAddress
+                0x0003682b                VMM_CreateTableForAddress
+                0x0003689d                VMM_CreateUserTableForAddress
+                0x0003690f                VMM_GetPageForAddress
+                0x00036996                VMM_CreatePageForAddress
+                0x00036a71                VMM_CreateUserDataPageForAddress
+                0x00036b4c                VMM_CreateUserCodePageForAddress
+                0x00036c27                VMM_ClearMappingForAddress
+ .text          0x00036d07      0x4af /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
+                0x00036d07                LoadProc
+ .text          0x000371b6      0x99a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+                0x000371b6                InitializeProcs
+                0x000371fa                AddToQueue
+                0x0003725e                AddToSleeping
+                0x0003727b                GetFromQueue
+                0x000372bb                GetAvailablePID
+                0x00037325                GetPCB
+                0x00037338                HandleExit
+                0x00037345                PutToSleep
+                0x00037381                GetRunningPID
+                0x000373a2                CreateCodeMappingForRegion
+                0x000373ef                CreateDataMappingForRegion
+                0x0003743c                RemoveMappingForRegion
+                0x00037468                FreeRegion
+                0x000374ad                AllocateMemoryRegion
+                0x000374e2                CreateMappingsForProcess
+                0x00037530                RemoveMappingsForProcess
+                0x0003757e                TerminateProcess
+                0x000375ea                TerminateRunningProcess
+                0x0003760a                ExecProc
+                0x00037752                SchedulerHook
+ .text          0x00037b50       0x8c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
+                0x00037b50                GDT_GetTSS
+                0x00037b5a                i686_GDT_Initialize
+ .text          0x00037bdc       0xda /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
+                0x00037bdc                i686_IDT_SetGate
+                0x00037c3d                i686_IDT_EnableGate
+                0x00037c5d                i686_IDT_EnableUserGate
+                0x00037c7d                i686_IDT_DisableGate
+                0x00037c9d                i686_IDT_Initialize
+ .text          0x00037cb6       0xcc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+                0x00037cb6                i686_IRQ_Handler
+                0x00037d28                i686_IRQ_Initialize
+                0x00037d6f                i686_IRQ_RegisterHandler
+ .text          0x00037d82     0x1669 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+                0x00037d82                i686_ISR_Initialize
+                0x0003923f                i686_ISR_RegisterHandler
+                0x00039263                i686_ISR_RegisterUserHandler
+                0x00039287                i686_ISR_Handler
+ .text          0x000393eb      0x2b6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
+                0x000393eb                i686_PIC_Configure
+                0x000394dd                i686_PIC_SendEndOfInterrupt
+                0x0003950d                i686_PIC_Disable
+                0x00039547                i686_PIC_Mask
+                0x0003959b                i686_PIC_Unmask
+                0x000395f1                i686_PIC_ReadIrqRequestRegister
+                0x00039649                i686_PIC_ReadInServiceRegister
+ *fill*         0x000396a1        0xf 
+ .text          0x000396b0      0x11a /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+                0x000396b0                __udivdi3
+ *fill*         0x000397ca        0x6 
+ .text          0x000397d0      0x136 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+                0x000397d0                __umoddi3
 
-.rodata         0x00038740      0xd28
+.rodata         0x00039920      0xfc8
  *(.rodata)
- .rodata        0x00038740       0xee /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
- *fill*         0x0003882e        0x2 
- .rodata        0x00038830      0x115 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
- *fill*         0x00038945        0x3 
- .rodata        0x00038948      0x2e8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
-                0x00038958                g_HexChars
- .rodata        0x00038c30       0x1a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
- *fill*         0x00038c4a        0x2 
- .rodata        0x00038c4c      0x1f7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
- *fill*         0x00038e43        0x1 
- .rodata        0x00038e44       0x37 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
- .rodata        0x00038e7b       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
- *fill*         0x00038e9d        0x3 
- .rodata        0x00038ea0      0x11e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
- *fill*         0x00038fbe        0x2 
- .rodata        0x00038fc0       0x5e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
- .rodata        0x0003901e       0x1b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
- .rodata        0x00039039       0x66 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
- *fill*         0x0003909f        0x1 
- .rodata        0x000390a0       0x25 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
- *fill*         0x000390c5       0x1b 
- .rodata        0x000390e0      0x388 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+ .rodata        0x00039920      0x14a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+ *fill*         0x00039a6a        0x2 
+ .rodata        0x00039a6c      0x115 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+ *fill*         0x00039b81        0x3 
+ .rodata        0x00039b84      0x438 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+                0x00039b94                g_HexChars
+ .rodata        0x00039fbc       0x38 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+ .rodata        0x00039ff4      0x1f7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+ *fill*         0x0003a1eb        0x1 
+ .rodata        0x0003a1ec       0x37 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+ .rodata        0x0003a223       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+ *fill*         0x0003a245        0x3 
+ .rodata        0x0003a248      0x1a8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+ .rodata        0x0003a3f0       0x5e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+ *fill*         0x0003a44e        0x2 
+ .rodata        0x0003a450       0x70 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+ .rodata        0x0003a4c0       0x6d /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+ *fill*         0x0003a52d        0x3 
+ .rodata        0x0003a530       0x25 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+ *fill*         0x0003a555        0xb 
+ .rodata        0x0003a560      0x388 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
 
-.eh_frame       0x00039468       0xd8
- .eh_frame      0x00039468       0x64 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .eh_frame      0x000394cc       0x74 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+.eh_frame       0x0003a8e8       0xd8
+ .eh_frame      0x0003a8e8       0x64 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .eh_frame      0x0003a94c       0x74 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
-.data           0x00039540      0x116
+.data           0x0003a9c0      0x11e
  *(.data)
- .data          0x00039540       0x4b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
- .data          0x0003958b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
- *fill*         0x0003958b        0x1 
- .data          0x0003958c        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
-                0x0003958c                g_FATLoaded
- .data          0x00039590        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
- .data          0x00039590        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
- *fill*         0x00039590       0x10 
- .data          0x000395a0       0x7a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
-                0x000395a0                g_QWERTY_make_scancodes_shifted
-                0x000395e0                g_QWERTY_make_scancodes_unshifted
- .data          0x0003961a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
- .data          0x0003961a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
- .data          0x0003961a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
- .data          0x0003961a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
- *fill*         0x0003961a        0x2 
- .data          0x0003961c        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
-                0x0003961c                g_schedulingEnabled
- .data          0x00039620       0x2e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
-                0x00039620                g_GDT
-                0x00039648                g_GDT_Descriptor
- *fill*         0x0003964e        0x2 
- .data          0x00039650        0x6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
-                0x00039650                g_IDTDescriptor
- .data          0x00039656        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
- .data          0x00039656        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
- .data          0x00039656        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
- .data          0x00039656        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .data          0x00039656        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .data          0x0003a9c0       0x4b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+ .data          0x0003aa0b        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
+ *fill*         0x0003aa0b        0x1 
+ .data          0x0003aa0c        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+                0x0003aa0c                g_FATLoaded
+ .data          0x0003aa10        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
+ .data          0x0003aa10        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
+ *fill*         0x0003aa10       0x10 
+ .data          0x0003aa20       0x7a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
+                0x0003aa20                g_QWERTY_make_scancodes_shifted
+                0x0003aa60                g_QWERTY_make_scancodes_unshifted
+ .data          0x0003aa9a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+ .data          0x0003aa9a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+ .data          0x0003aa9a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+ .data          0x0003aa9a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
+ *fill*         0x0003aa9a        0x2 
+ .data          0x0003aa9c        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+                0x0003aa9c                g_schedulingEnabled
+ .data          0x0003aaa0       0x36 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
+                0x0003aaa0                g_GDT
+                0x0003aad0                g_GDT_Descriptor
+ *fill*         0x0003aad6        0x2 
+ .data          0x0003aad8        0x6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
+                0x0003aad8                g_IDTDescriptor
+ .data          0x0003aade        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+ .data          0x0003aade        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+ .data          0x0003aade        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
+ .data          0x0003aade        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .data          0x0003aade        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
-.bss            0x00039660    0x2666c
+.bss            0x0003aae0    0x2686c
  *(COMMON)
  *(.bss)
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
- .bss           0x00039660        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
- .bss           0x00039660      0x500 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
-                0x00039660                g_CMDHandlers
-                0x00039a60                CurrentPath
- .bss           0x00039b60        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
- .bss           0x00039b60        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
-                0x00039b60                g_Timer
- .bss           0x00039b68        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
-                0x00039b68                CurrentAvailablePID
- .bss           0x00039b6c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
- *fill*         0x00039b6c       0x14 
- .bss           0x00039b80      0x586 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
-                0x00039b80                g_VGA_Display
-                0x00039ba0                g_Root_Terminal
-                0x00039cc8                g_ActiveContext
-                0x00039ce0                g_STDOUT
-                0x00039ee0                g_STDIN
-                0x00039f00                g_STDERR
-                0x0003a100                g_STDOUT_TAIL
-                0x0003a102                g_STDIN_TAIL
-                0x0003a104                g_STDERR_TAIL
- .bss           0x0003a106        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
- .bss           0x0003a106        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
- .bss           0x0003a106        0x2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
-                0x0003a106                g_WaitingForIRQ6
-                0x0003a107                g_FloppyNum
- .bss           0x0003a108        0x1 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
-                0x0003a108                g_BlinkDisable
- .bss           0x0003a109        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
- *fill*         0x0003a109       0x17 
- .bss           0x0003a120      0x580 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
-                0x0003a120                g_FatData
-                0x0003a480                g_FirstFATSector
-                0x0003a484                g_FirstRootDirSector
-                0x0003a488                g_RootDirSize
-                0x0003a48c                g_FirstDataSector
-                0x0003a490                g_FAT
-                0x0003a4a0                g_RootDirectoryBuffer
- .bss           0x0003a6a0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
- .bss           0x0003a6a0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
- .bss           0x0003a6a0        0x5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
-                0x0003a6a0                g_ControlKeyStates
-                0x0003a6a4                g_E0_Received
- *fill*         0x0003a6a5        0x3 
- .bss           0x0003a6a8        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
-                0x0003a6a8                g_KernelDMAAddress
-                0x0003a6ac                g_KernelDMAPhysicalAddress
- *fill*         0x0003a6b0       0x10 
- .bss           0x0003a6c0    0x2063c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
-                0x0003a6c0                g_MemoryMap
-                0x0003a9e0                g_UsableMemoryMap
-                0x0003ad00                g_BitmapWedges
-                0x0003ad20                g_Bitmap
- .bss           0x0005acfc       0x10 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
-                0x0005acfc                g_PageDirectoryAddress
-                0x0005ad00                g_WorkingPageTable
-                0x0005ad04                g_KernelPageTable
-                0x0005ad08                g_KernelDMAVirtualAddress
- .bss           0x0005ad0c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
- *fill*         0x0005ad0c       0x14 
- .bss           0x0005ad20     0x4350 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
-                0x0005ad20                g_running
-                0x0005ad24                g_queue
-                0x0005ad28                g_GoToKernel
-                0x0005ad2c                g_KernelESP
-                0x0005ad30                g_time_since_switch
-                0x0005ad40                g_Processes
- .bss           0x0005f070        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
- *fill*         0x0005f070       0x10 
- .bss           0x0005f080      0x800 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
-                0x0005f080                g_IDT
- .bss           0x0005f880       0x40 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
-                0x0005f880                g_IRQHandlers
- .bss           0x0005f8c0      0x400 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
-                0x0005f8c0                g_ISRHandlers
- .bss           0x0005fcc0        0xc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
-                0x0005fcc0                PIC_ICW1
-                0x0005fcc4                PIC_ICW4
-                0x0005fcc8                PIC_CMD
- .bss           0x0005fccc        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .bss           0x0005fccc        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
+ .bss           0x0003aae0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
+ .bss           0x0003aae0      0x500 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+                0x0003aae0                g_CMDHandlers
+                0x0003aee0                CurrentPath
+ .bss           0x0003afe0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
+ .bss           0x0003afe0        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
+                0x0003afe0                g_Timer
+ .bss           0x0003afe8        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+                0x0003afe8                CurrentAvailablePID
+ .bss           0x0003afec        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
+ *fill*         0x0003afec       0x14 
+ .bss           0x0003b000      0x586 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+                0x0003b000                g_VGA_Display
+                0x0003b020                g_Root_Terminal
+                0x0003b148                g_ActiveContext
+                0x0003b160                g_STDOUT
+                0x0003b360                g_STDIN
+                0x0003b380                g_STDERR
+                0x0003b580                g_STDOUT_TAIL
+                0x0003b582                g_STDIN_TAIL
+                0x0003b584                g_STDERR_TAIL
+ .bss           0x0003b586        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
+ .bss           0x0003b586        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+ .bss           0x0003b586        0x2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+                0x0003b586                g_WaitingForIRQ6
+                0x0003b587                g_FloppyNum
+ .bss           0x0003b588        0x1 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+                0x0003b588                g_BlinkDisable
+ .bss           0x0003b589        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
+ *fill*         0x0003b589       0x17 
+ .bss           0x0003b5a0      0x580 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+                0x0003b5a0                g_FatData
+                0x0003b900                g_FirstFATSector
+                0x0003b904                g_FirstRootDirSector
+                0x0003b908                g_RootDirSize
+                0x0003b90c                g_FirstDataSector
+                0x0003b910                g_FAT
+                0x0003b920                g_RootDirectoryBuffer
+ .bss           0x0003bb20        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
+ .bss           0x0003bb20        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
+ .bss           0x0003bb20        0x5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
+                0x0003bb20                g_ControlKeyStates
+                0x0003bb24                g_E0_Received
+ *fill*         0x0003bb25        0x3 
+ .bss           0x0003bb28        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+                0x0003bb28                g_KernelDMAAddress
+                0x0003bb2c                g_KernelDMAPhysicalAddress
+ *fill*         0x0003bb30       0x10 
+ .bss           0x0003bb40    0x2063c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+                0x0003bb40                g_MemoryMap
+                0x0003be60                g_UsableMemoryMap
+                0x0003c180                g_BitmapWedges
+                0x0003c1a0                g_Bitmap
+ .bss           0x0005c17c       0x10 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+                0x0005c17c                g_PageDirectoryAddress
+                0x0005c180                g_WorkingPageTable
+                0x0005c184                g_KernelPageTable
+                0x0005c188                g_KernelDMAVirtualAddress
+ .bss           0x0005c18c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
+ *fill*         0x0005c18c       0x14 
+ .bss           0x0005c1a0     0x44e0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+                0x0005c1a0                g_running
+                0x0005c1a4                g_queue
+                0x0005c1a8                g_sleeping_list
+                0x0005c1ac                g_GoToKernel
+                0x0005c1ad                g_KillRunning
+                0x0005c1ae                g_SleepRunning
+                0x0005c1b0                g_KernelESP
+                0x0005c1b4                g_SavedESP
+                0x0005c1b8                g_time_since_switch
+                0x0005c1bc                g_PIDCounter
+                0x0005c1c0                g_Processes
+ .bss           0x00060680       0x6c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
+                0x00060680                g_TSS
+ *fill*         0x000606ec       0x14 
+ .bss           0x00060700      0x800 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
+                0x00060700                g_IDT
+ .bss           0x00060f00       0x40 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+                0x00060f00                g_IRQHandlers
+ .bss           0x00060f40      0x400 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+                0x00060f40                g_ISRHandlers
+ .bss           0x00061340        0xc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
+                0x00061340                PIC_ICW1
+                0x00061344                PIC_ICW4
+                0x00061348                PIC_CMD
+ .bss           0x0006134c        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .bss           0x0006134c        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 LOAD /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
 LOAD /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
 LOAD /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o

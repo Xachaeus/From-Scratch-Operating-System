@@ -9,10 +9,10 @@
 typedef enum {
     FILE_PATH_ERROR = 0xFF,
     EXE_FORMAT_ERROR = 0x7F,
-    BLOCKED = 0x0,
+    COMPLETE = 0x0,
     READY = 0x1,
     RUNNING = 0x2,
-    COMPLETE = 0x3
+    BLOCKED = 0x3
 } PROC_STATES;
 
 typedef struct {
@@ -44,11 +44,15 @@ typedef struct {
     
     uint64_t creation_time;
     uint64_t run_time;
+    long sleep_time;
 
     void* next;
 
 } ProcessControlBlock;
 
+
+
+void InitializeProcs();
 
 
 int GetAvailablePID();
@@ -58,7 +62,11 @@ int ExecProc(int pid);
 
 void TerminateRunningProcess(Context* context);
 void SchedulerHook(uint32_t delta_time, Context* context);
-void SwitchToKernel();
+
+// Syscall functions
+void HandleExit();
+void PutToSleep(long microseconds, Context* context);
+uint32_t GetRunningPID();
 
 void __attribute__((cdecl)) i686_call(uint32_t addr);
 

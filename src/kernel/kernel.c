@@ -23,7 +23,10 @@
 #include <proc/load.h>
 
 // Set the PIC timer delay to the number of microseconds between timer calls
-#define PIC_TIMER_DELAY 100
+// Linux timer delay:
+//#define PIC_TIMER_DELAY 130
+// Windows timer delay:
+#define PIC_TIMER_DELAY 1000
 
 
 uint32_t CurrentAvailablePID = 0;
@@ -48,7 +51,7 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
     printf("Initializing HAL... ");
     i686_IRQ_RegisterHandler(0, setup_timer); // Do this so any initial timer interrupts are ignored
     HAL_Initialize();
-    i686_ISR_RegisterHandler(0x80, SyscallEntrypoint);
+    i686_ISR_RegisterUserHandler(0x80, SyscallEntrypoint);
 
     printf("Done!\nInitializing Memory Manager...");
     uint64_t usable_ram = FMM_Initialize((AddressRangeDescriptor*)OriginalMemoryMapPtr);
@@ -63,6 +66,7 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
 
     printf("Initializing filesystem... ");
     FAT12_Initialize();
+    InitializeProcs();
     printf("Done!\n");
 
     printf("System initialization complete!\n");

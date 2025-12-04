@@ -38,7 +38,6 @@ $(BUILD_DIR)/main_floppy.img: bootloader kernel
 	mmd -i $(BUILD_DIR)/main_floppy.img "::mydir"
 	mmd -i $(BUILD_DIR)/main_floppy.img "::mydir/secdir"
 	mcopy -i $(BUILD_DIR)/main_floppy.img bigtext.txt "::mydir/secdir/test.txt"
-	cp $(BUILD_DIR)/main_floppy.img $(EXPORT_DIR)
     
 	
 
@@ -77,7 +76,10 @@ $(BUILD_DIR)/kernel.bin: always
 #
 cross: $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS_S) $(CROSS_OBJECTS_C) $(CROSS_OBJECTS_S)
 	mmd -i $(BUILD_DIR)/main_floppy.img "::cross"
-	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/helloworld "::cross/hello"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/helloworld "::cross/hello.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/sleeptest "::cross/sleep.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/stresstest "::cross/stress.exe"
+
 
 $(CROSS_BUILD_DIR)/%: %.c always
 	@mkdir -p $(@D)
@@ -115,10 +117,15 @@ clean:
 # Run
 #
 run_debug: clean floppy_image cross
-	qemu-system-i386 -d int -monitor stdio -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
+	qemu-system-i386 -no-shutdown -no-reboot -d int -monitor stdio -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
 
 run: floppy_image cross
 	qemu-system-i386 -m 2G -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
 
-run64: floppy_image
+run64: floppy_image cross
 	qemu-system-x86_64 -no-shutdown -no-reboot -drive file=$(BUILD_DIR)/main_floppy.img,format=raw,index=0,if=floppy
+
+
+
+win: floppy_image cross
+	cp $(BUILD_DIR)/main_floppy.img $(EXPORT_DIR)

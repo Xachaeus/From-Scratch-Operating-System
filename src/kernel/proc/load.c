@@ -60,7 +60,7 @@ int LoadProc(const char* path, ProcessControlBlock* proc) {
     FAT12_File* data_file = FAT12_Open(path);
     int position_in_data_file = FAT12_Read(data_file, 512, data_buffer);
 
-    uint32_t PROCESSING_ADDRESS = VMM_GetWorkingPageTableAddr();
+    uint32_t PROCESSING_ADDRESS = 0x200000;
 
     for (int prog_table_index = 0; prog_table_index < program_header_table_entry_count; prog_table_index++) {
 
@@ -108,7 +108,7 @@ int LoadProc(const char* path, ProcessControlBlock* proc) {
             memcpy((void*)(PROCESSING_ADDRESS + (current_header->p_vaddr & 0x00000FFF) + data_bytes_read), data_buffer, MIN(512, current_header->p_filesz - data_bytes_read));
             data_bytes_read += MIN(512, current_header->p_filesz - data_bytes_read);
         }
-        //FMM_ClearMapping(PROCESSING_ADDRESS, active_region->NumBlocks);
+        FMM_ClearMapping(PROCESSING_ADDRESS, active_region->NumBlocks);
     }
 
     FAT12_Close(data_file);

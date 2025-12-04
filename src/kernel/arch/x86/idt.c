@@ -38,6 +38,10 @@ void i686_IDT_EnableGate(int interrupt)
     FLAG_SET(g_IDT[interrupt].Flags, IDT_FLAG_PRESENT);
 }
 
+void i686_IDT_EnableUserGate(int interrupt) {
+    FLAG_SET(g_IDT[interrupt].Flags, (IDT_FLAG_PRESENT | IDT_FLAG_RING3));
+}
+
 void i686_IDT_DisableGate(int interrupt)
 {
     FLAG_UNSET(g_IDT[interrupt].Flags, IDT_FLAG_PRESENT);

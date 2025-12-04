@@ -54,7 +54,7 @@ void VMM_CreatePageDirectoryEntry(VMM_PageDirectoryEntry* entry, uint32_t addres
 uint8_t VMM_GetPageDirectoryEntryAVL(VMM_PageDirectoryEntry* entry);
 void VMM_SetPageDirectoryEntryAVL(VMM_PageDirectoryEntry* entry, uint8_t avl);
 
-void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8_t avl, uint8_t supervisor, uint8_t global);
+void VMM_CreatePageTableEntry(VMM_PageTableEntry* entry, uint32_t address, uint8_t avl, uint8_t writeable, uint8_t supervisor, uint8_t global);
 uint8_t VMM_GetPageTableEntryAVL(VMM_PageTableEntry* entry);
 void VMM_SetPageTableEntryAVL(VMM_PageTableEntry* entry, uint8_t avl);
 
@@ -67,9 +67,16 @@ void __attribute__((cdecl)) VMM_InvalidateTLB();
 uint32_t VMM_GetWorkingPageTableAddr();
 void VMM_SetWorkingPageTable(uint32_t table_physical_address);
 int VMM_GetTableForAddress(uint32_t virtual_address, VMM_PageTableEntry** entry);
-void VMM_CreateTableForAddress(uint32_t virtual_address, uint32_t physical_address);
+int VMM_FetchTableForAddress(uint32_t virtual_address, VMM_PageDirectoryEntry* entry);
 int VMM_GetPageForAddress(uint32_t virtual_address, VMM_PageTableEntry* entry);
+
+void VMM_CreateTableForAddress(uint32_t virtual_address, uint32_t physical_address);
+void VMM_CreateUserTableForAddress(uint32_t virtual_address, uint32_t physical_address);
+
 int VMM_CreatePageForAddress(uint32_t virtual_address, uint32_t physical_address);
+int VMM_CreateUserCodePageForAddress(uint32_t virtual_address, uint32_t physical_address);
+int VMM_CreateUserDataPageForAddress(uint32_t virtual_address, uint32_t physical_address);
+
 void VMM_ClearMappingForAddress(uint32_t virtual_address);
 
 #endif

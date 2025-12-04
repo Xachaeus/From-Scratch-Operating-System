@@ -7,12 +7,15 @@
 #include <filesys/fat12.h>
 #include <proc/load.h>
 #include <proc/proc.h>
+#include <hardware-io/io.h>
+#include <delay.h>
 
 #define ERROR_ID 0xFFFFFFFF
 #define LS_ID 0
 #define CD_ID 1
 #define CAT_ID 2
 #define EXEC_ID 3
+#define PS_ID 4
 
 CMDHandler g_CMDHandlers[256];
 char CurrentPath[256];
@@ -25,6 +28,7 @@ int GetCMD(const char* command) {
         case 2:
             if (memcmp(command, "ls", 2) == 0) {return LS_ID;}
             else if (memcmp(command, "cd", 2) == 0) {return CD_ID;}
+            else if (memcmp(command, "ps", 2) == 0) {return PS_ID;}
             break;
         case 3:
             if (memcmp(command, "cat", 3) == 0) {return CAT_ID;}
@@ -60,13 +64,37 @@ void EXEC(int argc, const char** argv) {
         }
         int pid = GetAvailablePID();
         if (!LoadProc(absolute_path, GetPCB(pid))) {printf("Error: exe file not found!\n"); return;}
+
+        MaskTimerInterrupt();
         ExecProc(pid);
         ProcessControlBlock* proc = GetPCB(pid);
-        if (argc > 2) {
+        if (argc >= 3) {
             if (argv[2][0] == '&') {
+                UnmaskTimerInterrupt();
                 return;
             }
+            else if (argv[2][0] == '-') { // Flag handling
+                switch (argv[2][1]) {
+
+                    case 'n': // launch multiple processes
+                        if (argc < 4) {printf("Error: invalid number of processes!\n"); break;}
+                        int proc_count = 1;
+                        //sscanf(argv[3], "%u", proc_count);
+                        for (int i = 0; i < 5-1; i++) {
+                            pid = GetAvailablePID();
+                            LoadProc(absolute_path, GetPCB(pid));
+                            ExecProc(pid);
+                        }
+                        UnmaskTimerInterrupt();
+                        return;
+
+                    default:
+                        printf("Error: unknown flag \"%c\"\n", argv[2][1]);
+                }
+
+            }
         }
+        UnmaskTimerInterrupt();
         while (proc->proc_state != COMPLETE) {};
     }
 }
@@ -171,6 +199,18 @@ void CAT(int argc, const char** argv) {
 
 
 
+void PS(int argc, const char** argv) {
+    for (int i = 0; i<100; i++) {
+        ProcessControlBlock* pcb = GetPCB(i);
+        if (pcb->proc_state != COMPLETE) {
+            printf("%d: %s\n", i, (pcb->proc_state==RUNNING || pcb->proc_state==READY? "RUNNING" : "BLOCKED"));
+        }
+    }
+}
+
+
+
+
 int CLI_Mainloop() {
 
     for (int i = 0; i<256; i++) {
@@ -181,6 +221,7 @@ int CLI_Mainloop() {
     RegisterCMDHandler(CD_ID, CD);
     RegisterCMDHandler(CAT_ID, CAT);
     RegisterCMDHandler(EXEC_ID, EXEC);
+    RegisterCMDHandler(PS_ID, PS);
 
     char DriveLetter = 'A';
     char CommandBuffer[256];

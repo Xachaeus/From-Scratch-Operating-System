@@ -26,3 +26,26 @@ exit:
     int 0x80
     exit_loop: jmp exit_loop
 
+
+.global sleep
+sleep:
+    mov ecx, [esp+4]
+    mov eax, 0x2
+    int 0x80
+
+    ret
+
+
+.global get_pid
+get_pid:
+    mov eax, 0x3
+    int 0x80
+    ret
+
+
+.global putd
+putd:
+    mov eax, 0x5
+    mov ecx, [esp+4]
+    int 0x80
+    ret
