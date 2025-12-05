@@ -66,25 +66,28 @@ void EXEC(int argc, const char** argv) {
         if (!LoadProc(absolute_path, GetPCB(pid))) {printf("Error: exe file not found!\n"); return;}
 
         MaskTimerInterrupt();
+        DisableScheduling();
         ExecProc(pid);
         ProcessControlBlock* proc = GetPCB(pid);
         if (argc >= 3) {
             if (argv[2][0] == '&') {
+                EnableScheduling();
                 UnmaskTimerInterrupt();
                 return;
             }
             else if (argv[2][0] == '-') { // Flag handling
                 switch (argv[2][1]) {
 
-                    case 'n': // launch multiple processes
-                        if (argc < 4) {printf("Error: invalid number of processes!\n"); break;}
-                        int proc_count = 1;
-                        //sscanf(argv[3], "%u", proc_count);
-                        for (int i = 0; i < 5-1; i++) {
+                    case 'm': // launch multiple processes
+                        MaskTimerInterrupt();
+                        DisableScheduling();
+                        for (int i = 0; i < 4; i++) {
                             pid = GetAvailablePID();
+                            //printf("Launching proc %d\n", pid);
                             LoadProc(absolute_path, GetPCB(pid));
                             ExecProc(pid);
                         }
+                        EnableScheduling();
                         UnmaskTimerInterrupt();
                         return;
 
@@ -94,6 +97,7 @@ void EXEC(int argc, const char** argv) {
 
             }
         }
+        EnableScheduling();
         UnmaskTimerInterrupt();
         while (proc->proc_state != COMPLETE) {};
     }

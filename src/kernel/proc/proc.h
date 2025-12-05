@@ -58,6 +58,10 @@ void InitializeProcs();
 int GetAvailablePID();
 ProcessControlBlock* GetPCB(int pid);
 
+void DisableScheduling();
+void EnableScheduling();
+
+
 int ExecProc(int pid);
 
 void TerminateRunningProcess(Context* context);

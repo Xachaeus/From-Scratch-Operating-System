@@ -4,6 +4,7 @@
 #include <proc/proc.h>
 #include <CLI.h>
 #include <hardware-io/io.h>
+#include <delay.h>
 
 void SyscallEntrypoint(Registers* regs) {
     switch (regs->eax) {

@@ -225,12 +225,17 @@ int ExecProc(int pid) {
     
     AddToQueue(proc);
 
-    g_schedulingEnabled = 1;
-
     return 0;
 }
 
 
+void DisableScheduling() {
+    g_schedulingEnabled = 0;
+}
+
+void EnableScheduling() {
+    g_schedulingEnabled = 1;
+}
 
 void SchedulerHook(uint32_t delta_time, Context* context) {
 
@@ -300,7 +305,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
 
             // Force-kill running process
             if (g_KillRunning) {
-                printf("Killing process %d\n", g_running->pid);
+                //printf("Killing process %d\n", g_running->pid);
                 g_KillRunning = 0;
                 g_SleepRunning = 0; // Don't accidentally have the next process sleep
                 RemoveMappingsForProcess(g_running);

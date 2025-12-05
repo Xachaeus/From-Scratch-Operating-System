@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <hardware-io/io.h>
+#include <delay.h>
 
 
 
@@ -589,13 +590,16 @@ void i686_ISR_RegisterUserHandler(int interrupt, ISRHandler handler) {
 
 
 uint32_t __attribute__((cdecl)) i686_ISR_Handler(Registers* saved_state){
+    MaskTimerInterrupt();
     if (g_ISRHandlers[saved_state->interrupt] != NULL){
         saved_state->kernel_esp = (uint32_t)saved_state;
         g_ISRHandlers[saved_state->interrupt](saved_state);
+        UnmaskTimerInterrupt();
         return saved_state->kernel_esp;
     }
     else if (saved_state->interrupt >= 32) {
         printf("Unhandled interrupt received: %d!\n", saved_state->interrupt);
+        UnmaskTimerInterrupt();
         return saved_state->kernel_esp;
     }
     else {
