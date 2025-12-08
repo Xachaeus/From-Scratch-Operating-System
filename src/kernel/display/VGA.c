@@ -1,8 +1,16 @@
 #include <stdint.h>
+#include <hardware-io/io.h>
 #include "VGA.h"
 
 
+#define VGA_STARTING_WIDTH 80
+#define VGA_STARTING_HEIGHT 25
+#define VGA_DESIRED_WIDTH 80
+#define VGA_DESIRED_HEIGHT 50
 
+#define VGA_INDEX_PORT 0x3D4
+#define VGA_DATA_PORT 0x3D5
+#define VGA_RESET_PORT 0x3DA
 
 uint8_t VGA_ColorData(enum VGA_COLOR fg, enum VGA_COLOR bg) { 
     return (bg<<4)|fg; 
@@ -10,8 +18,8 @@ uint8_t VGA_ColorData(enum VGA_COLOR fg, enum VGA_COLOR bg) {
 
 
 uint8_t __attribute__((cdecl)) VGA_Initialize(VGA_Display* display, uint8_t color_data) {
-    display->width = 80;
-    display->height = 25;
+    display->width = VGA_STARTING_WIDTH;
+    display->height = VGA_STARTING_HEIGHT;
     display->color_data = color_data;
     display->cursor_pos = 0;
     

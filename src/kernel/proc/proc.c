@@ -13,8 +13,8 @@
 #define USER_CODE_SEGMENT 0x18
 #define USER_DATA_SEGMENT 0x20
 
-#define PROCESS_MAX_RUNTIME 1000000
-#define PROCESS_TIME_SLICE 50000
+#define PROCESS_MAX_RUNTIME 30000000 // Process max runtime is 30 seconds
+#define PROCESS_TIME_SLICE 10000 // Process time slice is 10ms
 
 #define STACK_BOTTOM 0xFFFFFFFC
 
@@ -89,8 +89,9 @@ ProcessControlBlock* GetPCB(int pid) {
 
 
 
-void HandleExit() {
+void HandleExit(Context* context) {
     g_KillRunning = 1;
+    SchedulerHook(0, context);
 }
 
 void PutToSleep(long microseconds, Context* context) {
@@ -229,6 +230,7 @@ int ExecProc(int pid) {
 }
 
 
+
 void DisableScheduling() {
     g_schedulingEnabled = 0;
 }
@@ -236,6 +238,8 @@ void DisableScheduling() {
 void EnableScheduling() {
     g_schedulingEnabled = 1;
 }
+
+
 
 void SchedulerHook(uint32_t delta_time, Context* context) {
 
@@ -248,51 +252,43 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
     ProcessControlBlock* curr_sleeping = g_sleeping_list;
     ProcessControlBlock* prev_sleeping = g_sleeping_list;
 
-    // Case where no processes are sleeping
-    if (curr_sleeping == NULL) {}
-    // Case where exactly one process is sleeping
-    else if (curr_sleeping->next == NULL) {
+
+    while (curr_sleeping != NULL) {
+
         curr_sleeping->sleep_time -= delta_time;
-        if (curr_sleeping->sleep_time < 0) {
-            curr_sleeping->proc_state = READY;
-            g_sleeping_list = NULL;
-            AddToQueue(curr_sleeping);
-        }
-    }
-    // Case where >1 processes are sleeping
-    else {
-        curr_sleeping->sleep_time -= delta_time;
-        if (curr_sleeping->sleep_time < 0) {
-            curr_sleeping->proc_state = READY;
-            g_sleeping_list = curr_sleeping->next;
-            curr_sleeping->next = NULL;
-            AddToQueue(curr_sleeping);
-        }
-        /*
-        curr_sleeping = g_sleeping_list;
-        while (curr_sleeping->next != NULL) {
-            ProcessControlBlock* next = curr_sleeping->next; // Assignment to appease the linter/compiler
-            next->sleep_time -= delta_time;
-            if (next->sleep_time < 0) {
-                next->proc_state = READY;
-                curr_sleeping->next = next->next;
-                next->next = NULL;
-                AddToQueue(next);
-                // Do NOT change curr_sleeping so that the next node in the chain is correctly found
+
+        // If process should wake
+        if (curr_sleeping->sleep_time <= 0) {
+            ProcessControlBlock* temp_sleeping = curr_sleeping;
+            // First node in list
+            if (curr_sleeping == g_sleeping_list) {
+                g_sleeping_list = curr_sleeping->next;
+                prev_sleeping = curr_sleeping->next;
+                curr_sleeping = curr_sleeping->next;
             }
+            // Otherwise
             else {
-                curr_sleeping = next;
+                prev_sleeping->next = curr_sleeping->next;
+                curr_sleeping = curr_sleeping->next;
             }
+            //printf("Previous is %d, current is %d, launching %d\n", prev_sleeping->pid, curr_sleeping->pid, temp_sleeping->pid);
+            temp_sleeping->proc_state = READY;
+            AddToQueue(temp_sleeping);
         }
-        */
+
+        // Otherwise
+        else {
+            prev_sleeping = curr_sleeping;
+            curr_sleeping = curr_sleeping->next;
+        }
     }
 
 
     // Update runtime of currently running process
     if (g_running != NULL) {
         g_running->run_time += delta_time;
-        if (g_running->run_time > 1000000) {
-            printf("\nProcess %d timeout!\n", g_running->pid);
+        if (g_running->run_time > PROCESS_MAX_RUNTIME) {
+            printf("Process %d timeout!\n", g_running->pid);
             g_KillRunning = 1;
         }
     }
@@ -308,11 +304,13 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                 //printf("Killing process %d\n", g_running->pid);
                 g_KillRunning = 0;
                 g_SleepRunning = 0; // Don't accidentally have the next process sleep
+                g_time_since_switch = 0;
                 RemoveMappingsForProcess(g_running);
                 TerminateProcess(g_running);
                 g_running->proc_state = COMPLETE;
                 g_running = GetFromQueue();
                 if (g_running != NULL) {
+                    //printf("Launching process %d\n", g_running->pid);
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
                     context->context_esp = g_running->saved_context.context_esp;
@@ -324,6 +322,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
 
             // Running process sleeps
             if (g_SleepRunning) {
+                g_time_since_switch = 0;
                 g_SleepRunning = 0;
                 g_running->saved_context.context_esp = context->context_esp;
                 RemoveMappingsForProcess(g_running);
@@ -379,5 +378,6 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
         }
         
     }
+
     UnmaskTimerInterrupt();
 }

@@ -9,7 +9,7 @@
 void SyscallEntrypoint(Registers* regs) {
     switch (regs->eax) {
         case 0x1: // Exit
-            HandleExit();
+            HandleExit((Context*)regs);
             break;
         case 0x2: // Sleep (temporary)
             PutToSleep(regs->ecx, (Context*)regs);
@@ -29,5 +29,4 @@ void SyscallEntrypoint(Registers* regs) {
             printf("Got system call 0x%x!\n", regs->eax);
             break;
     }
-    //asm("sti"); // THIS IS FULLY NECESSARY FOR SOME REASON
 }

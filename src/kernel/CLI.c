@@ -207,7 +207,7 @@ void PS(int argc, const char** argv) {
     for (int i = 0; i<100; i++) {
         ProcessControlBlock* pcb = GetPCB(i);
         if (pcb->proc_state != COMPLETE) {
-            printf("%d: %s\n", i, (pcb->proc_state==RUNNING || pcb->proc_state==READY? "RUNNING" : "BLOCKED"));
+            printf("%d: %s\n", i, ((pcb->proc_state==RUNNING || pcb->proc_state==READY) ? "RUNNING" : "BLOCKED"));
         }
     }
 }

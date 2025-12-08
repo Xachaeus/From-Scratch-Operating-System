@@ -24,12 +24,6 @@ typedef struct {
 
 
 typedef struct {
-    uint32_t old_stack_pointer;
-    Context context;
-} __attribute__((packed)) StackContext;
-
-
-typedef struct {
     MemoryRegion text_section;
     MemoryRegion data_section;
     MemoryRegion bss_section;
@@ -47,6 +41,9 @@ typedef struct {
     long sleep_time;
 
     void* next;
+    void* parent;
+    void* child;
+    void* sibling;
 
 } ProcessControlBlock;
 
@@ -68,7 +65,7 @@ void TerminateRunningProcess(Context* context);
 void SchedulerHook(uint32_t delta_time, Context* context);
 
 // Syscall functions
-void HandleExit();
+void HandleExit(Context* context);
 void PutToSleep(long microseconds, Context* context);
 uint32_t GetRunningPID();
 

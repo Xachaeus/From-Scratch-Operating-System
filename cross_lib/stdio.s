@@ -24,7 +24,8 @@ exit:
     mov ecx, [esp+4]
     mov eax, 0x1
     int 0x80
-    exit_loop: jmp exit_loop
+
+    ret
 
 
 .global sleep

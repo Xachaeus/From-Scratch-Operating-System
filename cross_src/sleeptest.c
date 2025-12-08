@@ -2,8 +2,9 @@
 #include <stdint.h>
 
 int main() {
-    sleep(10000000);
     uint32_t pid = get_pid();
+    puts("Process "); putd(pid); puts(" starting!\n");
+    sleep(10000000);
     puts("10 second passed since program started!\n");
     puts("Process "); putd(pid); puts(" exiting!\n");
     exit(0);

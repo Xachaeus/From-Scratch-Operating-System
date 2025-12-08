@@ -30,12 +30,17 @@ uint64_t FMM_Initialize(AddressRangeDescriptor* mem) {
     VMM_Initialize(kernel_page_directory_block, kernel_page_table_block, kernel_DMA_blocks);
 
     i686_ISR_RegisterHandler(0xe, PageFaultHandler);
+    i686_ISR_RegisterHandler(0xd, GeneralProtectionFaultHandler);
 
     g_KernelDMAPhysicalAddress = PMM_BlockIndex2PhysicalAddress(kernel_DMA_blocks);
     g_KernelDMAAddress = VMM_GetDMAAddress();
 
     return available_memory;
 }
+
+
+
+
 
 void PageFaultHandler(Registers* saved_state) {
 
@@ -50,7 +55,7 @@ void PageFaultHandler(Registers* saved_state) {
         printf("Error is kernel-caused!\n");
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
         printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
-        printf("  kernel_esp=0x%x  ebp=0x%x  eip=0x%x  cs=%d\n  eflags=%d  esp=0x%x  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+        printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=%d\n  eflags=%d  esp=0x%x  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
         for (;;);
     }
 
@@ -67,7 +72,7 @@ void PageFaultHandler(Registers* saved_state) {
         VMM_GetPageForAddress(invalid_address, &t_entry);
         printf("  Table: 0x%x  Page: 0x%x\n", d_entry.data, t_entry.data);
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
-        printf("  kernel_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+        printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
         
         TerminateRunningProcess((Context*)saved_state);
 
@@ -77,7 +82,29 @@ void PageFaultHandler(Registers* saved_state) {
 
 }
 
-void GeneralProtectionxFaultHandler(Registers* saved_state) {
+
+void GeneralProtectionFaultHandler(Registers* saved_state) {
+
+    i686_DisableInterrupts();
+
+    int violating_pid = GetRunningPID();
+    if (violating_pid == -1) {
+        printf("General Protection fault by Kernel!\n");
+        printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
+        printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
+        printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=%d\n  eflags=%d  esp=0x%x  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+        for (;;);
+    }
+
+    else {
+        printf("Process %d triggered a #GP!\n", violating_pid);
+        printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
+        printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+        
+        TerminateRunningProcess((Context*)saved_state);
+    }
+
+    i686_EnableInterrupts();
 
 }
 

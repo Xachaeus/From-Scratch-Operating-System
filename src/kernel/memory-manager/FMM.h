@@ -35,4 +35,5 @@ int FMM_CreateUserCodeMapping(uint32_t phys_block_id, uint32_t num_blocks, uint3
 int FMM_CreateUserDataMapping(uint32_t phys_block_id, uint32_t num_blocks, uint32_t virtual_address);
 
 void PageFaultHandler(Registers* saved_state);
+void GeneralProtectionFaultHandler(Registers* saved_state);
 #endif
