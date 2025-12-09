@@ -17,7 +17,7 @@ Linker script and memory map
 
                 0x00030000                        . = 0x30000
 
-.text           0x00030000     0x9aa6
+.text           0x00030000     0x9e56
  *(.text)
  .text          0x00030000       0x28 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
                 0x00030000                kernel_start
@@ -304,410 +304,418 @@ Linker script and memory map
                 0x00030b4c                i686_DisablePaging
  .text          0x00030b58       0x14 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
                 0x00030b58                i686_PIT_Initialize
- .text          0x00030b6c      0x99d /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+ .text          0x00030b6c      0xa01 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
                 0x00030b6c                GetCMD
-                0x00030c60                RegisterCMDHandler
-                0x00030c73                EXEC
-                0x00030e5f                LS
-                0x00030ef8                CD
-                0x0003110a                CAT
-                0x0003126d                PS
-                0x000312dc                CLI_Mainloop
- .text          0x00031509       0x55 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
-                0x00031509                islower
-                0x00031532                toupper
- .text          0x0003155e       0x93 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
-                0x0003155e                ActiveContextTimerSleepHook
-                0x0003158a                sleep
-                0x000315c5                MaskTimerInterrupt
-                0x000315db                UnmaskTimerInterrupt
- .text          0x000315f1      0x1a7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
-                0x000315f1                setup_timer
-                0x000315f7                timer
-                0x00031633                kernel_main
- .text          0x00031798       0xf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
-                0x00031798                memcpy
-                0x000317ea                memset
-                0x0003182d                memcmp
- .text          0x0003188d     0x13f0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
-                0x0003188d                initialize_stdio
-                0x000318df                GetActiveContext
-                0x000318e9                GetSTDOUT
-                0x000318f3                GetSTDIN
-                0x000318fd                GetSTDERR
-                0x00031907                STD_PutBuffer
-                0x0003193c                STD_GetBuffer
-                0x0003197d                STD_FlushSTDOUT
-                0x000319c6                STD_FlushSTDIN
-                0x000319f9                STD_FlushSTDERR
-                0x00031a2c                ActiveContextTimerCursorHook
-                0x00031a49                ActiveContextKeyboardHook
-                0x00031b12                CFG_EnableCursorBlinking
-                0x00031b21                CFG_DisableCursorBlinking
-                0x00031b30                CFG_SetCursorChar
-                0x00031b4b                __STD_Putc
-                0x00031b7e                __STD_Puts
-                0x00031ba7                printf_unsigned
-                0x00031c5a                printf_signed
-                0x00031cb4                printf
-                0x00031fd7                hex_to_dec
-                0x0003206f                scanf
-                0x0003265b                getline
-                0x00032713                sscanf
- .text          0x00032c7d       0xb6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
-                0x00032c7d                strchr
-                0x00032cbb                strcpy
-                0x00032d0d                strlen
- .text          0x00032d33       0x9b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
-                0x00032d33                SyscallEntrypoint
- .text          0x00032dce      0xabb /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
-                0x00032dce                GetCommandParamCount
-                0x00032e27                GetCommandAwaitIRQ6
-                0x00032e80                GetCommandReturnCount
-                0x00032ed9                DISK_Floppy_GetSectorAddr
-                0x00032ef5                DISK_Floppy_IRQ6Handler
-                0x00032f02                lba2chs
-                0x00032f76                WaitForIRQ6
-                0x00032fa0                WaitForFIFO
-                0x00032fdc                PrepareDMAForTransfer
-                0x000330a6                PrepareDMAForWrite
-                0x000330f6                PrepareDMAForRead
-                0x000331cf                FDC_SetBit
-                0x00033242                DISK_Floppy_Reset
-                0x000332cf                DISK_Floppy_Initialize
-                0x000333a2                DISK_Floppy_IssueCommand
-                0x0003358d                DISK_Floppy_ReadSector
-                0x0003366e                DISK_Floppy_ReadSectors
-                0x0003376b                DISK_Floppy_ReadSectorsTo
- .text          0x00033889      0xbd3 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
-                0x00033889                KI_VGACoordTransform
-                0x0003390a                KI_DisableBlinking
-                0x00033917                KI_EnableBlinking
-                0x00033924                KI_DrawCursor
-                0x000339ef                KI_CursorHook
-                0x00033a2a                KI_Initialize
-                0x00033b68                KI_Clear
-                0x00033bfe                KI_DrawBorder
-                0x00033fa6                KI_UpdateLineScrolling
-                0x00034104                KI_Putc
-                0x000343dc                KI_Puts
-                0x0003440e                KI_BadSizeError
-                0x00034445                KI_TextOverflowError
- .text          0x0003445c      0x276 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
-                0x0003445c                VGA_ColorData
-                0x0003446e                VGA_Initialize
-                0x000344b4                VGA_ClearScreen
-                0x00034535                VGA_SetChar
-                0x00034595                VGA_SetCursorPos
-                0x000345ca                VGA_Print
-                0x0003464e                VGA_Write
- .text          0x000346d2      0x7dd /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
-                0x000346d2                FAT12_ReadSector
-                0x0003470a                FAT12_LoadFATSector
-                0x0003474a                FAT12_Initialize
-                0x00034875                FAT12_OpenEntry
-                0x0003495a                FAT12_Cluster2Sector
-                0x0003496d                FAT12_NextCluster
-                0x000349e1                FAT12_Read
-                0x00034b62                FAT12_ReadEntry
-                0x00034b83                FAT12_Close
-                0x00034bb9                FAT12_FindFile
-                0x00034d69                FAT12_Open
- .text          0x00034eaf       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
-                0x00034eaf                HAL_Initialize
- .text          0x00034ed1       0x1b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
-                0x00034ed1                i686_iowait
- .text          0x00034eec      0x1a2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
-                0x00034eec                GetQWERTYCTRLMakeKeyCode
-                0x00034f49                GetQWERTYCTRLClearKeyCode
-                0x00034fb6                Keyboard_Handler
- .text          0x0003508e      0x82d /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
-                0x0003508e                FMM_GetDMAAddress
-                0x00035098                FMM_GetDMAPhysAddress
-                0x000350a2                FMM_Initialize
-                0x00035149                PageFaultHandler
-                0x0003531d                GeneralProtectionFaultHandler
-                0x0003547a                FMM_FreeBlocksAt
-                0x00035513                FMM_ClearMapping
-                0x000355a6                FMM_FreeBlocks
-                0x000355c0                FMM_AllocateBlocks
-                0x000355d6                FMM_CreateUserCodeMapping
-                0x000356cd                FMM_CreateUserDataMapping
-                0x000357c4                FMM_CreateMapping
- .text          0x000358bb      0xac8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
-                0x000358bb                PMM_Initialize
-                0x00035c2f                PMM_GetBitmapData
-                0x00035c53                PMM_SetBitmapData
-                0x00035cb0                PMM_PrintUsableRegionInfo
-                0x00035d34                PMM_BlockIndex2PhysicalAddress
-                0x00035e1b                PMM_PhysicalAddress2BlockIndex
-                0x00035ef8                PMM_DEBUG_PrintWedges
-                0x00035f7e                PMM_FirstFitSearch
-                0x00036058                PMM_AllocateBlocks
-                0x000361a0                PMM_FreeBlocks
-                0x000362b9                PMM_ForceFreeBlocks
- .text          0x00036383      0xaf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
-                0x00036383                VMM_GetDMAAddress
-                0x0003638d                VMM_GetWorkingPageTableAddr
-                0x00036397                VMM_VirtualAddress2PageIndices
-                0x000363bc                VMM_PageIndices2VirtualAddress
-                0x000363d1                VMM_VirtualAddress2PhysicalAddress
-                0x00036420                VMM_CreatePageDirectoryEntry
-                0x0003646b                VMM_GetPageDirectoryEntryAVL
-                0x00036475                VMM_SetPageDirectoryEntryAVL
-                0x00036484                VMM_CreatePageTableEntry
-                0x000364f3                VMM_GetPageTableEntryAVL
-                0x000364fd                VMM_SetPageTableEntryAVL
-                0x0003650c                VMM_GetActivePageTableEntryCount
-                0x00036582                VMM_SetActivePageTableEntryCount
-                0x0003661b                VMM_Initialize
-                0x00036848                VMM_SetWorkingPageTable
-                0x000368a8                VMM_LoadTableForAddress
-                0x000368ff                VMM_GetTableForAddress
-                0x00036951                VMM_FetchTableForAddress
-                0x0003699c                VMM_CreateTableForAddress
-                0x00036a0e                VMM_CreateUserTableForAddress
-                0x00036a80                VMM_GetPageForAddress
-                0x00036b07                VMM_CreatePageForAddress
-                0x00036be2                VMM_CreateUserDataPageForAddress
-                0x00036cbd                VMM_CreateUserCodePageForAddress
-                0x00036d98                VMM_ClearMappingForAddress
- .text          0x00036e78      0x4af /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
-                0x00036e78                LoadProc
- .text          0x00037327      0x9bc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
-                0x00037327                InitializeProcs
-                0x0003736b                AddToQueue
-                0x000373cf                AddToSleeping
-                0x000373ec                GetFromQueue
-                0x0003742c                GetAvailablePID
-                0x00037496                GetPCB
-                0x000374a9                HandleExit
-                0x000374c9                PutToSleep
-                0x00037505                GetRunningPID
-                0x00037526                CreateCodeMappingForRegion
-                0x00037573                CreateDataMappingForRegion
-                0x000375c0                RemoveMappingForRegion
-                0x000375ec                FreeRegion
-                0x00037631                AllocateMemoryRegion
-                0x00037666                CreateMappingsForProcess
-                0x000376b4                RemoveMappingsForProcess
-                0x00037702                TerminateProcess
-                0x0003776e                TerminateRunningProcess
-                0x0003778e                ExecProc
-                0x000378cc                DisableScheduling
-                0x000378dc                EnableScheduling
-                0x000378ec                SchedulerHook
- .text          0x00037ce3       0x8c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
-                0x00037ce3                GDT_GetTSS
-                0x00037ced                i686_GDT_Initialize
- .text          0x00037d6f       0xda /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
-                0x00037d6f                i686_IDT_SetGate
-                0x00037dd0                i686_IDT_EnableGate
-                0x00037df0                i686_IDT_EnableUserGate
-                0x00037e10                i686_IDT_DisableGate
-                0x00037e30                i686_IDT_Initialize
- .text          0x00037e49       0xcc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
-                0x00037e49                i686_IRQ_Handler
-                0x00037ebb                i686_IRQ_Initialize
-                0x00037f02                i686_IRQ_RegisterHandler
- .text          0x00037f15     0x1678 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
-                0x00037f15                i686_ISR_Initialize
-                0x000393d2                i686_ISR_RegisterHandler
-                0x000393f6                i686_ISR_RegisterUserHandler
-                0x0003941a                i686_ISR_Handler
- .text          0x0003958d      0x2b6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
-                0x0003958d                i686_PIC_Configure
-                0x0003967f                i686_PIC_SendEndOfInterrupt
-                0x000396af                i686_PIC_Disable
-                0x000396e9                i686_PIC_Mask
-                0x0003973d                i686_PIC_Unmask
-                0x00039793                i686_PIC_ReadIrqRequestRegister
-                0x000397eb                i686_PIC_ReadInServiceRegister
- *fill*         0x00039843        0xd 
- .text          0x00039850      0x11a /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
-                0x00039850                __udivdi3
- *fill*         0x0003996a        0x6 
- .text          0x00039970      0x136 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
-                0x00039970                __umoddi3
+                0x00030c83                RegisterCMDHandler
+                0x00030c96                EXEC
+                0x00030e82                LS
+                0x00030f1b                CD
+                0x0003112d                CAT
+                0x00031290                PS
+                0x000312ff                MEM
+                0x00031331                CLI_Mainloop
+ .text          0x0003156d       0x55 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
+                0x0003156d                islower
+                0x00031596                toupper
+ .text          0x000315c2       0x93 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
+                0x000315c2                ActiveContextTimerSleepHook
+                0x000315ee                sleep
+                0x00031629                MaskTimerInterrupt
+                0x0003163f                UnmaskTimerInterrupt
+ .text          0x00031655      0x1a7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+                0x00031655                setup_timer
+                0x0003165b                timer
+                0x00031697                kernel_main
+ .text          0x000317fc       0xf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
+                0x000317fc                memcpy
+                0x0003184e                memset
+                0x00031891                memcmp
+ .text          0x000318f1     0x13f0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+                0x000318f1                initialize_stdio
+                0x00031943                GetActiveContext
+                0x0003194d                GetSTDOUT
+                0x00031957                GetSTDIN
+                0x00031961                GetSTDERR
+                0x0003196b                STD_PutBuffer
+                0x000319a0                STD_GetBuffer
+                0x000319e1                STD_FlushSTDOUT
+                0x00031a2a                STD_FlushSTDIN
+                0x00031a5d                STD_FlushSTDERR
+                0x00031a90                ActiveContextTimerCursorHook
+                0x00031aad                ActiveContextKeyboardHook
+                0x00031b76                CFG_EnableCursorBlinking
+                0x00031b85                CFG_DisableCursorBlinking
+                0x00031b94                CFG_SetCursorChar
+                0x00031baf                __STD_Putc
+                0x00031be2                __STD_Puts
+                0x00031c0b                printf_unsigned
+                0x00031cbe                printf_signed
+                0x00031d18                printf
+                0x0003203b                hex_to_dec
+                0x000320d3                scanf
+                0x000326bf                getline
+                0x00032777                sscanf
+ .text          0x00032ce1       0xb6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
+                0x00032ce1                strchr
+                0x00032d1f                strcpy
+                0x00032d71                strlen
+ .text          0x00032d97       0xc5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+                0x00032d97                SyscallEntrypoint
+ .text          0x00032e5c      0xb9c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+                0x00032e5c                GetCommandParamCount
+                0x00032eb5                GetCommandAwaitIRQ6
+                0x00032f0e                GetCommandReturnCount
+                0x00032f67                DISK_Floppy_GetSectorAddr
+                0x00032f83                DISK_Floppy_IRQ6Handler
+                0x00032f90                lba2chs
+                0x00033004                WaitForIRQ6
+                0x0003302e                WaitForFIFO
+                0x0003306a                PrepareDMAForTransfer
+                0x00033134                PrepareDMAForWrite
+                0x00033184                PrepareDMAForRead
+                0x0003325d                FDC_SetBit
+                0x000332d0                DISK_Floppy_Reset
+                0x0003335d                DISK_Floppy_Initialize
+                0x00033430                DISK_Floppy_IssueCommand
+                0x0003361b                DISK_Floppy_ReadSector
+                0x000336fc                DISK_Floppy_ReadSectors
+                0x000337f9                DISK_Floppy_ReadSectorsTo
+                0x00033917                DISK_Floppy_WriteSector
+ .text          0x000339f8      0xbd3 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+                0x000339f8                KI_VGACoordTransform
+                0x00033a79                KI_DisableBlinking
+                0x00033a86                KI_EnableBlinking
+                0x00033a93                KI_DrawCursor
+                0x00033b5e                KI_CursorHook
+                0x00033b99                KI_Initialize
+                0x00033cd7                KI_Clear
+                0x00033d6d                KI_DrawBorder
+                0x00034115                KI_UpdateLineScrolling
+                0x00034273                KI_Putc
+                0x0003454b                KI_Puts
+                0x0003457d                KI_BadSizeError
+                0x000345b4                KI_TextOverflowError
+ .text          0x000345cb      0x276 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
+                0x000345cb                VGA_ColorData
+                0x000345dd                VGA_Initialize
+                0x00034623                VGA_ClearScreen
+                0x000346a4                VGA_SetChar
+                0x00034704                VGA_SetCursorPos
+                0x00034739                VGA_Print
+                0x000347bd                VGA_Write
+ .text          0x00034841      0x7dd /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+                0x00034841                FAT12_ReadSector
+                0x00034879                FAT12_LoadFATSector
+                0x000348b9                FAT12_Initialize
+                0x000349e4                FAT12_OpenEntry
+                0x00034ac9                FAT12_Cluster2Sector
+                0x00034adc                FAT12_NextCluster
+                0x00034b50                FAT12_Read
+                0x00034cd1                FAT12_ReadEntry
+                0x00034cf2                FAT12_Close
+                0x00034d28                FAT12_FindFile
+                0x00034ed8                FAT12_Open
+ .text          0x0003501e       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
+                0x0003501e                HAL_Initialize
+ .text          0x00035040       0x1b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
+                0x00035040                i686_iowait
+ .text          0x0003505b      0x1a2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
+                0x0003505b                GetQWERTYCTRLMakeKeyCode
+                0x000350b8                GetQWERTYCTRLClearKeyCode
+                0x00035125                Keyboard_Handler
+ .text          0x000351fd      0x852 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+                0x000351fd                FMM_GetUsedMemory
+                0x0003520a                FMM_GetDMAAddress
+                0x00035214                FMM_GetDMAPhysAddress
+                0x0003521e                FMM_Initialize
+                0x000352c5                PageFaultHandler
+                0x00035499                GeneralProtectionFaultHandler
+                0x0003560e                FMM_FreeBlocksAt
+                0x000356a7                FMM_ClearMapping
+                0x0003573a                FMM_FreeBlocks
+                0x00035754                FMM_AllocateBlocks
+                0x0003576a                FMM_CreateUserCodeMapping
+                0x00035861                FMM_CreateUserDataMapping
+                0x00035958                FMM_CreateMapping
+ .text          0x00035a4f      0xb03 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+                0x00035a4f                PMM_Initialize
+                0x00035dc3                PMM_GetBitmapData
+                0x00035de7                PMM_SetBitmapData
+                0x00035e44                PMM_PrintUsableRegionInfo
+                0x00035ec8                PMM_BlockIndex2PhysicalAddress
+                0x00035faf                PMM_PhysicalAddress2BlockIndex
+                0x0003608c                PMM_DEBUG_PrintWedges
+                0x00036112                PMM_FirstFitSearch
+                0x000361ec                PMM_AllocateBlocks
+                0x00036334                PMM_FreeBlocks
+                0x0003644d                PMM_ForceFreeBlocks
+                0x00036517                PMM_GetBusyMemory
+ .text          0x00036552      0xaf5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+                0x00036552                VMM_GetDMAAddress
+                0x0003655c                VMM_GetWorkingPageTableAddr
+                0x00036566                VMM_VirtualAddress2PageIndices
+                0x0003658b                VMM_PageIndices2VirtualAddress
+                0x000365a0                VMM_VirtualAddress2PhysicalAddress
+                0x000365ef                VMM_CreatePageDirectoryEntry
+                0x0003663a                VMM_GetPageDirectoryEntryAVL
+                0x00036644                VMM_SetPageDirectoryEntryAVL
+                0x00036653                VMM_CreatePageTableEntry
+                0x000366c2                VMM_GetPageTableEntryAVL
+                0x000366cc                VMM_SetPageTableEntryAVL
+                0x000366db                VMM_GetActivePageTableEntryCount
+                0x00036751                VMM_SetActivePageTableEntryCount
+                0x000367ea                VMM_Initialize
+                0x00036a17                VMM_SetWorkingPageTable
+                0x00036a77                VMM_LoadTableForAddress
+                0x00036ace                VMM_GetTableForAddress
+                0x00036b20                VMM_FetchTableForAddress
+                0x00036b6b                VMM_CreateTableForAddress
+                0x00036bdd                VMM_CreateUserTableForAddress
+                0x00036c4f                VMM_GetPageForAddress
+                0x00036cd6                VMM_CreatePageForAddress
+                0x00036db1                VMM_CreateUserDataPageForAddress
+                0x00036e8c                VMM_CreateUserCodePageForAddress
+                0x00036f67                VMM_ClearMappingForAddress
+ .text          0x00037047      0x4af /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
+                0x00037047                LoadProc
+ .text          0x000374f6      0xbaa /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+                0x000374f6                InitializeProcs
+                0x0003753a                AddToQueue
+                0x0003759e                AddToSchedulerQueue
+                0x000375c1                AddToSleeping
+                0x000375de                GetFromQueue
+                0x0003761e                GetAvailablePID
+                0x00037688                GetPCB
+                0x0003769b                HandleExit
+                0x000376bb                PutToSleep
+                0x000376f7                GetRunningPID
+                0x00037718                CreateCodeMappingForRegion
+                0x00037765                CreateDataMappingForRegion
+                0x000377b2                RemoveMappingForRegion
+                0x000377de                FreeRegion
+                0x00037823                AllocateMemoryRegion
+                0x00037858                CreateMappingsForProcess
+                0x000378ae                RemoveMappingsForProcess
+                0x00037904                CopyMemoryRegion
+                0x000379c0                CopyProcessMemory
+                0x00037a69                TerminateProcess
+                0x00037ad5                TerminateRunningProcess
+                0x00037af5                KillRunningProcess
+                0x00037b29                ExecProc
+                0x00037c89                DisableScheduling
+                0x00037c99                EnableScheduling
+                0x00037ca9                SchedulerHook
+ .text          0x000380a0       0x8c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
+                0x000380a0                GDT_GetTSS
+                0x000380aa                i686_GDT_Initialize
+ .text          0x0003812c       0xda /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
+                0x0003812c                i686_IDT_SetGate
+                0x0003818d                i686_IDT_EnableGate
+                0x000381ad                i686_IDT_EnableUserGate
+                0x000381cd                i686_IDT_DisableGate
+                0x000381ed                i686_IDT_Initialize
+ .text          0x00038206       0xcc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+                0x00038206                i686_IRQ_Handler
+                0x00038278                i686_IRQ_Initialize
+                0x000382bf                i686_IRQ_RegisterHandler
+ .text          0x000382d2     0x1678 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+                0x000382d2                i686_ISR_Initialize
+                0x0003978f                i686_ISR_RegisterHandler
+                0x000397b3                i686_ISR_RegisterUserHandler
+                0x000397d7                i686_ISR_Handler
+ .text          0x0003994a      0x2b6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
+                0x0003994a                i686_PIC_Configure
+                0x00039a3c                i686_PIC_SendEndOfInterrupt
+                0x00039a6c                i686_PIC_Disable
+                0x00039aa6                i686_PIC_Mask
+                0x00039afa                i686_PIC_Unmask
+                0x00039b50                i686_PIC_ReadIrqRequestRegister
+                0x00039ba8                i686_PIC_ReadInServiceRegister
+ .text          0x00039c00      0x11a /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+                0x00039c00                __udivdi3
+ *fill*         0x00039d1a        0x6 
+ .text          0x00039d20      0x136 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+                0x00039d20                __umoddi3
 
-.rodata         0x00039ac0      0xfc8
+.rodata         0x00039e60     0x1028
  *(.rodata)
- .rodata        0x00039ac0      0x123 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
- *fill*         0x00039be3        0x1 
- .rodata        0x00039be4      0x115 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
- *fill*         0x00039cf9        0x3 
- .rodata        0x00039cfc      0x438 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
-                0x00039d0c                g_HexChars
- .rodata        0x0003a134       0x38 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
- .rodata        0x0003a16c      0x1f7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
- *fill*         0x0003a363        0x1 
- .rodata        0x0003a364       0x37 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
- .rodata        0x0003a39b       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
- *fill*         0x0003a3bd        0x3 
- .rodata        0x0003a3c0      0x1eb /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
- *fill*         0x0003a5ab        0x1 
- .rodata        0x0003a5ac       0x5e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
- *fill*         0x0003a60a        0x2 
- .rodata        0x0003a60c       0x70 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
- .rodata        0x0003a67c       0x59 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
- *fill*         0x0003a6d5        0x3 
- .rodata        0x0003a6d8       0x25 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
- *fill*         0x0003a6fd        0x3 
- .rodata        0x0003a700      0x388 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+ .rodata        0x00039e60      0x152 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+ *fill*         0x00039fb2        0x2 
+ .rodata        0x00039fb4      0x115 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+ *fill*         0x0003a0c9        0x3 
+ .rodata        0x0003a0cc      0x438 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+                0x0003a0dc                g_HexChars
+ .rodata        0x0003a504       0x1d /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+ *fill*         0x0003a521        0x3 
+ .rodata        0x0003a524      0x1f7 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+ *fill*         0x0003a71b        0x1 
+ .rodata        0x0003a71c       0x37 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+ .rodata        0x0003a753       0x22 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+ *fill*         0x0003a775        0x3 
+ .rodata        0x0003a778      0x1fa /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+ *fill*         0x0003a972        0x2 
+ .rodata        0x0003a974       0x5e /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+ *fill*         0x0003a9d2        0x2 
+ .rodata        0x0003a9d4       0x70 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+ .rodata        0x0003aa44       0x89 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+ *fill*         0x0003aacd        0x3 
+ .rodata        0x0003aad0       0x25 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+ *fill*         0x0003aaf5        0xb 
+ .rodata        0x0003ab00      0x388 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
 
-.eh_frame       0x0003aa88       0xd8
- .eh_frame      0x0003aa88       0x64 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .eh_frame      0x0003aaec       0x74 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+.eh_frame       0x0003ae88       0xd8
+ .eh_frame      0x0003ae88       0x64 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .eh_frame      0x0003aeec       0x74 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
-.data           0x0003ab60      0x11e
+.data           0x0003af60      0x11e
  *(.data)
- .data          0x0003ab60       0x4b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
- .data          0x0003abab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
- *fill*         0x0003abab        0x1 
- .data          0x0003abac        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
-                0x0003abac                g_FATLoaded
- .data          0x0003abb0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
- .data          0x0003abb0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
- *fill*         0x0003abb0       0x10 
- .data          0x0003abc0       0x7a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
-                0x0003abc0                g_QWERTY_make_scancodes_shifted
-                0x0003ac00                g_QWERTY_make_scancodes_unshifted
- .data          0x0003ac3a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
- .data          0x0003ac3a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
- .data          0x0003ac3a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
- .data          0x0003ac3a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
- *fill*         0x0003ac3a        0x2 
- .data          0x0003ac3c        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
-                0x0003ac3c                g_schedulingEnabled
- .data          0x0003ac40       0x36 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
-                0x0003ac40                g_GDT
-                0x0003ac70                g_GDT_Descriptor
- *fill*         0x0003ac76        0x2 
- .data          0x0003ac78        0x6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
-                0x0003ac78                g_IDTDescriptor
- .data          0x0003ac7e        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
- .data          0x0003ac7e        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
- .data          0x0003ac7e        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
- .data          0x0003ac7e        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .data          0x0003ac7e        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .data          0x0003af60       0x4b /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+ .data          0x0003afab        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
+ *fill*         0x0003afab        0x1 
+ .data          0x0003afac        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+                0x0003afac                g_FATLoaded
+ .data          0x0003afb0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
+ .data          0x0003afb0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
+ *fill*         0x0003afb0       0x10 
+ .data          0x0003afc0       0x7a /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
+                0x0003afc0                g_QWERTY_make_scancodes_shifted
+                0x0003b000                g_QWERTY_make_scancodes_unshifted
+ .data          0x0003b03a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+ .data          0x0003b03a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+ .data          0x0003b03a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+ .data          0x0003b03a        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
+ *fill*         0x0003b03a        0x2 
+ .data          0x0003b03c        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+                0x0003b03c                g_schedulingEnabled
+ .data          0x0003b040       0x36 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
+                0x0003b040                g_GDT
+                0x0003b070                g_GDT_Descriptor
+ *fill*         0x0003b076        0x2 
+ .data          0x0003b078        0x6 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
+                0x0003b078                g_IDTDescriptor
+ .data          0x0003b07e        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+ .data          0x0003b07e        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+ .data          0x0003b07e        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
+ .data          0x0003b07e        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .data          0x0003b07e        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 
-.bss            0x0003ac80    0x26d2c
+.bss            0x0003b080    0x26d2c
  *(COMMON)
  *(.bss)
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
- .bss           0x0003ac80        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
- .bss           0x0003ac80      0x500 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
-                0x0003ac80                g_CMDHandlers
-                0x0003b080                CurrentPath
- .bss           0x0003b180        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
- .bss           0x0003b180        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
-                0x0003b180                g_Timer
- .bss           0x0003b188        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
-                0x0003b188                CurrentAvailablePID
- .bss           0x0003b18c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
- *fill*         0x0003b18c       0x14 
- .bss           0x0003b1a0      0x586 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
-                0x0003b1a0                g_VGA_Display
-                0x0003b1c0                g_Root_Terminal
-                0x0003b2e8                g_ActiveContext
-                0x0003b300                g_STDOUT
-                0x0003b500                g_STDIN
-                0x0003b520                g_STDERR
-                0x0003b720                g_STDOUT_TAIL
-                0x0003b722                g_STDIN_TAIL
-                0x0003b724                g_STDERR_TAIL
- .bss           0x0003b726        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
- .bss           0x0003b726        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
- .bss           0x0003b726        0x2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
-                0x0003b726                g_WaitingForIRQ6
-                0x0003b727                g_FloppyNum
- .bss           0x0003b728        0x1 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
-                0x0003b728                g_BlinkDisable
- .bss           0x0003b729        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
- *fill*         0x0003b729       0x17 
- .bss           0x0003b740      0x580 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
-                0x0003b740                g_FatData
-                0x0003baa0                g_FirstFATSector
-                0x0003baa4                g_FirstRootDirSector
-                0x0003baa8                g_RootDirSize
-                0x0003baac                g_FirstDataSector
-                0x0003bab0                g_FAT
-                0x0003bac0                g_RootDirectoryBuffer
- .bss           0x0003bcc0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
- .bss           0x0003bcc0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
- .bss           0x0003bcc0        0x5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
-                0x0003bcc0                g_ControlKeyStates
-                0x0003bcc4                g_E0_Received
- *fill*         0x0003bcc5        0x3 
- .bss           0x0003bcc8        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
-                0x0003bcc8                g_KernelDMAAddress
-                0x0003bccc                g_KernelDMAPhysicalAddress
- *fill*         0x0003bcd0       0x10 
- .bss           0x0003bce0    0x2063c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
-                0x0003bce0                g_MemoryMap
-                0x0003c000                g_UsableMemoryMap
-                0x0003c320                g_BitmapWedges
-                0x0003c340                g_Bitmap
- .bss           0x0005c31c       0x10 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
-                0x0005c31c                g_PageDirectoryAddress
-                0x0005c320                g_WorkingPageTable
-                0x0005c324                g_KernelPageTable
-                0x0005c328                g_KernelDMAVirtualAddress
- .bss           0x0005c32c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
- *fill*         0x0005c32c       0x14 
- .bss           0x0005c340     0x4990 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
-                0x0005c340                g_running
-                0x0005c344                g_queue
-                0x0005c348                g_sleeping_list
-                0x0005c34c                g_GoToKernel
-                0x0005c34d                g_KillRunning
-                0x0005c34e                g_SleepRunning
-                0x0005c350                g_KernelESP
-                0x0005c354                g_SavedESP
-                0x0005c358                g_time_since_switch
-                0x0005c35c                g_PIDCounter
-                0x0005c360                g_Processes
- *fill*         0x00060cd0       0x10 
- .bss           0x00060ce0       0x6c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
-                0x00060ce0                g_TSS
- *fill*         0x00060d4c       0x14 
- .bss           0x00060d60      0x800 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
-                0x00060d60                g_IDT
- .bss           0x00061560       0x40 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
-                0x00061560                g_IRQHandlers
- .bss           0x000615a0      0x400 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
-                0x000615a0                g_ISRHandlers
- .bss           0x000619a0        0xc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
-                0x000619a0                PIC_ICW1
-                0x000619a4                PIC_ICW4
-                0x000619a8                PIC_CMD
- .bss           0x000619ac        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
- .bss           0x000619ac        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/memory-manager/VMM.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/proc/proc.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/gdt.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/idt.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/isr.o
+ .bss           0x0003b080        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/arch/x86/PIT8254.o
+ .bss           0x0003b080      0x500 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/CLI.o
+                0x0003b080                g_CMDHandlers
+                0x0003b480                CurrentPath
+ .bss           0x0003b580        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/ctype.o
+ .bss           0x0003b580        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/delay.o
+                0x0003b580                g_Timer
+ .bss           0x0003b588        0x4 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/kernel.o
+                0x0003b588                CurrentAvailablePID
+ .bss           0x0003b58c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory.o
+ *fill*         0x0003b58c       0x14 
+ .bss           0x0003b5a0      0x586 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/stdio.o
+                0x0003b5a0                g_VGA_Display
+                0x0003b5c0                g_Root_Terminal
+                0x0003b6e8                g_ActiveContext
+                0x0003b700                g_STDOUT
+                0x0003b900                g_STDIN
+                0x0003b920                g_STDERR
+                0x0003bb20                g_STDOUT_TAIL
+                0x0003bb22                g_STDIN_TAIL
+                0x0003bb24                g_STDERR_TAIL
+ .bss           0x0003bb26        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/string.o
+ .bss           0x0003bb26        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/syscall.o
+ .bss           0x0003bb26        0x2 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/disk/floppy.o
+                0x0003bb26                g_WaitingForIRQ6
+                0x0003bb27                g_FloppyNum
+ .bss           0x0003bb28        0x1 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/kinter.o
+                0x0003bb28                g_BlinkDisable
+ .bss           0x0003bb29        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/display/VGA.o
+ *fill*         0x0003bb29       0x17 
+ .bss           0x0003bb40      0x580 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/filesys/fat12.o
+                0x0003bb40                g_FatData
+                0x0003bea0                g_FirstFATSector
+                0x0003bea4                g_FirstRootDirSector
+                0x0003bea8                g_RootDirSize
+                0x0003beac                g_FirstDataSector
+                0x0003beb0                g_FAT
+                0x0003bec0                g_RootDirectoryBuffer
+ .bss           0x0003c0c0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/HAL/hal.o
+ .bss           0x0003c0c0        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/hardware-io/io.o
+ .bss           0x0003c0c0        0x5 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/keyboard/keyboard.o
+                0x0003c0c0                g_ControlKeyStates
+                0x0003c0c4                g_E0_Received
+ *fill*         0x0003c0c5        0x3 
+ .bss           0x0003c0c8        0x8 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/FMM.o
+                0x0003c0c8                g_KernelDMAAddress
+                0x0003c0cc                g_KernelDMAPhysicalAddress
+ *fill*         0x0003c0d0       0x10 
+ .bss           0x0003c0e0    0x2063c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/PMM.o
+                0x0003c0e0                g_MemoryMap
+                0x0003c400                g_UsableMemoryMap
+                0x0003c720                g_BitmapWedges
+                0x0003c740                g_Bitmap
+ .bss           0x0005c71c       0x10 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/memory-manager/VMM.o
+                0x0005c71c                g_PageDirectoryAddress
+                0x0005c720                g_WorkingPageTable
+                0x0005c724                g_KernelPageTable
+                0x0005c728                g_KernelDMAVirtualAddress
+ .bss           0x0005c72c        0x0 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/load.o
+ *fill*         0x0005c72c       0x14 
+ .bss           0x0005c740     0x4990 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/proc/proc.o
+                0x0005c740                g_running
+                0x0005c744                g_queue
+                0x0005c748                g_sleeping_list
+                0x0005c74c                g_GoToKernel
+                0x0005c74d                g_KillRunning
+                0x0005c74e                g_SleepRunning
+                0x0005c750                g_KernelESP
+                0x0005c754                g_SavedESP
+                0x0005c758                g_time_since_switch
+                0x0005c75c                g_PIDCounter
+                0x0005c760                g_Processes
+ *fill*         0x000610d0       0x10 
+ .bss           0x000610e0       0x6c /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/gdt.o
+                0x000610e0                g_TSS
+ *fill*         0x0006114c       0x14 
+ .bss           0x00061160      0x800 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/idt.o
+                0x00061160                g_IDT
+ .bss           0x00061960       0x40 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/irq.o
+                0x00061960                g_IRQHandlers
+ .bss           0x000619a0      0x400 /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/isr.o
+                0x000619a0                g_ISRHandlers
+ .bss           0x00061da0        0xc /home/zack/Programming/NanobyteOS/SolOS/build/kernel/c/arch/x86/PIC8259.o
+                0x00061da0                PIC_ICW1
+                0x00061da4                PIC_ICW4
+                0x00061da8                PIC_CMD
+ .bss           0x00061dac        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_udivdi3.o)
+ .bss           0x00061dac        0x0 /home/zack/opt/cross/lib/gcc/i686-elf/12.1.0//libgcc.a(_umoddi3.o)
 LOAD /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/main.o
 LOAD /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/syscall.o
 LOAD /home/zack/Programming/NanobyteOS/SolOS/build/kernel/s/hardware-io/io.o

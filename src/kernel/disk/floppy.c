@@ -430,3 +430,36 @@ int DISK_Floppy_ReadSectorsTo(uint32_t lba, uint8_t sector_start, uint8_t sector
 
     return 0;
 }
+
+
+
+int DISK_Floppy_WriteSector(uint32_t lba) {
+
+    uint32_t source_address = FMM_GetDMAPhysAddress(); // Always returns 0x102000
+    uint32_t virtual_source_address = FMM_GetDMAAddress();
+
+    uint8_t cylinder, head, sector;
+    lba2chs(lba, &cylinder, &head, &sector);
+    PrepareDMAForWrite(source_address, 512);
+
+    uint8_t seek_args[] = {(uint8_t)((head<<2) | g_FloppyNum), cylinder};
+    DISK_Floppy_IssueCommand(SEEK, NULL, seek_args);
+    uint16_t int_results;
+    DISK_Floppy_IssueCommand(SENSE_INTERRUPT, (uint8_t*)&int_results, NULL);
+
+    uint8_t results[7];
+    uint8_t read_args[] = {
+        (uint8_t)((head<<2) | g_FloppyNum),  // (Head_number << 2) | drive
+        cylinder,           // Cylinder number
+        head,               // Head number
+        sector,             // Starting sector number
+        (uint8_t)2,         // 2 (all floppies have 512 byte sectors)
+        (uint8_t)18,        // Last sector number on track
+        (uint8_t)0x1b,      // 1B (gap number)
+        (uint8_t)0xff       // FF (data length)
+    };
+
+    DISK_Floppy_IssueCommand((WRITE_DATA | MT | MF), results, read_args);
+
+    return 0;
+}

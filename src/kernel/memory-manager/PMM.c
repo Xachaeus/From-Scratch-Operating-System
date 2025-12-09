@@ -348,3 +348,12 @@ void PMM_ForceFreeBlocks(uint32_t index, uint32_t num_blocks) {
 
     }
 }
+
+
+uint32_t PMM_GetBusyMemory() {
+    uint32_t count = 0;
+    for (uint32_t i = 0; i < MAX_NUM_BLOCKS; i++) {
+        if (PMM_GetBitmapData(i)) {count++;}
+    }
+    return count;
+}

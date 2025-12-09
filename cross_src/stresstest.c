@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    int pid = get_pid();
+    int pid = getpid();
     puts("Process "); putd(pid); puts(" starting!\n");
     for (int i = 0; i < 1000000000; i++) {
         if ((i % 100000000) == 0) {

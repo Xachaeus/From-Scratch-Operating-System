@@ -13,6 +13,12 @@ volatile uint32_t g_KernelDMAAddress;
 volatile uint32_t g_KernelDMAPhysicalAddress;
 
 
+
+uint32_t FMM_GetUsedMemory() {
+    return PMM_GetBusyMemory();
+}
+
+
 uint32_t FMM_GetDMAAddress() {
     return g_KernelDMAAddress;
 }
@@ -74,7 +80,7 @@ void PageFaultHandler(Registers* saved_state) {
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
         printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
         
-        TerminateRunningProcess((Context*)saved_state);
+        KillRunningProcess((Context*)saved_state);
 
     }
 
@@ -88,11 +94,12 @@ void GeneralProtectionFaultHandler(Registers* saved_state) {
     i686_DisableInterrupts();
 
     int violating_pid = GetRunningPID();
-    if (violating_pid == -1) {
+    if ((saved_state->cs & 0x3) != 0x3 ) {
         printf("General Protection fault by Kernel!\n");
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
         printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
         printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=%d\n  eflags=%d  esp=0x%x  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+        printf("KERNEL PANIC!\n");
         for (;;);
     }
 
@@ -101,7 +108,7 @@ void GeneralProtectionFaultHandler(Registers* saved_state) {
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
         printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
         
-        TerminateRunningProcess((Context*)saved_state);
+        KillRunningProcess((Context*)saved_state);
     }
 
     i686_EnableInterrupts();

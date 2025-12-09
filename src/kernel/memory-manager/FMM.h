@@ -36,4 +36,7 @@ int FMM_CreateUserDataMapping(uint32_t phys_block_id, uint32_t num_blocks, uint3
 
 void PageFaultHandler(Registers* saved_state);
 void GeneralProtectionFaultHandler(Registers* saved_state);
+
+uint32_t FMM_GetUsedMemory();
+
 #endif

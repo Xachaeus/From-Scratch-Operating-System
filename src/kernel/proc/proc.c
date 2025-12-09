@@ -13,8 +13,8 @@
 #define USER_CODE_SEGMENT 0x18
 #define USER_DATA_SEGMENT 0x20
 
-#define PROCESS_MAX_RUNTIME 30000000 // Process max runtime is 30 seconds
-#define PROCESS_TIME_SLICE 10000 // Process time slice is 10ms
+#define PROCESS_MAX_RUNTIME 5000000 // Process max runtime is 5 seconds
+#define PROCESS_TIME_SLICE 5000 // Process time slice is 5ms
 
 #define STACK_BOTTOM 0xFFFFFFFC
 
@@ -54,6 +54,10 @@ void AddToQueue(ProcessControlBlock* proc) {
     while (curr->next != NULL) {curr = curr->next;}
     curr->next = proc;
     proc->next = NULL;
+}
+
+void AddToSchedulerQueue(int pid) {
+    AddToQueue(GetPCB(pid));
 }
 
 void AddToSleeping(ProcessControlBlock* proc) {
@@ -151,7 +155,9 @@ void AllocateMemoryRegion(MemoryRegion* reg, uint32_t virtual_address, uint32_t 
 }
 
 
+
 void CreateMappingsForProcess(ProcessControlBlock* proc) {
+    if (proc == NULL) {return;}
     CreateCodeMappingForRegion(&(proc->text_section));
     CreateDataMappingForRegion(&(proc->data_section));
     CreateDataMappingForRegion(&(proc->rodata_section));
@@ -159,10 +165,39 @@ void CreateMappingsForProcess(ProcessControlBlock* proc) {
 }
 
 void RemoveMappingsForProcess(ProcessControlBlock* proc) {
+    if (proc == NULL){return;}
     RemoveMappingForRegion(&(proc->text_section));
     RemoveMappingForRegion(&(proc->data_section));
     RemoveMappingForRegion(&(proc->rodata_section));
     RemoveMappingForRegion(&(proc->stack_section));
+}
+
+
+
+
+void CopyMemoryRegion(MemoryRegion* dest, MemoryRegion* src) {
+    uint32_t temp_addr = src->BaseAddress + src->NumBlocks*4096;
+    // Detect overflow
+    if (temp_addr + src->NumBlocks*4096 < src->BaseAddress) {temp_addr = 0x200000;} // If processing address wraps around past the end of the address space, place it at the very beginning of the available address space
+    AllocateMemoryRegion(dest, temp_addr, src->NumBlocks);
+
+    CreateDataMappingForRegion(dest);
+    CreateDataMappingForRegion(src);
+    memcpy((void*)dest->BaseAddress, (void*)src->BaseAddress, src->NumBlocks*4096);
+    RemoveMappingForRegion(src);
+    RemoveMappingForRegion(dest);
+
+    dest->BaseAddress = src->BaseAddress;
+}
+
+void CopyProcessMemory(ProcessControlBlock* dest, ProcessControlBlock* src) {
+    if (dest == NULL || src == NULL) {printf("Error, invalid process args!\n"); return;}
+    RemoveMappingsForProcess(g_running);
+    CopyMemoryRegion(&(dest->text_section), &(src->text_section));
+    CopyMemoryRegion(&(dest->data_section), &(src->data_section));
+    CopyMemoryRegion(&(dest->rodata_section), &(src->rodata_section));
+    CopyMemoryRegion(&(dest->stack_section), &(src->stack_section));
+    CreateMappingsForProcess(g_running);
 }
 
 
@@ -184,6 +219,11 @@ void TerminateRunningProcess(Context* context) {
     SchedulerHook(0, context);
 }
 
+void KillRunningProcess(Context* context) {
+    printf("Killing process %d\n", g_running->pid);
+    TerminateRunningProcess(context);
+}
+
 
 
 int ExecProc(int pid) {
@@ -197,6 +237,7 @@ int ExecProc(int pid) {
 
     AllocateMemoryRegion(&(proc->stack_section), STACK_BOTTOM, 1);
 
+    RemoveMappingsForProcess(g_running);
     CreateMappingsForProcess(proc);
 
     proc->saved_context.eax = 0x0;
@@ -223,6 +264,7 @@ int ExecProc(int pid) {
     memcpy((void*)(proc->saved_context.context_esp), &(proc->saved_context), sizeof(Context));
 
     RemoveMappingsForProcess(proc);
+    CreateMappingsForProcess(g_running);
     
     AddToQueue(proc);
 

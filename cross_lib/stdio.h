@@ -5,8 +5,9 @@
 
 void __attribute__((cdecl)) exit(int exit_code);
 void __attribute__((cdecl)) sleep(long microseconds);
-uint32_t __attribute__((cdecl)) get_pid();
+uint32_t __attribute__((cdecl)) getpid();
 void __attribute__((cdecl)) puts(const char* str);
 void __attribute__((cdecl)) putd(int d);
+int __attribute__((cdecl)) fork();
 
 #endif

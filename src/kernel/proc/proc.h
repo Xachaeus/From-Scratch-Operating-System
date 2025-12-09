@@ -51,6 +51,7 @@ typedef struct {
 
 void InitializeProcs();
 
+void AddToSchedulerQueue(int pid);
 
 int GetAvailablePID();
 ProcessControlBlock* GetPCB(int pid);
@@ -62,12 +63,14 @@ void EnableScheduling();
 int ExecProc(int pid);
 
 void TerminateRunningProcess(Context* context);
+void KillRunningProcess(Context* context);
 void SchedulerHook(uint32_t delta_time, Context* context);
 
 // Syscall functions
 void HandleExit(Context* context);
 void PutToSleep(long microseconds, Context* context);
 uint32_t GetRunningPID();
+void CopyProcessMemory(ProcessControlBlock* dest, ProcessControlBlock* src);
 
 void __attribute__((cdecl)) i686_call(uint32_t addr);
 

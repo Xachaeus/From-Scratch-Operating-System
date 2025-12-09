@@ -32,13 +32,10 @@ $(BUILD_DIR)/main_floppy.img: bootloader kernel
 	dd if=/dev/zero of=$(BUILD_DIR)/main_floppy.img bs=512 count=2880
 	mkfs.fat -F 12 -n "SOLOS" $(BUILD_DIR)/main_floppy.img
 	dd if=$(BUILD_DIR)/stage1.bin of=$(BUILD_DIR)/main_floppy.img conv=notrunc
-	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/stage2.bin "::stage2.bin"
-	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/kernel.bin "::kernel.bin"
-	mcopy -i $(BUILD_DIR)/main_floppy.img test.txt "::test.txt"
-	mmd -i $(BUILD_DIR)/main_floppy.img "::mydir"
-	mmd -i $(BUILD_DIR)/main_floppy.img "::mydir/secdir"
-	mcopy -i $(BUILD_DIR)/main_floppy.img bigtext.txt "::mydir/secdir/test.txt"
-    
+	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/stage2.bin "::boot.bin"
+	mmd -i $(BUILD_DIR)/main_floppy.img "::boot"
+	mmd -i $(BUILD_DIR)/main_floppy.img "::bin"
+	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/kernel.bin "::boot/kernel.bin"
 	
 
 #
@@ -75,10 +72,11 @@ $(BUILD_DIR)/kernel.bin: always
 # Cross-Compiled executables
 #
 cross: $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS_S) $(CROSS_OBJECTS_C) $(CROSS_OBJECTS_S)
-	mmd -i $(BUILD_DIR)/main_floppy.img "::cross"
-	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/helloworld "::cross/hello.exe"
-	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/sleeptest "::cross/sleep.exe"
-	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/stresstest "::cross/stress.exe"
+	mmd -i $(BUILD_DIR)/main_floppy.img "::bin/cross"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/helloworld "::bin/cross/hello.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/sleeptest "::bin/cross/sleep.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/stresstest "::bin/cross/stress.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/forktest "::bin/cross/fork.exe"
 
 
 $(CROSS_BUILD_DIR)/%: %.c always
@@ -128,4 +126,11 @@ run64: floppy_image cross
 
 
 win: floppy_image cross
+	cp $(BUILD_DIR)/main_floppy.img $(EXPORT_DIR)
+
+
+
+cross_compile:
+	gcc -o $(OUT) -nostartfiles -nostdlib --static -Wl,--no-dynamic-linker -Wl,--omagic -ffreestanding -fcf-protection=none -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-stack-protector -fno-pic -fno-pie -fno-function-sections -fno-data-sections -m32 -Wl,-T,solos_link.ld $(IN)
+	mcopy -i $(BUILD_DIR)/main_floppy.img $(OUT) "::bin/cross/$(NAME)"
 	cp $(BUILD_DIR)/main_floppy.img $(EXPORT_DIR)

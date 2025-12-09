@@ -16,6 +16,7 @@
 #define CAT_ID 2
 #define EXEC_ID 3
 #define PS_ID 4
+#define MEM_ID 5
 
 CMDHandler g_CMDHandlers[256];
 char CurrentPath[256];
@@ -32,6 +33,7 @@ int GetCMD(const char* command) {
             break;
         case 3:
             if (memcmp(command, "cat", 3) == 0) {return CAT_ID;}
+            if (memcmp(command, "mem", 3) == 0) {return MEM_ID;}
             break;
         case 4:
             if (memcmp(command, "exec", 4) == 0) {return EXEC_ID;}
@@ -213,6 +215,12 @@ void PS(int argc, const char** argv) {
 }
 
 
+void MEM(int argc, const char** argv) {
+    uint32_t count = FMM_GetUsedMemory();
+    printf("%d blocks (%lld bytes) currently in use\n", count, ((uint64_t)count)*4096);
+}
+
+
 
 
 int CLI_Mainloop() {
@@ -226,6 +234,7 @@ int CLI_Mainloop() {
     RegisterCMDHandler(CAT_ID, CAT);
     RegisterCMDHandler(EXEC_ID, EXEC);
     RegisterCMDHandler(PS_ID, PS);
+    RegisterCMDHandler(MEM_ID, MEM);
 
     char DriveLetter = 'A';
     char CommandBuffer[256];

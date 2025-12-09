@@ -33,7 +33,7 @@ void _cdecl cstart_(uint16_t bootDrive, void far* kernel_address)
     // /*
     // Load kernel into memory
     #define max_kernel_sz 0x10000
-    fd = FAT_Open(&disk, "/kernel.bin");
+    fd = FAT_Open(&disk, "/boot/kernel.bin");
     uint32_t read = FAT_Read(&disk, fd, max_kernel_sz, kernel_address);
     FAT_Close(fd);
 
