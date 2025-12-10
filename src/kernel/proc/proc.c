@@ -17,6 +17,7 @@
 #define PROCESS_TIME_SLICE 5000 // Process time slice is 5ms
 
 #define STACK_BOTTOM 0xFFFFFFFC
+#define KERNEL_STACK_BOTTOM 0x1FFFFC
 
 
 #define MAX_PID 100
@@ -29,7 +30,7 @@ volatile uint8_t g_GoToKernel = 0;
 volatile uint8_t g_KillRunning = 0;
 volatile uint8_t g_SleepRunning = 0;
 volatile int g_schedulingEnabled = 1;
-volatile uint32_t g_KernelESP;
+volatile Context g_KernelContext;
 volatile uint32_t g_SavedESP;
 volatile uint32_t g_time_since_switch = 0;
 volatile uint16_t g_PIDCounter = 0;
@@ -38,6 +39,19 @@ ProcessControlBlock g_Processes[MAX_PID];
 
 
 
+
+void PrintMemoryRegion(MemoryRegion* reg) {
+    printf("S: %d  B: 0x%x  L: 0x%x\n", reg->PhysMemoryBlockIdx, reg->BaseAddress, reg->NumBlocks*4096);
+}
+
+void PrintProc(ProcessControlBlock* proc) {
+    Context* saved_state = &(proc->saved_context);
+    printf("PID: %d  STATE: %d  RUNTIME: %d\n", proc->pid, proc->proc_state, proc->run_time);
+    printf("Text: "); PrintMemoryRegion(&(proc->text_section));
+    printf("Stack: "); PrintMemoryRegion(&(proc->stack_section));
+    printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
+    printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->context_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+}
 
 
 void InitializeProcs() {
@@ -150,7 +164,7 @@ void FreeRegion(MemoryRegion* reg) {
 void AllocateMemoryRegion(MemoryRegion* reg, uint32_t virtual_address, uint32_t num_blocks) {
     reg->NumBlocks = num_blocks;
     reg->PhysMemoryBlockIdx = FMM_AllocateBlocks(num_blocks);
-    reg->BaseAddress = virtual_address;
+    reg->BaseAddress = virtual_address & 0xFFFFF000;
     reg->isActive = true;
 }
 
@@ -162,6 +176,8 @@ void CreateMappingsForProcess(ProcessControlBlock* proc) {
     CreateDataMappingForRegion(&(proc->data_section));
     CreateDataMappingForRegion(&(proc->rodata_section));
     CreateDataMappingForRegion(&(proc->stack_section));
+    CreateDataMappingForRegion(&(proc->kernel_stack_section));
+    //HAL_SetInterruptStack((void*)proc->saved_context.context_esp);
 }
 
 void RemoveMappingsForProcess(ProcessControlBlock* proc) {
@@ -170,6 +186,7 @@ void RemoveMappingsForProcess(ProcessControlBlock* proc) {
     RemoveMappingForRegion(&(proc->data_section));
     RemoveMappingForRegion(&(proc->rodata_section));
     RemoveMappingForRegion(&(proc->stack_section));
+    RemoveMappingForRegion(&(proc->kernel_stack_section));
 }
 
 
@@ -178,12 +195,18 @@ void RemoveMappingsForProcess(ProcessControlBlock* proc) {
 void CopyMemoryRegion(MemoryRegion* dest, MemoryRegion* src) {
     uint32_t temp_addr = src->BaseAddress + src->NumBlocks*4096;
     // Detect overflow
-    if (temp_addr + src->NumBlocks*4096 < src->BaseAddress) {temp_addr = 0x200000;} // If processing address wraps around past the end of the address space, place it at the very beginning of the available address space
+    if (temp_addr + src->NumBlocks*4096 < src->BaseAddress) {
+        // If processing address wraps around past the end of the address space, place it at the very beginning of the available address space
+        temp_addr = 0x200000;
+    }
     AllocateMemoryRegion(dest, temp_addr, src->NumBlocks);
 
     CreateDataMappingForRegion(dest);
     CreateDataMappingForRegion(src);
     memcpy((void*)dest->BaseAddress, (void*)src->BaseAddress, src->NumBlocks*4096);
+    if (memcmp((void*)dest->BaseAddress, (void*)src->BaseAddress, src->NumBlocks*4096) != 0) {
+        printf("Error: memory copy did not work!\n");
+    }
     RemoveMappingForRegion(src);
     RemoveMappingForRegion(dest);
 
@@ -197,6 +220,7 @@ void CopyProcessMemory(ProcessControlBlock* dest, ProcessControlBlock* src) {
     CopyMemoryRegion(&(dest->data_section), &(src->data_section));
     CopyMemoryRegion(&(dest->rodata_section), &(src->rodata_section));
     CopyMemoryRegion(&(dest->stack_section), &(src->stack_section));
+    CopyMemoryRegion(&(dest->kernel_stack_section), &(src->kernel_stack_section));
     CreateMappingsForProcess(g_running);
 }
 
@@ -208,6 +232,7 @@ void TerminateProcess(ProcessControlBlock* proc) {
     FreeRegion(&(proc->data_section));
     FreeRegion(&(proc->rodata_section));
     FreeRegion(&(proc->stack_section));
+    FreeRegion(&(proc->kernel_stack_section));
 
     proc->proc_state = COMPLETE;
     proc->run_time = 0;
@@ -226,6 +251,29 @@ void KillRunningProcess(Context* context) {
 
 
 
+void SaveContextToStack(ProcessControlBlock* proc) {
+    RemoveMappingsForProcess(g_running);
+    CreateMappingsForProcess(proc);
+    memcpy((void*)(proc->saved_context.context_esp), &(proc->saved_context), sizeof(Context));
+    RemoveMappingsForProcess(proc);
+    CreateMappingsForProcess(g_running);
+}
+
+void SaveExplicitContext(ProcessControlBlock* proc, Context* context) {
+    RemoveMappingsForProcess(g_running);
+    memcpy(&(proc->saved_context), context, sizeof(Context));
+    CreateMappingsForProcess(g_running);
+}
+
+
+
+
+void SetContext(Context* dest, Context* src) {
+    memcpy(dest, src, sizeof(Context));
+}
+
+
+
 int ExecProc(int pid) {
 
     ProcessControlBlock* proc = &(g_Processes[pid]);
@@ -236,6 +284,7 @@ int ExecProc(int pid) {
     proc->proc_state = READY;
 
     AllocateMemoryRegion(&(proc->stack_section), STACK_BOTTOM, 1);
+    AllocateMemoryRegion(&(proc->kernel_stack_section), KERNEL_STACK_BOTTOM, 1);
 
     RemoveMappingsForProcess(g_running);
     CreateMappingsForProcess(proc);
@@ -248,8 +297,7 @@ int ExecProc(int pid) {
     proc->saved_context.edi = 0x0;
     proc->saved_context.esi = 0x0;
 
-    proc->saved_context.context_esp = (uint32_t)STACK_BOTTOM - (uint32_t)(sizeof(Context));
-    // Don't bother setting the stack pointer, it won't be restored explicitly by the ISR handler
+    //proc->saved_context.context_esp = (uint32_t)KERNEL_STACK_BOTTOM - (uint32_t)(sizeof(Context));
     proc->saved_context.ebp = STACK_BOTTOM;
     proc->saved_context.esp = STACK_BOTTOM;
 
@@ -261,7 +309,7 @@ int ExecProc(int pid) {
 
 
     // Put the context onto the new process's stack
-    memcpy((void*)(proc->saved_context.context_esp), &(proc->saved_context), sizeof(Context));
+    //memcpy((void*)(proc->saved_context.context_esp), &(proc->saved_context), sizeof(Context));
 
     RemoveMappingsForProcess(proc);
     CreateMappingsForProcess(g_running);
@@ -291,53 +339,54 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
     g_time_since_switch += delta_time;
 
 
-    ProcessControlBlock* curr_sleeping = g_sleeping_list;
-    ProcessControlBlock* prev_sleeping = g_sleeping_list;
-
-
-    while (curr_sleeping != NULL) {
-
-        curr_sleeping->sleep_time -= delta_time;
-
-        // If process should wake
-        if (curr_sleeping->sleep_time <= 0) {
-            ProcessControlBlock* temp_sleeping = curr_sleeping;
-            // First node in list
-            if (curr_sleeping == g_sleeping_list) {
-                g_sleeping_list = curr_sleeping->next;
-                prev_sleeping = curr_sleeping->next;
-                curr_sleeping = curr_sleeping->next;
-            }
-            // Otherwise
-            else {
-                prev_sleeping->next = curr_sleeping->next;
-                curr_sleeping = curr_sleeping->next;
-            }
-            //printf("Previous is %d, current is %d, launching %d\n", prev_sleeping->pid, curr_sleeping->pid, temp_sleeping->pid);
-            temp_sleeping->proc_state = READY;
-            AddToQueue(temp_sleeping);
-        }
-
-        // Otherwise
-        else {
-            prev_sleeping = curr_sleeping;
-            curr_sleeping = curr_sleeping->next;
-        }
-    }
-
-
-    // Update runtime of currently running process
-    if (g_running != NULL) {
-        g_running->run_time += delta_time;
-        if (g_running->run_time > PROCESS_MAX_RUNTIME) {
-            printf("Process %d timeout!\n", g_running->pid);
-            g_KillRunning = 1;
-        }
-    }
-
-
     // Determine if context switch is needed
     if (g_schedulingEnabled) {
+
+        ProcessControlBlock* curr_sleeping = g_sleeping_list;
+        ProcessControlBlock* prev_sleeping = g_sleeping_list;
+
+
+        while (curr_sleeping != NULL) {
+
+            curr_sleeping->sleep_time -= delta_time;
+
+            // If process should wake
+            if (curr_sleeping->sleep_time <= 0) {
+                ProcessControlBlock* temp_sleeping = curr_sleeping;
+                // First node in list
+                if (curr_sleeping == g_sleeping_list) {
+                    g_sleeping_list = curr_sleeping->next;
+                    prev_sleeping = curr_sleeping->next;
+                    curr_sleeping = curr_sleeping->next;
+                }
+                // Otherwise
+                else {
+                    prev_sleeping->next = curr_sleeping->next;
+                    curr_sleeping = curr_sleeping->next;
+                }
+                //printf("Previous is %d, current is %d, launching %d\n", prev_sleeping->pid, curr_sleeping->pid, temp_sleeping->pid);
+                temp_sleeping->proc_state = READY;
+                AddToQueue(temp_sleeping);
+            }
+
+            // Otherwise
+            else {
+                prev_sleeping = curr_sleeping;
+                curr_sleeping = curr_sleeping->next;
+            }
+        }
+
+
+        // Update runtime of currently running process
+        if (g_running != NULL) {
+            g_running->run_time += delta_time;
+            if (g_running->run_time > PROCESS_MAX_RUNTIME) {
+                printf("Process %d timeout!\n", g_running->pid);
+                g_KillRunning = 1;
+            }
+        }
+
+
 
         if (g_running != NULL) {
 
@@ -349,13 +398,14 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                 g_time_since_switch = 0;
                 RemoveMappingsForProcess(g_running);
                 TerminateProcess(g_running);
-                g_running->proc_state = COMPLETE;
+                //g_running->next = g_killed_processes; g_killed_processes = g_running; // Put running in list to be destroyed later
                 g_running = GetFromQueue();
                 if (g_running != NULL) {
                     //printf("Launching process %d\n", g_running->pid);
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
-                    context->context_esp = g_running->saved_context.context_esp;
+                    //context->context_esp = g_running->saved_context.context_esp;
+                    SetContext(context, &(g_running->saved_context));
                 }
                 else {
                     g_GoToKernel = 1;
@@ -367,13 +417,15 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                 g_time_since_switch = 0;
                 g_SleepRunning = 0;
                 g_running->saved_context.context_esp = context->context_esp;
+                SetContext(&(g_running->saved_context), context);
                 RemoveMappingsForProcess(g_running);
                 g_running->proc_state = BLOCKED;
                 g_running = GetFromQueue();
                 if (g_running != NULL) {
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
-                    context->context_esp = g_running->saved_context.context_esp;
+                    //context->context_esp = g_running->saved_context.context_esp;
+                    SetContext(context, &(g_running->saved_context));
                 }
                 else {
                     g_GoToKernel = 1;
@@ -384,16 +436,18 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
             if (g_time_since_switch > PROCESS_TIME_SLICE && g_running != NULL) {
                 g_time_since_switch = 0;
                 g_running->saved_context.context_esp = context->context_esp;
+                SetContext(&(g_running->saved_context), context);
                 RemoveMappingsForProcess(g_running);
                 g_running->proc_state = READY;
                 AddToQueue(g_running);
                 //printf("Switching from %hu ", g_running->pid);
                 g_running = GetFromQueue();
                 if (g_running != NULL) {
+                    if ((g_running->saved_context.cs & 0x3) != 0x3) {printf("Error: new process not running in Ring 3!\n");}
                     //printf("to %d\n", g_running->pid);
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
-                    context->context_esp = g_running->saved_context.context_esp;
+                    SetContext(context, &(g_running->saved_context));
                 }
                 else {
                     //printf("to kernel\n");
@@ -403,20 +457,21 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
         }
 
         if (g_running == NULL && g_queue != NULL) {
+            //HAL_SetInterruptStack((void*)KERNEL_STACK_BOTTOM);
+            SetContext((Context*)&g_KernelContext, context);
             g_running = GetFromQueue();
             if (g_running == NULL) {printf("DEBUG: Error in queue pop function!\n");}
             g_running->proc_state = RUNNING;
             CreateMappingsForProcess(g_running);
-            g_KernelESP = context->context_esp;
-            context->context_esp = g_running->saved_context.context_esp;
+            SetContext(context, &(g_running->saved_context));
         }
 
         if (g_GoToKernel) {
             g_GoToKernel = 0;
-            context->context_esp = g_KernelESP;
             RemoveMappingsForProcess(g_running);
             TerminateProcess(g_running);
             g_running = NULL;
+            SetContext(context, (Context*)&g_KernelContext);
         }
         
     }

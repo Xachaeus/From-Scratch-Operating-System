@@ -14,3 +14,7 @@ void HAL_Initialize()
     i686_IRQ_Initialize();
     i686_PIT_Initialize();
 }
+
+void HAL_SetInterruptStack(void* address) {
+    i686_SetInterruptStack(address);
+}

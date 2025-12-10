@@ -141,8 +141,13 @@ void i686_GDT_Initialize()
     // Fill TSS with information necessary for interrupt handling
     g_TSS.SS0 = 0x10; // Kernel Data Segment
     g_TSS.ESP0 = 0x10000; // TODO: Address much higher in the kernel's current stack; potential for collision, but will tackle later with a more elegant solution
-    g_TSS.IOPB = 104;
+    g_TSS.IOPB = 104; // Size of TSS
 
     i686_GDT_Load(&g_GDT_Descriptor, i686_GDT_CODE_SEGMENT, i686_GDT_DATA_SEGMENT);
     i686_TSS_Load(i686_GDT_TSS_SEGMENT);
+}
+
+
+void i686_SetInterruptStack(void* address) {
+    g_TSS.ESP0 = (uint32_t)address;
 }

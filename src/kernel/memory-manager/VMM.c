@@ -275,7 +275,7 @@ int VMM_CreatePageForAddress(uint32_t virtual_address, uint32_t physical_address
     if (!VMM_GetTableForAddress(virtual_address, &table_address)) {return 0;}
 
     VMM_SetWorkingPageTable((uint32_t)table_address);
-    if(((g_WorkingPageTable[table_index].data) & 0x1)) {printf("Page %d:%d is still active during creation!\n", directory_index, table_index);}
+    //if(((g_WorkingPageTable[table_index].data) & 0x1)) {printf("Page %d:%d is still active during creation!\n", directory_index, table_index);}
     uint16_t table_entry_count = VMM_GetActivePageTableEntryCount() + 1;
     VMM_CreatePageTableEntry(&(g_WorkingPageTable[table_index]), physical_address, VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[table_index])), 0, 1, 0); // This page does not need to be writable since it will only be managed by kernel
     VMM_SetActivePageTableEntryCount(table_entry_count);
@@ -303,7 +303,7 @@ int VMM_CreateUserDataPageForAddress(uint32_t virtual_address, uint32_t physical
     if (!VMM_GetTableForAddress(virtual_address, &table_address)) {return 0;}
 
     VMM_SetWorkingPageTable((uint32_t)table_address);
-    if(((g_WorkingPageTable[table_index].data) & 0x1)) {printf("Page %d:%d is still active during creation!\n", directory_index, table_index);}
+    //if(((g_WorkingPageTable[table_index].data) & 0x1)) {printf("Page %d:%d is still active during creation!\n", directory_index, table_index);}
     uint16_t table_entry_count = VMM_GetActivePageTableEntryCount() + 1;
     VMM_CreatePageTableEntry(&(g_WorkingPageTable[table_index]), physical_address, VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[table_index])), 1, 0, 0);
     VMM_SetActivePageTableEntryCount(table_entry_count);
@@ -323,7 +323,7 @@ int VMM_CreateUserCodePageForAddress(uint32_t virtual_address, uint32_t physical
     if (!VMM_GetTableForAddress(virtual_address, &table_address)) {return 0;}
 
     VMM_SetWorkingPageTable((uint32_t)table_address);
-    if(((g_WorkingPageTable[table_index].data) & 0x1)) {printf("Page %d:%d is still active during creation!\n", directory_index, table_index);}
+    //if(((g_WorkingPageTable[table_index].data) & 0x1)) {printf("Page %d:%d is still active during creation!\n", directory_index, table_index);}
     uint16_t table_entry_count = VMM_GetActivePageTableEntryCount() + 1;
     VMM_CreatePageTableEntry(&(g_WorkingPageTable[table_index]), physical_address, VMM_GetPageTableEntryAVL(&(g_WorkingPageTable[table_index])), 0, 0, 0);
     VMM_SetActivePageTableEntryCount(table_entry_count);

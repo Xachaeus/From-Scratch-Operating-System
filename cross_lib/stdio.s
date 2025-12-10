@@ -16,7 +16,7 @@ exit:
     mov eax, 0x3C
     int 0x80
 
-    end_loop: jmp end_loop
+    ret
 
 
 .global sleep

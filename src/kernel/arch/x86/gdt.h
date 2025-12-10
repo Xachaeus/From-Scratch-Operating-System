@@ -40,5 +40,6 @@ typedef struct
 TSSEntry* GDT_GetTSS();
 
 void i686_GDT_Initialize();
+void i686_SetInterruptStack(void* address);
 
 #endif

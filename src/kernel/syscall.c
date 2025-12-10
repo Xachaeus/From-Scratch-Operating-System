@@ -7,6 +7,7 @@
 #include <delay.h>
 #include <display/kinter.h>
 #include <memory.h>
+#include <stddef.h>
 
 void SyscallEntrypoint(Registers* regs) {
     //printf("Handling syscall\n");
@@ -33,21 +34,34 @@ void SyscallEntrypoint(Registers* regs) {
             break;
         
         // Fork
-        /*
+        
         case 0x39:
+            //printf("Beginning fork...\n");
             int new_pid = GetAvailablePID();
             ProcessControlBlock* new_proc = GetPCB(new_pid);
             ProcessControlBlock* running_proc = GetPCB(GetRunningPID());
+
+            SetContext(&(running_proc->saved_context), (Context*)regs);
+            //printf("Copying process parameters...\n");
             memcpy(new_proc, running_proc, sizeof(ProcessControlBlock));
+
             new_proc->pid = new_pid;
             new_proc->proc_state = READY;
+            //printf("Copying memory regions...\n");
             CopyProcessMemory(new_proc, running_proc);
-            new_proc->parent = running_proc; running_proc->child = new_proc;
             regs->eax = new_pid;
             new_proc->saved_context.eax = 0;
+            //printf("Adding child to scheduler queue...\n");
             AddToSchedulerQueue(new_pid);
+            //printf("Fork complete!\n");
+            /*
+            printf("Parent:\n");
+            PrintProc(running_proc);
+            printf("Child:\n");
+            PrintProc(new_proc);
+            */
             break;
-        */
+        
         // Exit
         case 0x3C:
         // Kill

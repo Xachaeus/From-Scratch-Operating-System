@@ -29,6 +29,7 @@ typedef struct {
     MemoryRegion bss_section;
     MemoryRegion rodata_section;
     MemoryRegion stack_section;
+    MemoryRegion kernel_stack_section;
 
     uint32_t entry_address;
 
@@ -56,6 +57,8 @@ void AddToSchedulerQueue(int pid);
 int GetAvailablePID();
 ProcessControlBlock* GetPCB(int pid);
 
+void PrintProc(ProcessControlBlock* proc);
+
 void DisableScheduling();
 void EnableScheduling();
 
@@ -71,6 +74,9 @@ void HandleExit(Context* context);
 void PutToSleep(long microseconds, Context* context);
 uint32_t GetRunningPID();
 void CopyProcessMemory(ProcessControlBlock* dest, ProcessControlBlock* src);
+void SaveContextToStack(ProcessControlBlock* proc);
+void SaveExplicitContext(ProcessControlBlock* proc, Context* context);
+void SetContext(Context* dest, Context* src);
 
 void __attribute__((cdecl)) i686_call(uint32_t addr);
 

@@ -8,5 +8,6 @@
 #include <arch/x86/PIT8254.h>
 
 void HAL_Initialize();
+void HAL_SetInterruptStack(void* address);
 
 #endif
