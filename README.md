@@ -11,6 +11,17 @@ To run the existing image without building, you can navigate to the project dire
 
 This project was inspired by the Nanobyte OS video tutorial available on Youtube. While this OS uses some code directly from the tutorial's example OS (particularly for the bootloader), the kernel for this OS is almost entirely original (the only copied code is for the interrupt service routines, which would have required 256 identical functions regardless).
 
+## Supported CLI Commands
+
+ - ```ls``` : Lists the contents of the current directory
+ - ```cd <path>``` : Changes the current directory to the specified path. Supports relative/absolute paths and multi-level paths (i.e. ```cd ../bin/./```)
+ - ```exec <path> <flags>``` : Executes a .exe file specified by path. Supports relative/absolute paths and multi-level paths. Currently accepted flags are:
+    - ```&``` : Launches process in background and returns to CLI. Current implementation does NOT support running additional commands after this flag.
+    - ```-m```: Launches 5 copies of the program as multiple processes.
+ - ```cat <path>``` : Prints contents of the file specified by path to the command line, assuming ASCII-formatting and null-termination.
+ - ```ps```: Lists the PIDs and statuses of all currently active processes.
+ - ```mem``` : Lists the total amount of memory currently in use.
+
 ### Notes for future changes:
 
 Physical Memory Allocation via bitmap with Available Spots Optimization

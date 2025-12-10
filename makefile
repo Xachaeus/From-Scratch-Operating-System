@@ -35,6 +35,7 @@ $(BUILD_DIR)/main_floppy.img: bootloader kernel
 	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/stage2.bin "::boot.bin"
 	mmd -i $(BUILD_DIR)/main_floppy.img "::boot"
 	mmd -i $(BUILD_DIR)/main_floppy.img "::bin"
+	mmd -i $(BUILD_DIR)/main_floppy.img "::etc"
 	mcopy -i $(BUILD_DIR)/main_floppy.img $(BUILD_DIR)/kernel.bin "::boot/kernel.bin"
 	
 
@@ -73,6 +74,13 @@ $(BUILD_DIR)/kernel.bin: always
 #
 cross: $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS_S) $(CROSS_OBJECTS_C) $(CROSS_OBJECTS_S)
 	mmd -i $(BUILD_DIR)/main_floppy.img "::bin/cross"
+	mmd -i $(BUILD_DIR)/main_floppy.img "::etc/cross"
+
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/helloworld.c "::etc/cross/hello.c"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/sleeptest.c "::etc/cross/sleep.c"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/stresstest.c "::etc/cross/stress.c"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/forktest.c "::etc/cross/fork.c"
+
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/helloworld "::bin/cross/hello.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/sleeptest "::bin/cross/sleep.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/stresstest "::bin/cross/stress.exe"
