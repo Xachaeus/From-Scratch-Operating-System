@@ -1,3 +1,4 @@
+
 ASM=nasm
 CC=gcc
 CC16=/usr/bin/watcom/binl/wcc
@@ -42,7 +43,6 @@ $(BUILD_DIR)/main_floppy.img: bootloader kernel
 #
 # Bootloader
 #
-
 bootloader: stage1 stage2
 
 
@@ -137,7 +137,7 @@ win: floppy_image cross
 	cp $(BUILD_DIR)/main_floppy.img $(EXPORT_DIR)
 
 
-
+# In development, not used
 cross_compile:
 	gcc -o $(OUT) -nostartfiles -nostdlib --static -Wl,--no-dynamic-linker -Wl,--omagic -ffreestanding -fcf-protection=none -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-stack-protector -fno-pic -fno-pie -fno-function-sections -fno-data-sections -m32 -Wl,-T,solos_link.ld $(IN)
 	mcopy -i $(BUILD_DIR)/main_floppy.img $(OUT) "::bin/cross/$(NAME)"
