@@ -8,34 +8,50 @@
 #include <display/kinter.h>
 #include <memory.h>
 #include <stddef.h>
+#include <file.h>
 
 void SyscallEntrypoint(Registers* regs) {
     //printf("Handling syscall\n");
     MaskTimerInterrupt();
     switch (regs->eax) {
 
-        // Write
-        case 0x1:
-            printf("%s", regs->ecx);
+        // Read
+        case 0x3:
+            regs->eax = read((int)regs->ebx, (int)regs->edx, (void*)regs->ecx);
             break;
 
+        // Write
+        case 0x4:
+            regs->eax = write((int)regs->ebx, (int)regs->edx, (void*)regs->ecx);
+            break;
+        
+        // Open
         case 0x5:
+            regs->eax = open((const char*)regs->ebx);
+            break;
+
+        // Close
+        case 0x6:
+            close((int)regs->ebx);
+            break;
+
+        // Put Integer
+        case 0x7: // Temporary
             printf("%d", regs->ecx);
             break;
 
         // Microsleep
-        case 0x23:
-            PutToSleep(regs->ecx, (Context*)regs);
+        case 0xa2:
+            PutToSleep(regs->ebx, (Context*)regs);
             break;
 
         // Getpid
-        case 0x27:
+        case 0x14:
             regs->eax = GetRunningPID();
             break;
         
         // Fork
-        
-        case 0x39:
+        case 0x2:
             //printf("Beginning fork...\n");
             int new_pid = GetAvailablePID();
             ProcessControlBlock* new_proc = GetPCB(new_pid);
@@ -61,9 +77,14 @@ void SyscallEntrypoint(Registers* regs) {
             PrintProc(new_proc);
             */
             break;
+
+        // Exec
+        case 0xb:
+            regs->eax = exec((const char*)regs->ebx, NULL, 1);
+            break;
         
         // Exit
-        case 0x3C:
+        case 0x1:
         // Kill
         //case 0x3E:
             //printf("Process %d called exit\n", GetRunningPID());

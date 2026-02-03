@@ -1,5 +1,6 @@
 
 #include "proc.h"
+#include "load.h"
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -477,4 +478,25 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
     }
 
     UnmaskTimerInterrupt();
+}
+
+
+
+int __attribute__((cdecl)) exec(const char* path, const char** argv, int argc) {
+
+    DisableScheduling();
+    UnmaskTimerInterrupt();
+    i686_EnableInterrupts();
+
+    int pid = GetAvailablePID();
+    if (!LoadProc(path, GetPCB(pid))) {return -1;}
+
+    i686_DisableInterrupts();
+    MaskTimerInterrupt();
+
+    ExecProc(pid);
+
+    EnableScheduling();
+
+    return pid;
 }

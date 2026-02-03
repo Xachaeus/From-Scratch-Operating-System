@@ -128,6 +128,11 @@ void __STD_Puts(const char* s) {
     }
 }
 
+void PutsK(const char* s, int k) {
+    for (int i=0; i<k; i++) {__STD_Putc(*s); s++;}
+    STD_FlushSTDOUT();
+}
+
 const char g_HexChars[] = "0123456789abcdef";
 
 

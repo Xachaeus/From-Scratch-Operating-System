@@ -80,4 +80,6 @@ void SetContext(Context* dest, Context* src);
 
 void __attribute__((cdecl)) i686_call(uint32_t addr);
 
+int __attribute__((cdecl)) exec(const char* path, const char** argv, int argc);
+
 #endif

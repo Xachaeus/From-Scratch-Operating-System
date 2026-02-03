@@ -85,6 +85,8 @@ cross: $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS_S) $(CROSS_OBJECTS_C) $(CROSS_
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/sleeptest "::bin/cross/sleep.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/stresstest "::bin/cross/stress.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/forktest "::bin/cross/fork.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/execparent "::bin/cross/exec_p.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/execchild "::bin/cross/exec_c.exe"
 
 
 $(CROSS_BUILD_DIR)/%: %.c always

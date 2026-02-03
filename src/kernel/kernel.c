@@ -6,7 +6,9 @@
 #include <memory-manager/PMM.h>
 #include <memory-manager/VMM.h>
 #include <disk/floppy.h>
+#include <filesys/drive.h>
 #include <filesys/fat12.h>
+#include <file.h>
 #include <syscall.h>
 #include <CLI.h>
 
@@ -27,9 +29,6 @@
 //#define PIC_TIMER_DELAY 130
 // Windows timer delay:
 #define PIC_TIMER_DELAY 1000
-
-
-uint32_t CurrentAvailablePID = 0;
 
 
 void setup_timer(Registers* regs) {
@@ -65,7 +64,9 @@ void __attribute__((cdecl)) kernel_main(uint32_t boot_drive, uint32_t OriginalMe
     printf("Done!\n");
 
     printf("Initializing filesystem... ");
+    Drive_Initialize();
     FAT12_Initialize();
+    File_Initialize();
     InitializeProcs();
     printf("Done!\n");
 

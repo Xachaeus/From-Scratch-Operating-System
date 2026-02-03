@@ -9,5 +9,5 @@ uint32_t __attribute__((cdecl)) getpid();
 void __attribute__((cdecl)) puts(const char* str);
 void __attribute__((cdecl)) putd(int d);
 int __attribute__((cdecl)) fork();
-
+int __attribute__((cdecl)) exec(const char* path);
 #endif

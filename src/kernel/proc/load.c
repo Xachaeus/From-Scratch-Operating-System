@@ -13,10 +13,16 @@
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+#ifdef DEBUG
+#define LOADER_DEBUG
+#endif
 
 int LoadProc(const char* path, ProcessControlBlock* proc) {
 
     // Start by copying the ELF file header into a buffer
+    #ifdef LOADER_DEBUG 
+    printf("[Loader] Opening header file...\n");
+    #endif
     FAT12_File* file = FAT12_Open(path);
     if (file == NULL) {proc->proc_state = FILE_PATH_ERROR; return 0;}
     if (file->IsDirectory) {FAT12_Close(file); proc->proc_state = FILE_PATH_ERROR; return 0;}
@@ -26,6 +32,9 @@ int LoadProc(const char* path, ProcessControlBlock* proc) {
     memset(header_buffer, '\0', 512);
     memset(data_buffer, '\0', 512);
 
+    #ifdef LOADER_DEBUG 
+    printf("[Loader] Reading file...\n");
+    #endif
     int position_in_file = FAT12_Read(file, 512, header_buffer);
 
     // Read the ELF Header
@@ -57,10 +66,23 @@ int LoadProc(const char* path, ProcessControlBlock* proc) {
     proc->rodata_section.isActive = false;
     proc->text_section.isActive = false;
 
+    #ifdef LOADER_DEBUG 
+    printf("[Loader] Opening data file...\n");
+    #endif
+
     FAT12_File* data_file = FAT12_Open(path);
+    if (data_file == NULL) {printf("Error: Program load failed, open did not work!\n"); return -1;}
+
+    #ifdef LOADER_DEBUG 
+    printf("[Loader] Reading data file...\n");
+    #endif
     int position_in_data_file = FAT12_Read(data_file, 512, data_buffer);
 
     uint32_t PROCESSING_ADDRESS = 0x200000;
+
+    #ifdef LOADER_DEBUG 
+    printf("[Loader] Loading program into memory...\n");
+    #endif
 
     for (int prog_table_index = 0; prog_table_index < program_header_table_entry_count; prog_table_index++) {
 
@@ -110,6 +132,10 @@ int LoadProc(const char* path, ProcessControlBlock* proc) {
         }
         FMM_ClearMapping(PROCESSING_ADDRESS, active_region->NumBlocks);
     }
+
+    #ifdef LOADER_DEBUG 
+    printf("[Loader] Cleaning up...\n");
+    #endif
 
     FAT12_Close(data_file);
     FAT12_Close(file);
