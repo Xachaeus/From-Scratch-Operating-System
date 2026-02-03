@@ -22,6 +22,15 @@ This project was inspired by the Nanobyte OS video tutorial available on Youtube
  - ```ps```: Lists the PIDs and statuses of all currently active processes.
  - ```mem``` : Lists the total amount of memory currently in use.
 
+## Supported System Calls for SolOS-Compiled Programs
+ - ```exit(int exit_code)```: Stops the program with the provided exit code. MUST BE CALLED TO END PROGRAM EXECUTION CLEANLY.
+ - ```puts(const char* str)```: Prints a literal string to the screen. Does NOT support formatting.
+ - ```putd(int d)```: Prints a single number to the screen as a 32-bit integer.
+ - ```sleep(int microseconds)```: Puts the process into standby mode for the provided number of microseconds.
+ - ```getpid()```: Gets the process ID of the running program.
+ - ```fork()```: Forks the currently-running process into a parent and child process. Returns 0 for the child process, returns child_pid for the parent process.
+ - ```exec(const char* path)```: Executes the program at the provided path.
+
 ### Notes for future changes:
 
 #### ~~Physical Memory Allocation via bitmap with Available Spots Optimization~~ (Implemented)
@@ -53,6 +62,12 @@ ring 0 for long durations) and make it much easier to launch processes that run 
 #### Loading more complex executables
 
 #### Page-Swapping
+
+#### Booting/Handling with Non-Floppy Disks
+
+#### Supporting filesystems beyond FAT12
+
+#### Changing VGA Display size
 
 ## Technical Details
 
