@@ -2,10 +2,10 @@
 
 int main() {
     int pid = getpid();
-    puts("Process "); putd(pid); puts(" starting!\n");
+    printf("Process %d starting!\n", pid);
     for (int i = 0; i < 1000000000; i++) {
         if ((i % 100000000) == 0) {
-            puts("Process "); putd(pid); puts(" did "); putd((i/100000000)+1); puts("00 million iterations!\n");
+            printf("Process %d did %d00 million iterations!\n", pid, (i/100000000)+1);
         }
     }
     exit(0);

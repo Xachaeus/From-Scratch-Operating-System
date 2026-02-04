@@ -31,6 +31,9 @@ This project was inspired by the Nanobyte OS video tutorial available on Youtube
  - ```fork()```: Forks the currently-running process into a parent and child process. Returns 0 for the child process, returns child_pid for the parent process.
  - ```exec(const char* path)```: Executes the program at the provided path.
 
+## Supported Standard Functions for SolOS-Compiled Programs
+ - ```printf(const char* fmt, ...)```: A rudimentary implementation of printf.
+
 ### Notes for future changes:
 
 #### ~~Physical Memory Allocation via bitmap with Available Spots Optimization~~ (Implemented)

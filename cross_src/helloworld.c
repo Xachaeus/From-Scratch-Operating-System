@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 int main() {
-    puts("Hello world!\n");
-    puts("This is coming from an EXTERNAL program!\n");
+    printf("Hello world!\n");
+    printf("This is coming from an EXTERNAL program!\n");
     exit(0);
 }

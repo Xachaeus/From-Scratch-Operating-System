@@ -2,8 +2,8 @@
 
 int main() {
     int my_pid = getpid();
-    puts("[Parent] Starting from the parent with PID "); putd(my_pid); puts("...\n");
+    printf("[Parent] Starting from the parent with PID %d...\n", my_pid);
     int pid = exec("/bin/cross/exec_c.exe");
-    puts("[Parent] Ran child with PID "); putd(pid); puts("\n");
+    printf("[Parent] Ran child with pid %d\n", pid);
     exit(0);
 }

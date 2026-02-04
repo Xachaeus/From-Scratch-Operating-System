@@ -23,6 +23,11 @@
 
 #define MAX_PID 100
 
+
+//
+// Global variable definitions
+//
+
 ProcessControlBlock* g_running = NULL;
 ProcessControlBlock* g_queue = NULL;
 ProcessControlBlock* g_sleeping_list = NULL;
@@ -40,6 +45,9 @@ ProcessControlBlock g_Processes[MAX_PID];
 
 
 
+//
+// Debug Functions
+//
 
 void PrintMemoryRegion(MemoryRegion* reg) {
     printf("S: %d  B: 0x%x  L: 0x%x\n", reg->PhysMemoryBlockIdx, reg->BaseAddress, reg->NumBlocks*4096);
@@ -55,6 +63,9 @@ void PrintProc(ProcessControlBlock* proc) {
 }
 
 
+//
+// Initialization
+//
 void InitializeProcs() {
     for (int i = 0; i<MAX_PID; i++) {
         g_Processes[i].proc_state = COMPLETE;

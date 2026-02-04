@@ -2,6 +2,6 @@
 
 int main() {
     int pid = getpid();
-    puts("[Child] Child process has PID "); putd(pid); puts("\n");
+    printf("[Child] Child process has pid %d\n", pid);
     exit(0);
 }

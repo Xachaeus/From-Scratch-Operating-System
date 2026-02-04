@@ -35,8 +35,12 @@ void SyscallEntrypoint(Registers* regs) {
             close((int)regs->ebx);
             break;
 
+        // WaitPID
+        case 0x7:
+            break;
+
         // Put Integer
-        case 0x7: // Temporary
+        case 0xFF: // Temporary
             printf("%d", regs->ecx);
             break;
 

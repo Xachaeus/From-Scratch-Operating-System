@@ -5,10 +5,10 @@ int main() {
     int rc = fork();
     int pid = getpid();
     if (rc == 0) {
-        puts("[CHILD] Child process has pid "); putd(pid); puts("!\n");
+        printf("[CHILD] Child process has pid %d!\n", pid);
     }
     else {
-        puts("[PARENT] child process has pid "); putd(rc); puts("; parent has pid "); putd(pid); puts("!\n");
+        printf("[PARENT] Child process has pid %d!\n", rc);
     }
     exit(0);
 }

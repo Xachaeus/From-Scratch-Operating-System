@@ -21,6 +21,7 @@ CROSS_OBJECTS_C=$(patsubst %.c, $(CROSS_BUILD_DIR)/$(notdir %), $(CROSS_SOURCES_
 CROSS_OBJECTS_S=$(patsubst %.s, $(CROSS_BUILD_DIR)/$(notdir %), $(CROSS_SOURCES_S))
 CROSS_LIB_OBJECTS_C=$(patsubst %.c, $(CROSS_BIN_DIR)/%.o, $(CROSS_LIB_SOURCES_C))
 CROSS_LIB_OBJECTS_S=$(patsubst %.s, $(CROSS_BIN_DIR)/%.o, $(CROSS_LIB_SOURCES_S))
+CROSS_LIB_OBJECTS=$(CROSS_BIN_DIR)/libstdio.a
 
 .PHONY: all floppy_image kernel bootloader clean always run run_debug 
 
@@ -72,7 +73,7 @@ $(BUILD_DIR)/kernel.bin: always
 #
 # Cross-Compiled executables
 #
-cross: $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS_S) $(CROSS_OBJECTS_C) $(CROSS_OBJECTS_S)
+cross: $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS) $(CROSS_OBJECTS_S) $(CROSS_OBJECTS_C)
 	mmd -i $(BUILD_DIR)/main_floppy.img "::bin/cross"
 	mmd -i $(BUILD_DIR)/main_floppy.img "::etc/cross"
 
@@ -89,21 +90,26 @@ cross: $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS_S) $(CROSS_OBJECTS_C) $(CROSS_
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/execchild "::bin/cross/exec_c.exe"
 
 
+$(CROSS_BIN_DIR)/libstdio.a: $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C)
+	i686-elf-ar rcs $(CROSS_BIN_DIR)/libstdio.a $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C)
+
+
+$(CROSS_BIN_DIR)/%.o: %.s always
+	@mkdir -p $(@D)
+	i686-elf-as --32 -msyntax=intel -o $@ -c $<
+
+$(CROSS_BIN_DIR)/%.o: %.c always
+	@mkdir -p $(@D)
+	i686-elf-gcc -m32 -std=gnu99 -ffreestanding -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR)/$(CROSS_LIB_DIR) -o $@ -c $<
+
 $(CROSS_BUILD_DIR)/%: %.c always
 	@mkdir -p $(@D)
-	i686-elf-gcc -m32 -nostdlib -nostartfiles -static -std=gnu99 -ffreestanding -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR)/$(CROSS_LIB_DIR) -o $@ cross_bin/cross_lib/stdio.o -emain $<
+	i686-elf-gcc -m32 -nostdlib -static -std=gnu99 -ffreestanding -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR) -o $@ -emain $< -lstdio
 
 $(CROSS_BUILD_DIR)/%: %.s always
 	@mkdir -p $(@D)
 	i686-elf-as --32 -msyntax=intel -o $@ $<
 
-$(CROSS_BIN_DIR)/%.o: %.c always
-	@mkdir -p $(@D)
-	i686-elf-gcc -m32 -nostdlib -nostartfiles -static -std=gnu99 -ffreestanding -I$(CROSS_LIB_DIR) -o -c $@ $<
-
-$(CROSS_BIN_DIR)/%.o: %.s always
-	@mkdir -p $(@D)
-	i686-elf-as --32 -msyntax=intel -o $@ -c $<
 
 
 #

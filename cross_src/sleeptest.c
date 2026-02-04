@@ -3,9 +3,9 @@
 
 int main() {
     uint32_t pid = getpid();
-    puts("Process "); putd(pid); puts(" starting!\n");
+    printf("Process %d starting!\n", pid);
     sleep(10000000);
-    puts("10 second passed since program started!\n");
-    puts("Process "); putd(pid); puts(" exiting!\n");
+    printf("10 second passed since program started!\n");
+    printf("Process %d exiting!\n");
     exit(0);
 }
