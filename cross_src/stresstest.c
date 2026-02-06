@@ -8,5 +8,5 @@ int main() {
             printf("Process %d did %d00 million iterations!\n", pid, (i/100000000)+1);
         }
     }
-    exit(0);
+    return 0;
 }

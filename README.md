@@ -23,7 +23,7 @@ This project was inspired by the Nanobyte OS video tutorial available on Youtube
  - ```mem``` : Lists the total amount of memory currently in use.
 
 ## Supported System Calls for SolOS-Compiled Programs
- - ```exit(int exit_code)```: Stops the program with the provided exit code. MUST BE CALLED TO END PROGRAM EXECUTION CLEANLY.
+ - ```exit(int exit_code)```: Stops the program with the provided exit code. Not necessary if main function of program returns.
  - ```puts(const char* str)```: Prints a literal string to the screen. Does NOT support formatting.
  - ```putd(int d)```: Prints a single number to the screen as a 32-bit integer.
  - ```sleep(int microseconds)```: Puts the process into standby mode for the provided number of microseconds.

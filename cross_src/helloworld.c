@@ -3,5 +3,5 @@
 int main() {
     printf("Hello world!\n");
     printf("This is coming from an EXTERNAL program!\n");
-    exit(0);
+    return 0;
 }

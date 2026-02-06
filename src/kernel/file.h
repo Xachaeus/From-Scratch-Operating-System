@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <filesys/drive.h>
+#include <proc/proc.h>
 
 #ifndef FILE_H
 #define FILE_H
@@ -16,6 +17,7 @@ typedef struct {
 
 
 void File_Initialize();
+void SetActiveFileDescriptors(FileDescriptor* fd);
 
 int open(const char* path);
 int read(int file, uint32_t byte_count, void* dest);

@@ -69,7 +69,8 @@ void EXEC(int argc, const char** argv) {
 
         MaskTimerInterrupt();
         DisableScheduling();
-        ExecProc(pid);
+        const char* argv_default[] = {absolute_path};
+        ExecProc(pid, 1, argv_default);
         ProcessControlBlock* proc = GetPCB(pid);
         if (argc >= 3) {
             if (argv[2][0] == '&') {
@@ -84,10 +85,11 @@ void EXEC(int argc, const char** argv) {
                         MaskTimerInterrupt();
                         DisableScheduling();
                         for (int i = 0; i < 4; i++) {
+                        DisableScheduling();
                             pid = GetAvailablePID();
                             //printf("Launching proc %d\n", pid);
                             LoadProc(absolute_path, GetPCB(pid));
-                            ExecProc(pid);
+                            ExecProc(pid, 0, NULL);
                         }
                         EnableScheduling();
                         UnmaskTimerInterrupt();

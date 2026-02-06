@@ -7,5 +7,5 @@ int main() {
     sleep(10000000);
     printf("10 second passed since program started!\n");
     printf("Process %d exiting!\n");
-    exit(0);
+    return 0;
 }

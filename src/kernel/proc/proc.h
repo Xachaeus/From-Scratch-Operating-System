@@ -6,6 +6,10 @@
 #include <HAL/hal.h>
 
 
+#ifndef PROC_NUM_FD
+#define PROC_NUM_FD 10
+#endif
+
 typedef enum {
     FILE_PATH_ERROR = 0xFF,
     EXE_FORMAT_ERROR = 0x7F,
@@ -21,6 +25,11 @@ typedef struct {
     uint32_t interrupt, error;
     uint32_t eip, cs, eflags, esp, ss;
 } __attribute__((packed)) Context;
+
+typedef struct {
+    int handle;
+    int source_handle;
+} __attribute__((packed)) FileDescriptor;
 
 
 typedef struct {
@@ -46,6 +55,8 @@ typedef struct {
     void* child;
     void* sibling;
 
+    FileDescriptor FD[PROC_NUM_FD];
+
 } ProcessControlBlock;
 
 
@@ -63,7 +74,7 @@ void DisableScheduling();
 void EnableScheduling();
 
 
-int ExecProc(int pid);
+int ExecProc(int pid, int argc, const char** argv);
 
 void TerminateRunningProcess(Context* context);
 void KillRunningProcess(Context* context);
@@ -80,6 +91,6 @@ void SetContext(Context* dest, Context* src);
 
 void __attribute__((cdecl)) i686_call(uint32_t addr);
 
-int __attribute__((cdecl)) exec(const char* path, const char** argv, int argc);
+int __attribute__((cdecl)) exec(const char* path, int argc, const char** argv);
 
 #endif

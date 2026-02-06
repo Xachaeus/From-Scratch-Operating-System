@@ -21,7 +21,7 @@ CROSS_OBJECTS_C=$(patsubst %.c, $(CROSS_BUILD_DIR)/$(notdir %), $(CROSS_SOURCES_
 CROSS_OBJECTS_S=$(patsubst %.s, $(CROSS_BUILD_DIR)/$(notdir %), $(CROSS_SOURCES_S))
 CROSS_LIB_OBJECTS_C=$(patsubst %.c, $(CROSS_BIN_DIR)/%.o, $(CROSS_LIB_SOURCES_C))
 CROSS_LIB_OBJECTS_S=$(patsubst %.s, $(CROSS_BIN_DIR)/%.o, $(CROSS_LIB_SOURCES_S))
-CROSS_LIB_OBJECTS=$(CROSS_BIN_DIR)/libstdio.a
+CROSS_LIB_OBJECTS=$(CROSS_BIN_DIR)/libstdio.a $(CROSS_BIN_DIR)/exe.o
 
 .PHONY: all floppy_image kernel bootloader clean always run run_debug 
 
@@ -88,10 +88,14 @@ cross: $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS) $(CROS
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/forktest "::bin/cross/fork.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/execparent "::bin/cross/exec_p.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/execchild "::bin/cross/exec_c.exe"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/argtest "::bin/cross/arg.exe"
 
 
 $(CROSS_BIN_DIR)/libstdio.a: $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C)
 	i686-elf-ar rcs $(CROSS_BIN_DIR)/libstdio.a $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C)
+
+$(CROSS_BIN_DIR)/exe.o:
+	i686-elf-as --32 -msyntax=intel -o $(CROSS_BIN_DIR)/exe.o -c $(CROSS_LIB_DIR)/exe.s
 
 
 $(CROSS_BIN_DIR)/%.o: %.s always
@@ -100,11 +104,11 @@ $(CROSS_BIN_DIR)/%.o: %.s always
 
 $(CROSS_BIN_DIR)/%.o: %.c always
 	@mkdir -p $(@D)
-	i686-elf-gcc -m32 -std=gnu99 -ffreestanding -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR)/$(CROSS_LIB_DIR) -o $@ -c $<
+	i686-elf-gcc -m32 -std=gnu99 -ffreestanding -mpreferred-stack-boundary=2 -mregparm=0 -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR)/$(CROSS_LIB_DIR) -o $@ -c $<
 
 $(CROSS_BUILD_DIR)/%: %.c always
 	@mkdir -p $(@D)
-	i686-elf-gcc -m32 -nostdlib -static -std=gnu99 -ffreestanding -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR) -o $@ -emain $< -lstdio
+	i686-elf-gcc -m32 -nostdlib -mpreferred-stack-boundary=2 -static -std=gnu99 -ffreestanding -mregparm=0 -fno-optimize-sibling-calls -fno-omit-frame-pointer -O0 -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR) -o $@ -e_start $(CROSS_BIN_DIR)/exe.o $< -lstdio
 
 $(CROSS_BUILD_DIR)/%: %.s always
 	@mkdir -p $(@D)
@@ -117,6 +121,7 @@ $(CROSS_BUILD_DIR)/%: %.s always
 #
 always:
 	mkdir -p $(BUILD_DIR)
+	rm -r $(CROSS_BIN_DIR)/
 
 #
 # Clean
@@ -147,6 +152,6 @@ win: floppy_image cross
 
 # In development, not used
 cross_compile:
-	gcc -o $(OUT) -nostartfiles -nostdlib --static -Wl,--no-dynamic-linker -Wl,--omagic -ffreestanding -fcf-protection=none -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-stack-protector -fno-pic -fno-pie -fno-function-sections -fno-data-sections -m32 -Wl,-T,solos_link.ld $(IN)
+	i686-elf-gcc -m32 -nostdlib -mpreferred-stack-boundary=2 -static -std=gnu99 -ffreestanding -mregparm=0 -fno-optimize-sibling-calls -fno-omit-frame-pointer -O0 -I$(CROSS_LIB_DIR) -L$(CROSS_BIN_DIR) -o $(OUT) -e_start $(CROSS_BIN_DIR)/exe.o $(IN) -lstdio
 	mcopy -i $(BUILD_DIR)/main_floppy.img $(OUT) "::bin/cross/$(NAME)"
 	cp $(BUILD_DIR)/main_floppy.img $(EXPORT_DIR)

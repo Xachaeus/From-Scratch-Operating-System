@@ -14,7 +14,7 @@ void __attribute__((cdecl)) puts(const char* str);
 void __attribute__((cdecl)) __putsk(const char* str, uint32_t k);
 void __attribute__((cdecl)) putd(int d);
 int __attribute__((cdecl)) fork();
-int __attribute__((cdecl)) exec(const char* path);
+int __attribute__((cdecl)) exec(const char* path, int argc, const char** argv);
 
 void __attribute__((cdecl)) printf(const char* fmt, ...);
 

@@ -71,14 +71,22 @@ void PageFaultHandler(Registers* saved_state) {
             printf("Page Fault: Mapping not found for virtual address 0x%x!\n", invalid_address);
         }
         else {
-            printf("Page fault for address 0x%x!\n", invalid_address);
+            printf("Page protection fault at address 0x%x!\n", invalid_address);
         }
         VMM_PageDirectoryEntry d_entry; VMM_PageTableEntry t_entry;
         VMM_FetchTableForAddress(invalid_address, &d_entry);
         VMM_GetPageForAddress(invalid_address, &t_entry);
         printf("  Table: 0x%x  Page: 0x%x\n", d_entry.data, t_entry.data);
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
+        printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
         printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=0x%x\n  eflags=0x%x  esp=0x%x  ss=0x%x  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
+
+        printf("  Stack prior to fault:\n");
+        //saved_state->esp = 0xFFFFFFDD;
+        for (int i = 0; i<20; i+=2) {
+            if ((uint64_t)saved_state->esp + (i*4) > 0xFFFFFFFF) {break;}
+            printf("  0x%x: 0x%x    0x%x: 0x%x\n", saved_state->esp + (i*4), *((uint32_t*)(saved_state->esp + (i*4))), saved_state->esp + (i*4 + 4), *((uint32_t*)(saved_state->esp + (i*4 + 4))));
+        }
         
         KillRunningProcess((Context*)saved_state);
 

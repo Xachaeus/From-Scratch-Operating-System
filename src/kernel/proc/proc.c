@@ -10,6 +10,7 @@
 #include <memory.h>
 #include <hardware-io/io.h>
 #include <delay.h>
+#include <file.h>
 
 #define USER_CODE_SEGMENT 0x18
 #define USER_DATA_SEGMENT 0x20
@@ -22,6 +23,11 @@
 
 
 #define MAX_PID 100
+
+
+#ifndef PROC_NUM_FD
+#define PROC_NUM_FD 10
+#endif
 
 
 //
@@ -70,6 +76,14 @@ void InitializeProcs() {
     for (int i = 0; i<MAX_PID; i++) {
         g_Processes[i].proc_state = COMPLETE;
         g_Processes[i].pid = i;
+        for (int j = 0; j < PROC_NUM_FD; j++) {
+            g_Processes[i].FD[j].handle = -1;
+            g_Processes[i].FD[j].source_handle = -1;
+        }
+        // Explicit assignments for each process's STD files
+        g_Processes[i].FD[0].handle = 0;
+        g_Processes[i].FD[1].handle = 1;
+        g_Processes[i].FD[2].handle = 2;
     }
 }
 
@@ -286,7 +300,7 @@ void SetContext(Context* dest, Context* src) {
 
 
 
-int ExecProc(int pid) {
+int ExecProc(int pid, int argc, const char** argv) {
 
     ProcessControlBlock* proc = &(g_Processes[pid]);
 
@@ -297,6 +311,24 @@ int ExecProc(int pid) {
 
     AllocateMemoryRegion(&(proc->stack_section), STACK_BOTTOM, 1);
     AllocateMemoryRegion(&(proc->kernel_stack_section), KERNEL_STACK_BOTTOM, 1);
+
+    // Translate the argc and argv values
+    uint32_t argv_pointers[argc];
+    char argv_buffer[2000];
+    uint32_t argv_bytes = 0;
+    uint32_t argv_pos = 0;
+    for (int i = 0; i<argc; i++) {
+        uint32_t str_len = 0;
+        const char* c = argv[i];
+        while(*c) {argv_bytes++; str_len++; c++;}
+        argv_bytes++; // Include the null terminator as part of the size
+        if (argv_bytes > 2000) {argv_bytes = 2000;}
+        str_len++;
+        memcpy(argv_buffer+argv_pos, argv[i], str_len);
+        argv_pointers[i] = argv_pos;
+        argv_pos = argv_bytes;
+    }
+    
 
     RemoveMappingsForProcess(g_running);
     CreateMappingsForProcess(proc);
@@ -311,7 +343,22 @@ int ExecProc(int pid) {
 
     //proc->saved_context.context_esp = (uint32_t)KERNEL_STACK_BOTTOM - (uint32_t)(sizeof(Context));
     proc->saved_context.ebp = STACK_BOTTOM;
-    proc->saved_context.esp = STACK_BOTTOM;
+    proc->saved_context.esp = STACK_BOTTOM - (8 + (argc*4) + argv_bytes);
+
+    /*printf("Starting stack at 0x%x for argv of size %d\n", proc->saved_context.esp, argv_bytes);
+    for (int i = 0; i<argc; i++) {
+        printf("Arg pos: %d\n", argv_pointers[i]);
+        printf("Argv[%d]: %s\n", i, &argv_buffer[argv_pointers[i]]);
+    }*/
+
+    *((uint32_t*)(proc->saved_context.esp)) = argc;
+    *((uint32_t*)(proc->saved_context.esp + 4)) = proc->saved_context.esp + 8;
+
+    for (int i = 0; i<argc; i++) {
+        *((uint32_t*)(proc->saved_context.esp + 8 + (i*4))) = argv_pointers[i] + proc->saved_context.esp + 8 + (argc*4);
+    }
+
+    memcpy((uint32_t*)(proc->saved_context.esp + 8 + (argc*4)), argv_buffer, argv_bytes);
 
     proc->saved_context.eip = proc->entry_address;
     proc->saved_context.eflags = 0x200 | 0x3000;
@@ -416,6 +463,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                     //printf("Launching process %d\n", g_running->pid);
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
+                    SetActiveFileDescriptors(g_running->FD);
                     //context->context_esp = g_running->saved_context.context_esp;
                     SetContext(context, &(g_running->saved_context));
                 }
@@ -436,6 +484,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                 if (g_running != NULL) {
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
+                    SetActiveFileDescriptors(g_running->FD);
                     //context->context_esp = g_running->saved_context.context_esp;
                     SetContext(context, &(g_running->saved_context));
                 }
@@ -459,6 +508,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                     //printf("to %d\n", g_running->pid);
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
+                    SetActiveFileDescriptors(g_running->FD);
                     SetContext(context, &(g_running->saved_context));
                 }
                 else {
@@ -475,6 +525,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
             if (g_running == NULL) {printf("DEBUG: Error in queue pop function!\n");}
             g_running->proc_state = RUNNING;
             CreateMappingsForProcess(g_running);
+            SetActiveFileDescriptors(g_running->FD);
             SetContext(context, &(g_running->saved_context));
         }
 
@@ -483,6 +534,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
             RemoveMappingsForProcess(g_running);
             TerminateProcess(g_running);
             g_running = NULL;
+            SetActiveFileDescriptors(NULL);
             SetContext(context, (Context*)&g_KernelContext);
         }
         
@@ -493,7 +545,7 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
 
 
 
-int __attribute__((cdecl)) exec(const char* path, const char** argv, int argc) {
+int __attribute__((cdecl)) exec(const char* path, int argc, const char** argv) {
 
     DisableScheduling();
     UnmaskTimerInterrupt();
@@ -505,7 +557,7 @@ int __attribute__((cdecl)) exec(const char* path, const char** argv, int argc) {
     i686_DisableInterrupts();
     MaskTimerInterrupt();
 
-    ExecProc(pid);
+    ExecProc(pid, argc, argv);
 
     EnableScheduling();
 

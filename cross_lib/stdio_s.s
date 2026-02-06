@@ -78,5 +78,7 @@ fork:
 exec:
     mov eax, 0xb
     mov ebx, [esp+4]
+    mov ecx, [esp+8]
+    mov edx, [esp+12]
     int 0x80
     ret

@@ -84,7 +84,7 @@ void SyscallEntrypoint(Registers* regs) {
 
         // Exec
         case 0xb:
-            regs->eax = exec((const char*)regs->ebx, NULL, 1);
+            regs->eax = exec((const char*)regs->ebx, (int)regs->ecx, (const char**)regs->edx);
             break;
         
         // Exit

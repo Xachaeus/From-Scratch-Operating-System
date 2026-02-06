@@ -10,5 +10,5 @@ int main() {
     else {
         printf("[PARENT] Child process has pid %d!\n", rc);
     }
-    exit(0);
+    return 0;
 }
