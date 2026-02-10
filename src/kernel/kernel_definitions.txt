@@ -1,2 +1,18 @@
+
+// DEBUG Flags - Uncomment to enable debug messaging for the specified feature
+
+//LOADER_DEBUG
+//PROC_MMAP_DEBUG
+//PROC_SCHED_DEBUG
+
+
+// Process Functionality
 MAX_PID=100
+PROCESS_MAX_RUNTIME=5000000
+PROCESS_TIME_SLICE=5000
+
+// Drive Module
 MAX_DRIVE_COUNT=8
+
+// Memory Manager
+PMM_OPTIM_WEDGE_COUNT=3

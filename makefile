@@ -121,7 +121,7 @@ $(CROSS_BUILD_DIR)/%: %.s always
 #
 always:
 	mkdir -p $(BUILD_DIR)
-	rm -r $(CROSS_BIN_DIR)/
+	rm -rf $(CROSS_BIN_DIR)/
 
 #
 # Clean

@@ -7,7 +7,7 @@ ASMFLAGS=--32 -msyntax=intel
 LDFLAGS=-T linker.ld --oformat=binary -nostdlib -Map output.map
 
 
-KERNEL_DEFINITIONS=$(shell cat kernel_definitions.txt)
+KERNEL_DEFINITIONS=$(shell grep -v '^//' kernel_definitions.txt)
 KERNEL_DEF_FLAGS=$(addprefix -D, $(KERNEL_DEFINITIONS))
 
 

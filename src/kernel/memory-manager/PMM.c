@@ -2,14 +2,18 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define NUM_WEDGES 3
+
+#ifndef PMM_OPTIM_WEDGE_COUNT
+#define PMM_OPTIM_WEDGE_COUNT 3
+#endif
+
 #define MAX_NUM_BLOCKS_REQ 1048288
 #define MAX_NUM_BLOCKS ((MAX_NUM_BLOCKS_REQ + 7)/8)
 
 AddressRegionDescriptor g_MemoryMap[MAX_ADDRESS_REGIONS];
 AddressRegionDescriptor g_UsableMemoryMap[MAX_ADDRESS_REGIONS];
 
-BitmapWedge g_BitmapWedges[NUM_WEDGES];
+BitmapWedge g_BitmapWedges[PMM_OPTIM_WEDGE_COUNT];
 
 uint8_t g_Bitmap[MAX_NUM_BLOCKS];
 
@@ -36,7 +40,7 @@ uint64_t PMM_Initialize(AddressRangeDescriptor* mem) {
         }
     }
 
-    for (int i = 0; i<NUM_WEDGES; i++) {
+    for (int i = 0; i<PMM_OPTIM_WEDGE_COUNT; i++) {
         g_BitmapWedges[i].free_blocks = 0;
         g_BitmapWedges[i].position = 0;
     }
@@ -90,7 +94,7 @@ uint32_t PMM_PhysicalAddress2BlockIndex(uint32_t address) {
 
 
 void PMM_DEBUG_PrintWedges() {
-    for (int i = 0; i < NUM_WEDGES; i++) {
+    for (int i = 0; i < PMM_OPTIM_WEDGE_COUNT; i++) {
         if (i%5 == 0){printf("\n");}
         printf("%d: P:%d,F:%d * ", i, g_BitmapWedges[i].position, g_BitmapWedges[i].free_blocks);
     }
@@ -140,7 +144,7 @@ uint32_t PMM_AllocateBlocks(uint32_t num_blocks) {
     int wedge = 0;
     uint32_t index = -1;
     uint32_t num_free = 0;
-    while (index == -1 && wedge < NUM_WEDGES) {
+    while (index == -1 && wedge < PMM_OPTIM_WEDGE_COUNT) {
         //printf("Checking wedge %d... ", wedge);
         if (num_blocks > g_BitmapWedges[wedge].free_blocks) {
             //printf("Not enough space: %d\n", g_BitmapWedges[wedge].free_blocks);
@@ -169,7 +173,7 @@ uint32_t PMM_AllocateBlocks(uint32_t num_blocks) {
     // If all wedges are too far along to check, just find the first fit from 0
     index = PMM_FirstFitSearch(g_BitmapWedges[wedge].position, num_blocks, &num_free);
     // Update the free block counts of all wedges, but only if a real index was found
-    for (int w = 0; w < NUM_WEDGES && index != -1; w++) {
+    for (int w = 0; w < PMM_OPTIM_WEDGE_COUNT && index != -1; w++) {
         g_BitmapWedges[w].free_blocks -= num_blocks;
     }
     return index;
@@ -179,7 +183,7 @@ uint32_t PMM_AllocateBlocks(uint32_t num_blocks) {
 int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
 
     int wedge = 0;
-    while (wedge < NUM_WEDGES) {
+    while (wedge < PMM_OPTIM_WEDGE_COUNT) {
         // Case 1: Wedge contains freed region
         if (g_BitmapWedges[wedge].position > index+num_blocks) {
             g_BitmapWedges[wedge].free_blocks += num_blocks;
@@ -190,7 +194,7 @@ int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
         else if (g_BitmapWedges[wedge].position == index+num_blocks) {
 
             // If this is the last wedge, aka what to do when back to first fit search
-            if (wedge == NUM_WEDGES-1) {
+            if (wedge == PMM_OPTIM_WEDGE_COUNT-1) {
                 // Potential handler 1: do a backwards search to find the next unfree block and place the wedge there
                 // Potential handler 2: put the wedge at 0, so the search takes place at the next allocation
 
@@ -234,9 +238,9 @@ int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
                 // Find the next wedge that is not overlapped with this one,
                 // and update all overlapped wedges
                 int position; int free_blocks; int last_wedge;
-                for (int search = wedge+1; search<NUM_WEDGES; search++) {
+                for (int search = wedge+1; search<PMM_OPTIM_WEDGE_COUNT; search++) {
                     // If all following wedges are overlapped, all the way to the end
-                    if (g_BitmapWedges[search].position==g_BitmapWedges[wedge].position && search==NUM_WEDGES-1) {
+                    if (g_BitmapWedges[search].position==g_BitmapWedges[wedge].position && search==PMM_OPTIM_WEDGE_COUNT-1) {
                         // Then all will need to be set to 0.
                         position = 0; 
                         free_blocks = 0; 
@@ -280,9 +284,9 @@ int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
 
 // Function to force-free a region, regardless of wedges. Should only be used if region sizes have been lost.
 int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
-    //int wedge = NUM_WEDGES-1;
+    //int wedge = PMM_OPTIM_WEDGE_COUNT-1;
     uint32_t position = 0; uint32_t free_blocks = 0;
-    for (int wedge = NUM_WEDGES-1; wedge >= 0; wedge--) {
+    for (int wedge = PMM_OPTIM_WEDGE_COUNT-1; wedge >= 0; wedge--) {
         // Case 1: Wedge is before free region
         if (g_BitmapWedges[wedge].position <= index) {
             //printf("%d:1;", wedge);
@@ -323,7 +327,7 @@ int PMM_FreeBlocks(uint32_t index, uint32_t num_blocks) {
 // Function to force-free a region, regardless of wedges. Should only be used if region sizes have been lost.
 void PMM_ForceFreeBlocks(uint32_t index, uint32_t num_blocks) {
     for (int i = index; i<index+num_blocks; i++) { PMM_SetBitmapData(i, 0); }
-    int wedge = NUM_WEDGES;
+    int wedge = PMM_OPTIM_WEDGE_COUNT;
     uint32_t position = 0; uint32_t free_blocks = 0;
     while (wedge >= 0) {
         // Case 1: Wedge is before force-free region

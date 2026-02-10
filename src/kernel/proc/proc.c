@@ -15,8 +15,13 @@
 #define USER_CODE_SEGMENT 0x18
 #define USER_DATA_SEGMENT 0x20
 
+#ifndef PROCESS_MAX_RUNTIME
 #define PROCESS_MAX_RUNTIME 5000000 // Process max runtime is 5 seconds
+#endif
+
+#ifndef PROCESS_TIME_SLICE
 #define PROCESS_TIME_SLICE 5000 // Process time slice is 5ms
+#endif
 
 #define STACK_BOTTOM 0xFFFFFFFC
 #define KERNEL_STACK_BOTTOM 0x1FFFFC
@@ -157,7 +162,9 @@ uint32_t GetRunningPID() {
 
 void CreateCodeMappingForRegion(MemoryRegion* reg) {
     if (reg->isActive) {
-        //printf("0x%x 0x%x 0x%x\n", reg->PhysMemoryBlockIdx, reg->NumBlocks, reg->BaseAddress);
+        #ifdef PROC_MMAP_DEBUG
+        printf("0x%x 0x%x 0x%x\n", reg->PhysMemoryBlockIdx, reg->NumBlocks, reg->BaseAddress);
+        #endif
         if(!FMM_CreateUserCodeMapping(reg->PhysMemoryBlockIdx, reg->NumBlocks, reg->BaseAddress)){
             printf("Failed to map address 0x%x\n", reg->BaseAddress);
         }
@@ -166,7 +173,9 @@ void CreateCodeMappingForRegion(MemoryRegion* reg) {
 
 void CreateDataMappingForRegion(MemoryRegion* reg) {
     if (reg->isActive) {
-        //printf("0x%x 0x%x 0x%x\n", reg->PhysMemoryBlockIdx, reg->NumBlocks, reg->BaseAddress);
+        #ifdef PROC_MMAP_DEBUG
+        printf("0x%x 0x%x 0x%x\n", reg->PhysMemoryBlockIdx, reg->NumBlocks, reg->BaseAddress);
+        #endif
         if(!FMM_CreateUserDataMapping(reg->PhysMemoryBlockIdx, reg->NumBlocks, reg->BaseAddress)){
             printf("Failed to map address 0x%x\n", reg->BaseAddress);
         }
@@ -363,9 +372,6 @@ int ExecProc(int pid, int argc, const char** argv) {
     proc->saved_context.ss = USER_DATA_SEGMENT | 0x3;
 
 
-    // Put the context onto the new process's stack
-    //memcpy((void*)(proc->saved_context.context_esp), &(proc->saved_context), sizeof(Context));
-
     RemoveMappingsForProcess(proc);
     CreateMappingsForProcess(g_running);
     
@@ -419,7 +425,9 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                     prev_sleeping->next = curr_sleeping->next;
                     curr_sleeping = curr_sleeping->next;
                 }
-                //printf("Previous is %d, current is %d, launching %d\n", prev_sleeping->pid, curr_sleeping->pid, temp_sleeping->pid);
+                #ifdef PROC_SCHED_DEBUG
+                printf("Previous is %d, current is %d, launching %d\n", prev_sleeping->pid, curr_sleeping->pid, temp_sleeping->pid);
+                #endif
                 temp_sleeping->proc_state = READY;
                 AddToQueue(temp_sleeping);
             }
@@ -456,7 +464,9 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                 //g_running->next = g_killed_processes; g_killed_processes = g_running; // Put running in list to be destroyed later
                 g_running = GetFromQueue();
                 if (g_running != NULL) {
-                    //printf("Launching process %d\n", g_running->pid);
+                    #ifdef PROC_SCHED_DEBUG
+                    printf("Launching process %d\n", g_running->pid);
+                    #endif
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
                     SetActiveFileDescriptors(g_running->FD);
@@ -497,18 +507,24 @@ void SchedulerHook(uint32_t delta_time, Context* context) {
                 RemoveMappingsForProcess(g_running);
                 g_running->proc_state = READY;
                 AddToQueue(g_running);
-                //printf("Switching from %hu ", g_running->pid);
+                #ifdef PROC_SCHED_DEBUG
+                printf("Switching from %hu ", g_running->pid);
+                #endif
                 g_running = GetFromQueue();
                 if (g_running != NULL) {
                     if ((g_running->saved_context.cs & 0x3) != 0x3) {printf("Error: new process not running in Ring 3!\n");}
-                    //printf("to %d\n", g_running->pid);
+                    #ifdef PROC_SCHED_DEBUG
+                    printf("to %d\n", g_running->pid);
+                    #endif
                     g_running->proc_state = RUNNING;
                     CreateMappingsForProcess(g_running);
                     SetActiveFileDescriptors(g_running->FD);
                     SetContext(context, &(g_running->saved_context));
                 }
                 else {
-                    //printf("to kernel\n");
+                    #ifdef PROC_SCHED_DEBUG
+                    printf("to kernel\n");
+                    #endif
                     g_GoToKernel = 1;
                 }
             }
