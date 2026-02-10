@@ -14,7 +14,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define MAX_FILE_HANDLES 10
+#ifndef MAX_FAT12_FILE_HANDLES
+#define MAX_FAT12_FILE_HANDLES 10
+#endif
 
 #pragma pack(push, 1)
 typedef struct 
@@ -104,7 +106,7 @@ typedef struct
 
     FAT12_FileData RootDirectory;
 
-    FAT12_FileData OpenedFiles[MAX_FILE_HANDLES];
+    FAT12_FileData OpenedFiles[MAX_FAT12_FILE_HANDLES];
 
 } FAT12_Data;
 

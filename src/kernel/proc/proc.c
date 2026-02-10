@@ -21,8 +21,9 @@
 #define STACK_BOTTOM 0xFFFFFFFC
 #define KERNEL_STACK_BOTTOM 0x1FFFFC
 
-
+#ifndef MAX_PID
 #define MAX_PID 100
+#endif
 
 
 #ifndef PROC_NUM_FD
@@ -341,15 +342,10 @@ int ExecProc(int pid, int argc, const char** argv) {
     proc->saved_context.edi = 0x0;
     proc->saved_context.esi = 0x0;
 
-    //proc->saved_context.context_esp = (uint32_t)KERNEL_STACK_BOTTOM - (uint32_t)(sizeof(Context));
+
     proc->saved_context.ebp = STACK_BOTTOM;
     proc->saved_context.esp = STACK_BOTTOM - (8 + (argc*4) + argv_bytes);
 
-    /*printf("Starting stack at 0x%x for argv of size %d\n", proc->saved_context.esp, argv_bytes);
-    for (int i = 0; i<argc; i++) {
-        printf("Arg pos: %d\n", argv_pointers[i]);
-        printf("Argv[%d]: %s\n", i, &argv_buffer[argv_pointers[i]]);
-    }*/
 
     *((uint32_t*)(proc->saved_context.esp)) = argc;
     *((uint32_t*)(proc->saved_context.esp + 4)) = proc->saved_context.esp + 8;

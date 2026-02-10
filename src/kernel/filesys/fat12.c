@@ -12,9 +12,17 @@
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
-#define MAX_FILE_HANDLES 10
+#ifndef MAX_FAT12_FILE_HANDLES
+#define MAX_FAT12_FILE_HANDLES 10
+#endif
+
+#ifndef ROOT_DIRECTORY_HANDLE
 #define ROOT_DIRECTORY_HANDLE -1
-#define MAX_PATH_SIZE 256
+#endif
+
+#ifndef MAX_FAT12_PATH_SIZE
+#define MAX_FAT12_PATH_SIZE 256
+#endif
 
 FAT12_Data g_FatData;
 uint32_t g_FirstFATSector;
@@ -62,7 +70,7 @@ void FAT12_Initialize() {
 
     g_FirstDataSector = g_FirstRootDirSector + ((g_RootDirSize + 512 - 1) / 512);
 
-    for (int i = 0; i < MAX_FILE_HANDLES; i++) {
+    for (int i = 0; i < MAX_FAT12_FILE_HANDLES; i++) {
         g_FatData.OpenedFiles[i].Opened = false;
     }
 
@@ -74,7 +82,7 @@ void FAT12_Initialize() {
 FAT12_File* FAT12_OpenEntry(FAT12_DirectoryEntry* entry) {
     // find empty handle
     int handle = -1;
-    for (int i = 0; i < MAX_FILE_HANDLES; i++) {
+    for (int i = 0; i < MAX_FAT12_FILE_HANDLES; i++) {
         if (!g_FatData.OpenedFiles[i].Opened) {handle = i; break;}
     }
     // out of handles
@@ -211,8 +219,8 @@ bool FAT12_FindFile(FAT12_File* file, const char* name, FAT12_DirectoryEntry* en
 
 FAT12_File* FAT12_Open(const char* path) {
 
-    char name[MAX_PATH_SIZE];
-    memset(name, '\0', MAX_PATH_SIZE);
+    char name[MAX_FAT12_PATH_SIZE];
+    memset(name, '\0', MAX_FAT12_PATH_SIZE);
 
     // Ignore leading slash
     if (path[0] == '/') {path++;}

@@ -6,6 +6,11 @@ CFLAGS=-m32 -nostdlib -nostartfiles -static -std=gnu99 -ffreestanding -I.
 ASMFLAGS=--32 -msyntax=intel
 LDFLAGS=-T linker.ld --oformat=binary -nostdlib -Map output.map
 
+
+KERNEL_DEFINITIONS=$(shell cat kernel_definitions.txt)
+KERNEL_DEF_FLAGS=$(addprefix -D, $(KERNEL_DEFINITIONS))
+
+
 LINKER_LIB_PATHS=-L/home/zack/opt/cross/lib/gcc/i686-elf/12.1.0/
 LINKER_LIBS=-lgcc
 
@@ -30,7 +35,7 @@ $(BUILD_DIR)/kernel.bin: $(OBJECTS_C) $(OBJECTS_S)
 
 $(BUILD_DIR)/kernel/c/%.o: %.c always
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) $(KERNEL_DEF_FLAGS) -o $@ -c $<
 
 $(BUILD_DIR)/kernel/s/%.o: %.s always
 	@mkdir -p $(@D)

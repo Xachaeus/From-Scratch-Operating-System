@@ -1,7 +1,9 @@
 #include "drive.h"
 #include <stddef.h>
 
+#ifndef MAX_DRIVE_COUNT
 #define MAX_DRIVE_COUNT 8
+#endif
 
 Drive g_Drives[MAX_DRIVE_COUNT];
 
