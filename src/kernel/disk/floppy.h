@@ -75,5 +75,6 @@ uint8_t* DISK_Floppy_GetSectorAddr(uint8_t sector);
 int DISK_Floppy_ReadSector(uint32_t lba);
 int DISK_Floppy_ReadSectors(uint32_t lba, uint8_t sector_count);
 int DISK_Floppy_ReadSectorsTo(uint32_t lba, uint8_t sector_start, uint8_t sector_count);
+int DISK_Floppy_WriteSectorFrom(uint32_t lba, uint8_t sector_start);
 
 #endif

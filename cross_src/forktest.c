@@ -8,7 +8,7 @@ int main() {
         printf("[CHILD] Child process has pid %d!\n", pid);
     }
     else {
-        printf("[PARENT] Child process has pid %d!\n", rc);
+        printf("[PARENT] Self has pid %d; Child process has pid %d!\n", pid, rc);
     }
     return 0;
 }

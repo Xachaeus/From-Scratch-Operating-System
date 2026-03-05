@@ -60,7 +60,7 @@ void PageFaultHandler(Registers* saved_state) {
         printf("Page fault for address 0x%x!\n", invalid_address);
         printf("Error is kernel-caused!\n");
         printf("  interrupt=0x%x  error_code=0x%x  \n", saved_state->interrupt, saved_state->error);
-        printf("  eax=%d  ebx=%d  ecx=%d  edx=%d  esi=%d  edi=%d\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
+        printf("  eax=0x%x  ebx=0x%x  ecx=0x%x  edx=0x%x  esi=0x%x  edi=0x%x\n", saved_state->eax, saved_state->ebx, saved_state->ecx, saved_state->edx, saved_state->esi, saved_state->edi);
         printf("  context_esp=0x%x  ebp=0x%x  eip=0x%x  cs=%d\n  eflags=%d  esp=0x%x  ss=%d  \n", saved_state->kernel_esp, saved_state->ebp, saved_state->eip, saved_state->cs, saved_state->eflags, saved_state->esp, saved_state->ss);
         for (;;);
     }

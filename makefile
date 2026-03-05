@@ -81,6 +81,9 @@ cross: $(CROSS_LIB_OBJECTS_S) $(CROSS_LIB_OBJECTS_C) $(CROSS_LIB_OBJECTS) $(CROS
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/sleeptest.c "::etc/cross/sleep.c"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/stresstest.c "::etc/cross/stress.c"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/forktest.c "::etc/cross/fork.c"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/execparent.c "::etc/cross/exec_p.c"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/execchild.c "::etc/cross/exec_c.c"
+	mcopy -i $(BUILD_DIR)/main_floppy.img cross_src/argtest.c "::etc/cross/arg.c"
 
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/helloworld "::bin/cross/hello.exe"
 	mcopy -i $(BUILD_DIR)/main_floppy.img cross_build/cross_src/sleeptest "::bin/cross/sleep.exe"

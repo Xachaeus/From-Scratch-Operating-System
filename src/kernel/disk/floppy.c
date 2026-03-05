@@ -433,10 +433,12 @@ int DISK_Floppy_ReadSectorsTo(uint32_t lba, uint8_t sector_start, uint8_t sector
 
 
 
-int DISK_Floppy_WriteSector(uint32_t lba) {
+int DISK_Floppy_WriteSectorFrom(uint32_t lba, uint8_t sector_start) {
 
-    uint32_t source_address = FMM_GetDMAPhysAddress(); // Always returns 0x102000
-    uint32_t virtual_source_address = FMM_GetDMAAddress();
+    if (sector_start > MAX_SECTOR_REGIONS) {return 1;}
+
+    uint32_t source_address = FMM_GetDMAPhysAddress() + 512 * sector_start; // Always returns 0x102000
+    uint32_t virtual_source_address = FMM_GetDMAAddress() + 512 * sector_start;
 
     uint8_t cylinder, head, sector;
     lba2chs(lba, &cylinder, &head, &sector);

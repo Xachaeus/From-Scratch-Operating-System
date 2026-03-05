@@ -116,6 +116,7 @@ void FAT12_Initialize();
 FAT12_File* FAT12_Open(const char* path);
 uint32_t FAT12_Read(FAT12_File* file, uint32_t byte_count, void* dest);
 bool FAT12_ReadEntry(FAT12_File* file, FAT12_DirectoryEntry* entry);
+uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src);
 void FAT12_Close(FAT12_File* file);
 
 #endif

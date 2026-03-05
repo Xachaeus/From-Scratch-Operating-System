@@ -17,6 +17,7 @@
 #define EXEC_ID 3
 #define PS_ID 4
 #define MEM_ID 5
+#define TSTW_ID 6
 
 CMDHandler g_CMDHandlers[256];
 char CurrentPath[256];
@@ -37,6 +38,7 @@ int GetCMD(const char* command) {
             break;
         case 4:
             if (memcmp(command, "exec", 4) == 0) {return EXEC_ID;}
+            if (memcmp(command, "tstw", 4) == 0) {return TSTW_ID;}
             break;
         default:
             return ERROR_ID;
@@ -69,8 +71,8 @@ void EXEC(int argc, const char** argv) {
 
         MaskTimerInterrupt();
         DisableScheduling();
-        const char* argv_default[] = {absolute_path};
-        ExecProc(pid, 1, argv_default);
+        const char** argv_default = &argv[1];
+        ExecProc(pid, argc-1, argv_default);
         ProcessControlBlock* proc = GetPCB(pid);
         if (argc >= 3) {
             if (argv[2][0] == '&') {
@@ -108,11 +110,19 @@ void EXEC(int argc, const char** argv) {
 }
 
 void LS(int argc, const char** argv) {
-    if (argc == 1) {
+    if (argc >= 1) {
+        int do_hiding = 1;
+        for (int i=1; i<argc; i++) {
+            if (argv[i][0] == '-') { // Parse flags
+                if (argv[i][1] == 'a'){do_hiding = 0;}
+            }
+        }
         FAT12_File* dir = FAT12_Open(CurrentPath);
         FAT12_DirectoryEntry entry;
         while (FAT12_ReadEntry(dir, &entry)) {
             if (entry.Name[0] == '\0'){break;}
+            if (memcmp(entry.Name, "BOOT    BIN", 11) == 0 && do_hiding) {continue;}
+            if (entry.Name[0] == '.' && do_hiding) {continue;}
             for (int i = 0; i<11; i++) {printf("%c", entry.Name[i]);}
             printf("\n");
         }
@@ -222,6 +232,11 @@ void MEM(int argc, const char** argv) {
     printf("%d blocks (%lld bytes) currently in use\n", count, ((uint64_t)count)*4096);
 }
 
+void TSTW(int argc, const char** argv) {
+    const char* hello = "Hello World!";
+    FAT12_Write_New("/etc/hello.txt", strlen(hello), (void*)hello);
+}
+
 
 
 
@@ -237,6 +252,7 @@ int CLI_Mainloop() {
     RegisterCMDHandler(EXEC_ID, EXEC);
     RegisterCMDHandler(PS_ID, PS);
     RegisterCMDHandler(MEM_ID, MEM);
+    RegisterCMDHandler(TSTW_ID, TSTW);
 
     char DriveLetter = 'A';
     char CommandBuffer[256];
