@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <ctype.h>
 #include <filesys/fat12.h>
 #include <proc/load.h>
 #include <proc/proc.h>
@@ -132,6 +133,11 @@ void LS(int argc, const char** argv) {
 
 void CD(int argc, const char** argv) {
     const char* new_path = argv[1];
+    char* c = (char*)new_path;
+    while (*c) {
+        *c = tolower(*c);
+        c++;
+    }
     char absolute_path[256];
     if (new_path[0] != '/') { // Relative, non-absolute path
         strcpy(absolute_path, CurrentPath);

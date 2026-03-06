@@ -5,5 +5,6 @@
 
 bool islower(char chr);
 char toupper(char chr);
+char tolower(char chr);
 
 #endif
