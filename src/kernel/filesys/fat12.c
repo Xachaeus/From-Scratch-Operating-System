@@ -176,6 +176,15 @@ uint32_t FAT12_FindFreeCluster(uint32_t start_cluster) {
 
 uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
 
+    uint32_t current_cluster_val = FAT12_NextCluster(currentCluster);
+
+    // If the provided cluster already has a cluster that follows it, return that cluster
+    if (current_cluster_val != 0 && current_cluster_val < 0xFF8) {
+        return current_cluster_val;
+    }
+
+    // Otherwise, rewrite the FAT to make this cluster point to a free cluster
+
     // Find a new cluster to use, and write its number to this cluster's entry in the FAT
     uint32_t next_cluster = FAT12_FindFreeCluster(currentCluster);
 
@@ -183,6 +192,7 @@ uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
     uint32_t fatSectorIndex = (fatIndex * 3)/(512*2); // Figure out which sector of the fat needs to be loaded
     if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
     uint16_t FAT_val = (*(uint16_t*)(g_FAT + fatIndex));
+
 
     if (currentCluster % 2 == 0)
         (*(uint16_t*)(g_FAT + fatIndex)) = (FAT_val & 0xF000) | (next_cluster & 0x0FFF);
@@ -194,6 +204,11 @@ uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
 }
 
 void FAT12_WriteFinalCluster(uint32_t currentCluster) {
+    
+    uint32_t current_cluster_val = FAT12_NextCluster(currentCluster);
+    if (current_cluster_val != 0 && current_cluster_val < 0xFF8) {
+        // TODO: Set this cluster to 0xFF8, then follow through the rest of the clusters in the preexisting chain and set them all to 0
+    }
 
     uint32_t fatIndex = currentCluster * 3 / 2;
     uint32_t fatSectorIndex = (fatIndex * 3)/(512*2); // Figure out which sector of the fat needs to be loaded

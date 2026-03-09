@@ -279,16 +279,25 @@ int CLI_Mainloop() {
         int command_len = strlen(CommandBuffer);
         int argc = 0;
         bool inArg = false;
+        bool inLongArg = false;
 
         if (command_len == 0) {continue;}
 
         for (int i = 0; i < command_len; i++) {
+
+            if (CommandBuffer[i] == '"' && !inLongArg) {
+                i++; // Do this so that the argument itself does not include the quotation mark
+                inLongArg = true; inArg = true; ARGV_Base[argc] = &CommandBuffer[i]; argc++;
+            }
+            else if (CommandBuffer[i] == '"' && inLongArg) {
+                inLongArg = false; inArg = false; CommandBuffer[i] = '\0';
+            }
             // Case 1: Found a value while not already in a value
-            if (CommandBuffer[i] != ' ' && !inArg) {
+            else if (CommandBuffer[i] != ' ' && !inArg) {
                 inArg = true; ARGV_Base[argc] = &(CommandBuffer[i]); argc++;
             }
             // Case 2: Found the end of a value
-            else if (CommandBuffer[i] == ' ' && inArg) {
+            else if (CommandBuffer[i] == ' ' && inArg && !inLongArg) {
                 inArg = false; CommandBuffer[i] = '\0';
             }
             // Case 3: Found a space but not ending the current value

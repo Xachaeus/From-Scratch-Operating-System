@@ -92,7 +92,7 @@ int read(int file, uint32_t byte_count, void* dest) {
         file = g_ActiveFileDescriptors[file].source_handle;
     }
     // Behavior for no processes running
-    if (g_Files[file].filesys == FILESYS_FAT12) {
+    else if (g_Files[file].filesys == FILESYS_FAT12) {
         return FAT12_Read(g_Files[file].mapped_handle, byte_count, dest);
     }
 }
@@ -100,16 +100,18 @@ int read(int file, uint32_t byte_count, void* dest) {
 int write(int file, uint32_t byte_count, void* src) {
     // Behavior for running processes
     if (g_ActiveFileDescriptors != NULL) {
+        // If writing to STDOUT
         if (file == 0 && g_ActiveFileDescriptors[0].source_handle == UNUSED_HANDLE) {
             PutsK(src, byte_count);
         }
+        // If writing to legitimate file
         else {
             // TODO: fill this in after file write has been implemented
         }
     }
     // Behavior for no running processes
-    else {
-        // TODO: fill this in after file write has been implemented
+    else if (g_Files[file].filesys == FILESYS_FAT12) {
+        return FAT12_Write(g_Files[file].mapped_handle, byte_count, src);
     }
 }
 
