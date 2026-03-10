@@ -70,14 +70,12 @@ void FAT12_ReadSector(uint32_t lba, uint8_t* dest) {
 void FAT12_LoadFATSector(uint32_t idx) {
     DISK_Floppy_ReadSectorsTo(g_FirstFATSector + idx, 15, 1);
     g_FAT = DISK_Floppy_GetSectorAddr(15);
-    g_FATLoaded = true;
+    g_FATLoaded = idx;
 }
 
 void FAT12_WriteActiveFATSector(uint32_t idx) {
-    printf("Writing active FAT sector to disk...\n");
     // Writes the currently-loaded FAT sector back to the disk
     DISK_Floppy_WriteSectorFrom(g_FirstFATSector + idx, 15);
-    printf("Success!\n");
 }
 
 void FAT12_Initialize() {
@@ -145,36 +143,40 @@ uint32_t FAT12_Cluster2Sector(uint32_t cluster) {
 uint32_t FAT12_NextCluster(uint32_t currentCluster)
 {    
     uint32_t fatIndex = currentCluster * 3 / 2;
-    uint32_t fatSectorIndex = (fatIndex * 3)/(512*2); // Figure out which sector of the fat needs to be loaded
+    uint32_t fatSectorIndex = fatIndex/512; // Figure out which sector of the fat needs to be loaded
     if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
     if (currentCluster % 2 == 0)
-        return (*(uint16_t*)(g_FAT + fatIndex)) & 0x0FFF;
+        return (*(uint16_t*)(g_FAT + (fatIndex%512))) & 0x0FFF;
     else
-        return (*(uint16_t*)(g_FAT + fatIndex)) >> 4;
+        return (*(uint16_t*)(g_FAT + (fatIndex%512))) >> 4;
 }
 
-uint32_t FAT12_FindFreeCluster(uint32_t start_cluster) {
+uint32_t FAT12_FindFreeCluster(uint32_t currentCluster) {
     // Start by loading the FAT at the provided start point. We will search one cluster at a time until a free cluster is found.
-    uint32_t fatIndex = start_cluster * 3 / 2;
-    uint32_t fatSectorIndex = (fatIndex * 3)/(512*2);
-    if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
+    uint32_t fatIndex;
+    uint32_t fatSectorIndex;
     uint16_t fatData = 0;
 
     __FAT_CHECK_LOOP:
-    if (fatIndex % 2 == 0)
-        fatData = (*(uint16_t*)(g_FAT + fatIndex)) & 0x0FFF;
+    fatIndex = currentCluster * 3 / 2;
+    fatSectorIndex = fatIndex/512;
+    if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
+    if (currentCluster % 2 == 0)
+        fatData = (*(uint16_t*)(g_FAT + (fatIndex%512))) & 0x0FFF;
     else
-        fatData = (*(uint16_t*)(g_FAT + fatIndex)) >> 4;
+        fatData = (*(uint16_t*)(g_FAT + (fatIndex%512))) >> 4;
     if (fatData) {
-        fatIndex++;
+        currentCluster++;
         goto __FAT_CHECK_LOOP;
     }
     
-    return fatIndex * 2 / 3;
+    return currentCluster;
 }
 
 
 uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
+
+    printf("[DEBUG] Writing FAT table and getting another cluster...\n");
 
     uint32_t current_cluster_val = FAT12_NextCluster(currentCluster);
 
@@ -189,19 +191,20 @@ uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
     uint32_t next_cluster = FAT12_FindFreeCluster(currentCluster);
 
     uint32_t fatIndex = currentCluster * 3 / 2;
-    uint32_t fatSectorIndex = (fatIndex * 3)/(512*2); // Figure out which sector of the fat needs to be loaded
+    uint32_t fatSectorIndex = fatIndex/512; // Figure out which sector of the fat needs to be loaded
     if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
-    uint16_t FAT_val = (*(uint16_t*)(g_FAT + fatIndex));
+    uint16_t FAT_val = (*(uint16_t*)(g_FAT + (fatIndex%512)));
 
 
     if (currentCluster % 2 == 0)
-        (*(uint16_t*)(g_FAT + fatIndex)) = (FAT_val & 0xF000) | (next_cluster & 0x0FFF);
+        (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0xF000) | (next_cluster & 0x0FFF);
     else
-        (*(uint16_t*)(g_FAT + fatIndex)) = (FAT_val & 0x000F) | (next_cluster << 4);
+        (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0x000F) | (next_cluster << 4);
 
     FAT12_WriteActiveFATSector(fatSectorIndex);
     return next_cluster;
 }
+
 
 void FAT12_WriteFinalCluster(uint32_t currentCluster) {
     
@@ -211,17 +214,16 @@ void FAT12_WriteFinalCluster(uint32_t currentCluster) {
     }
 
     uint32_t fatIndex = currentCluster * 3 / 2;
-    uint32_t fatSectorIndex = (fatIndex * 3)/(512*2); // Figure out which sector of the fat needs to be loaded
+    uint32_t fatSectorIndex = fatIndex/512; // Figure out which sector of the fat needs to be loaded
     if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
-    uint16_t FAT_val = (*(uint16_t*)(g_FAT + fatIndex));
+    uint16_t FAT_val = (*(uint16_t*)(g_FAT + (fatIndex%512)));
 
     if (currentCluster % 2 == 0)
-        (*(uint16_t*)(g_FAT + fatIndex)) = (FAT_val & 0xF000) | (0xFF8 & 0x0FFF);
+        (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0xF000) | (0x0FF8);
     else
-        (*(uint16_t*)(g_FAT + fatIndex)) = (FAT_val & 0x000F) | (0xFF8 << 4);
+        (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0x000F) | (0xFF80);
 
     FAT12_WriteActiveFATSector(fatSectorIndex);
-    printf("Final cluster signature written!\n");
 }
 
 
@@ -272,26 +274,19 @@ uint32_t FAT12_Read(FAT12_File* file, uint32_t byte_count, void* dest) {
 
 uint32_t FAT12_Write(FAT12_File* file, uint32_t byte_count, void* src) {
 
-    printf("Beginning write...\n");
     FAT12_FileData* fd = (file->Handle == ROOT_DIRECTORY_HANDLE) ? &g_FatData.RootDirectory : &(g_FatData.OpenedFiles[file->Handle]);
     uint8_t* data_in = src;
 
-    printf("Checking for directory status...\n");
-    // If writing a file, do not read source buffer past the end of the file
-    if (!fd->Public.IsDirectory) {
-        byte_count = MIN(byte_count, fd->Public.Size - fd->Public.Position);
-    }
+    fd->Public.Position = 0;
 
-    printf("Beginning loop...\n");
     while (byte_count > 0) {
         uint32_t left_in_buffer = 512 - (fd->Public.Position % 512);
         uint32_t put = MIN(byte_count, left_in_buffer);
 
-        printf("Copying write data to DMA-addressable sector...\n");
         memcpy(DISK_Floppy_GetSectorAddr(0) + (fd->Public.Position % 512), data_in, put);
         // Special handling of root directory
-        printf("Calling floppy write handler...\n");
         if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE) {
+            //printf("WARNING: Writing Root!\n");
             DISK_Floppy_WriteSectorFrom(fd->CurrentCluster, 0);
         }
         else {
@@ -301,9 +296,8 @@ uint32_t FAT12_Write(FAT12_File* file, uint32_t byte_count, void* src) {
         data_in += put;
         fd->Public.Position += put;
         byte_count -= put;
-        printf("Checking how much still needs written...\n");
         if ((left_in_buffer == put) && byte_count > 0) {
-            printf("Getting another cluster to write to...\n");
+            //printf("[DEBUG] Getting another cluster to write to...\n");
             // Special handling for root directory
             if (fd->Public.Handle == ROOT_DIRECTORY_HANDLE) {
                 FAT12_WriteGetAnotherCluster(fd->CurrentCluster);
@@ -323,9 +317,7 @@ uint32_t FAT12_Write(FAT12_File* file, uint32_t byte_count, void* src) {
             }
         }
     }
-    printf("Writing closing signature to final cluster in chain...\n");
     FAT12_WriteFinalCluster(fd->CurrentCluster);
-    printf("Write complete!\n");
     return (uint32_t)data_in - (uint32_t)src;
 }
 
@@ -482,7 +474,7 @@ uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src) {
         }
     }
 
-    printf("Directory bytes: %d  |  Directory entries: %d\n", offset, offset/sizeof(FAT12_DirectoryEntry));
+    //printf("Directory bytes: %d  |  Directory entries: %d\n", offset, offset/sizeof(FAT12_DirectoryEntry));
     // Set up a pointer to write information for new file entry
     FAT12_DirectoryEntry* NewFileEntry = (FAT12_DirectoryEntry*)(&DirectoryBuffer[offset]);
 
@@ -514,7 +506,7 @@ uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src) {
     //printf("Finding a good cluster to write to...\n");
 
     // Find a free cluster and save its index to the file entry
-    uint32_t first_free_cluster = FAT12_FindFreeCluster(0);
+    uint32_t first_free_cluster = FAT12_FindFreeCluster(2);
     NewFileEntry->FirstClusterHigh = first_free_cluster >> 16;
     NewFileEntry->FirstClusterLow = first_free_cluster & 0xFFFF;
     NewFileEntry->Attributes = 0;
@@ -528,12 +520,10 @@ uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src) {
     FAT12_Write(parent_dir, 512, DirectoryBuffer);
     FAT12_Close(parent_dir);
 
+
     // Lastly, write actual file data into the file that is now pointed to in the directory
     *final_slash_pos = '/';
-    printf("Opening file %s...\n", path);
     FAT12_File* file = FAT12_Open(path);
-    printf("File value: 0x%x\n", file);
-    printf("Writing file contents...\n");
     FAT12_Write(file, byte_count, src);
     FAT12_Close(file);
 

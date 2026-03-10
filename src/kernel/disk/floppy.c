@@ -435,6 +435,8 @@ int DISK_Floppy_ReadSectorsTo(uint32_t lba, uint8_t sector_start, uint8_t sector
 
 int DISK_Floppy_WriteSectorFrom(uint32_t lba, uint8_t sector_start) {
 
+    if (lba == 0) {printf("WARNING: Writing to boot sector!!\n");}
+
     if (sector_start > MAX_SECTOR_REGIONS) {return 1;}
 
     uint32_t source_address = FMM_GetDMAPhysAddress() + 512 * sector_start; // Always returns 0x102000

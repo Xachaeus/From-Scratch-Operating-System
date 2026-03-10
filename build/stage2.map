@@ -1,7 +1,7 @@
 Open Watcom Linker Version 2.0 beta Jul 13 2025 02:53:52 (32-bit)
 Copyright (c) 2002-2025 The Open Watcom Contributors. All Rights Reserved.
 Portions Copyright (c) 1985-2002 Sybase, Inc. All Rights Reserved.
-Created on:       26/03/09 13:55:55
+Created on:       26/03/09 23:15:55
 Executable Image: /home/zack/Programming/NanobyteOS/SolOS/build/stage2.bin
 creating a RAW Binary Image executable
 
@@ -13,7 +13,7 @@ creating a RAW Binary Image executable
 Group                           Address              Size
 =====                           =======              ====
 
-DGROUP                          00001a9a             00000462
+DGROUP                          00001aa4             0000048a
 
 
 
@@ -25,13 +25,13 @@ Segment                Class          Group          Address         Size
 =======                =====          =====          =======         ====
 
 _ENTRY                 CODE           AUTO           00000000        00000112
-_TEXT                  CODE           AUTO           00000112        00001987
-CONST                  DATA           DGROUP         00001a9a        0000018f
-CONST2                 DATA           DGROUP         00001c2a        00000011
-_DATA                  DATA           DGROUP         00001c3c        00000004
-_GDT                                  AUTO           00001c40        000000d4
-bss                                   AUTO           00001d14        000001e0
-_BSS                   BSS            DGROUP         00001ef4        00000008
+_TEXT                  CODE           AUTO           00000112        00001991
+CONST                  DATA           DGROUP         00001aa4        000001b8
+CONST2                 DATA           DGROUP         00001c5c        00000011
+_DATA                  DATA           DGROUP         00001c6e        00000004
+_GDT                                  AUTO           00001c72        000000d4
+bss                                   AUTO           00001d46        000001e0
+_BSS                   BSS            DGROUP         00001f26        00000008
 
 
                         +----------------+
@@ -76,22 +76,22 @@ Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/fat.obj(/home/zac
 Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/main.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/main.c)
 000010e0       _cstart_
 Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/memory.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/memory.c)
-00001209       memcpy_
-0000127d       memset_
-000012dc       memcmp_
+00001213       memcpy_
+00001287       memset_
+000012e6       memcmp_
 Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/stdio.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/stdio.c)
-00001355       putc_
-0000137c+      puts_
-000013b3+      puts_f_
-000013f0       _printf
-00001673+      printf_number_
-00001c2a+      _g_HexChars
+0000135f       putc_
+00001386+      puts_
+000013bd+      puts_f_
+000013fa       _printf
+0000167d+      printf_number_
+00001c5c+      _g_HexChars
 Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/string.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/string.c)
-000018e7       strchr_
-00001945+      strcpy_
-000019bf       strlen_
+000018f1       strchr_
+0000194f+      strcpy_
+000019c9       strlen_
 Module: /home/zack/Programming/NanobyteOS/SolOS/build/stage2/c/utility.obj(/home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/utility.c)
-00001a00+      align_
+00001a0a+      align_
 
 
                         +---------------------+
@@ -105,50 +105,50 @@ Module          Segment               Class           Address         Size
 ======          =======               =====           =======         ====
 
 main.asm        _ENTRY                CODE           00000000         00000112
-                _GDT                                 00001c40         000000d4
-                bss                                  00001d14         000001e0
+                _GDT                                 00001c72         000000d4
+                bss                                  00001d46         000001e0
 x86.asm         _TEXT                 CODE           00000112         00000112
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/ctype.c
                 _TEXT                 CODE           00000224         00000086
-                CONST                 DATA           00001a9a         00000000
-                CONST2                DATA           00001c2a         00000000
-                _DATA                 DATA           00001c3c         00000000
+                CONST                 DATA           00001aa4         00000000
+                CONST2                DATA           00001c5c         00000000
+                _DATA                 DATA           00001c6e         00000000
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/disc.c
                 _TEXT                 CODE           000002aa         000001c6
-                CONST                 DATA           00001a9a         00000000
-                CONST2                DATA           00001c2a         00000000
-                _DATA                 DATA           00001c3c         00000000
+                CONST                 DATA           00001aa4         00000000
+                CONST2                DATA           00001c5c         00000000
+                _DATA                 DATA           00001c6e         00000000
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/fat.c
                 _TEXT                 CODE           00000470         00000c70
-                CONST                 DATA           00001a9a         00000107
-                CONST2                DATA           00001c2a         00000000
-                _DATA                 DATA           00001c3c         00000004
-                _BSS                  BSS            00001ef4         00000008
+                CONST                 DATA           00001aa4         00000107
+                CONST2                DATA           00001c5c         00000000
+                _DATA                 DATA           00001c6e         00000004
+                _BSS                  BSS            00001f26         00000008
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/main.c
-                _TEXT                 CODE           000010e0         00000129
-                CONST                 DATA           00001ba2         00000087
-                CONST2                DATA           00001c2a         00000000
-                _DATA                 DATA           00001c40         00000000
+                _TEXT                 CODE           000010e0         00000133
+                CONST                 DATA           00001bac         000000b0
+                CONST2                DATA           00001c5c         00000000
+                _DATA                 DATA           00001c72         00000000
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/memory.c
-                _TEXT                 CODE           00001209         0000014c
-                CONST                 DATA           00001c2a         00000000
-                CONST2                DATA           00001c2a         00000000
-                _DATA                 DATA           00001c40         00000000
+                _TEXT                 CODE           00001213         0000014c
+                CONST                 DATA           00001c5c         00000000
+                CONST2                DATA           00001c5c         00000000
+                _DATA                 DATA           00001c72         00000000
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/stdio.c
-                _TEXT                 CODE           00001355         00000592
-                CONST                 DATA           00001c2a         00000000
-                CONST2                DATA           00001c2a         00000011
-                _DATA                 DATA           00001c40         00000000
+                _TEXT                 CODE           0000135f         00000592
+                CONST                 DATA           00001c5c         00000000
+                CONST2                DATA           00001c5c         00000011
+                _DATA                 DATA           00001c72         00000000
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/string.c
-                _TEXT                 CODE           000018e7         00000119
-                CONST                 DATA           00001c2a         00000000
-                CONST2                DATA           00001c3c         00000000
-                _DATA                 DATA           00001c40         00000000
+                _TEXT                 CODE           000018f1         00000119
+                CONST                 DATA           00001c5c         00000000
+                CONST2                DATA           00001c6e         00000000
+                _DATA                 DATA           00001c72         00000000
 /home/zack/Programming/NanobyteOS/SolOS/src/bootloader/stage2/utility.c
-                _TEXT                 CODE           00001a00         00000099
-                CONST                 DATA           00001c2a         00000000
-                CONST2                DATA           00001c3c         00000000
-                _DATA                 DATA           00001c40         00000000
+                _TEXT                 CODE           00001a0a         00000099
+                CONST                 DATA           00001c5c         00000000
+                CONST2                DATA           00001c6e         00000000
+                _DATA                 DATA           00001c72         00000000
 Warning! W1014: stack segment not found
 
 
@@ -157,6 +157,6 @@ Warning! W1014: stack segment not found
                         +-----------------------+
 
 Stack size:  0200 (512.)
-Memory size:  1efc (7932.)
+Memory size:  1f2e (7982.)
 Entry point address: 00000000
-Link time: 00:00.00
+Link time: 00:00.10

@@ -19,6 +19,7 @@
 #define PS_ID 4
 #define MEM_ID 5
 #define TSTW_ID 6
+#define ECHO_ID 7
 
 CMDHandler g_CMDHandlers[256];
 char CurrentPath[256];
@@ -40,6 +41,7 @@ int GetCMD(const char* command) {
         case 4:
             if (memcmp(command, "exec", 4) == 0) {return EXEC_ID;}
             if (memcmp(command, "tstw", 4) == 0) {return TSTW_ID;}
+            if (memcmp(command, "echo", 4) == 0) {return ECHO_ID;}
             break;
         default:
             return ERROR_ID;
@@ -243,6 +245,41 @@ void TSTW(int argc, const char** argv) {
     FAT12_Write_New("/etc/hello.txt", strlen(hello), (void*)hello);
 }
 
+void ECHO(int argc, const char** argv) {
+    bool found_output_file = false;
+    int mode;
+    if (memcmp(argv[argc-2], ">>", 2) == 0) {mode = 2;}
+    else if (argv[argc-2][0] == '>') {mode = 1;}
+    else {mode = 0;}
+    switch (mode) {
+        case 0: // Print arguments normally
+            for (int i = 1; i<argc-1; i++) {
+                printf("%s ", argv[i]);
+            }
+            printf("%s\n", argv[argc-1]);
+            break;
+
+        case 1: // Write arguments to file
+            uint32_t total_len = 0;
+            if (argc > 3) { // Only count text length if actual text has been provided
+                for (int i = 1; i < argc-3; i++) {
+                    char* c = (char*)argv[i];
+                    while (*c) {c++; total_len++;}
+                    *c = ' '; total_len++;
+                }
+                char *c = (char*)argv[argc-3];
+                while (*c) {c++; total_len++;}
+                total_len++; // Write the null terminator as well
+            }
+            FAT12_Write_New((char*)argv[argc-1], total_len, (void*)argv[1]);
+            break;
+
+        case 2: // Append arguments to file
+            printf("[DEV NOTE] Sorry, I haven't implemented file appending yet!\n\n  ____||____\n     >__<  \n\n");
+            break;
+    }
+}
+
 
 
 
@@ -258,7 +295,8 @@ int CLI_Mainloop() {
     RegisterCMDHandler(EXEC_ID, EXEC);
     RegisterCMDHandler(PS_ID, PS);
     RegisterCMDHandler(MEM_ID, MEM);
-    RegisterCMDHandler(TSTW_ID, TSTW);
+    //RegisterCMDHandler(TSTW_ID, TSTW);
+    RegisterCMDHandler(ECHO_ID, ECHO);
 
     char DriveLetter = 'A';
     char CommandBuffer[256];

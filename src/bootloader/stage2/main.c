@@ -5,6 +5,7 @@
 
 void _cdecl cstart_(uint16_t bootDrive, void far* kernel_address)
 {
+    printf("[DEBUG] Entered Stage 2 of bootloader!\r\n");
     DISK disk;
     if (!DISK_Initialize(&disk, bootDrive))
     {
