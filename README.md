@@ -21,7 +21,7 @@ This project was inspired by the Nanobyte OS video tutorial available on Youtube
  - ```cat <path>``` : Prints contents of the file specified by path to the command line, assuming ASCII-formatting and null-termination.
  - ```ps```: Lists the PIDs and statuses of all currently active processes.
  - ```mem``` : Lists the total amount of memory currently in use.
- - ```echo <args>```: Prints out the arguments provided. If used with the syntax ```echo <args> \> <file>```, then the arguments will be written to the new file specified.
+ - ```echo <args>```: Prints out the arguments provided. If used with the syntax ```echo <args> > <file>```, then the arguments will be written to the new file specified.
  - ```rm <path>```: Removes the file at the provided path.
  - ```rmdir <path>```: Recursively removes the directory at the provided path and all of its contents.
 
