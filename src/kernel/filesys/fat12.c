@@ -173,6 +173,45 @@ uint32_t FAT12_FindFreeCluster(uint32_t currentCluster) {
     return currentCluster;
 }
 
+uint32_t FAT12_FreeCluster(uint32_t currentCluster) {
+
+    uint32_t next_cluster = FAT12_NextCluster(currentCluster);
+
+    uint32_t fatIndex = currentCluster * 3 / 2;
+    uint32_t fatSectorIndex = fatIndex/512; // Figure out which sector of the fat needs to be loaded
+    if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
+    uint16_t FAT_val = (*(uint16_t*)(g_FAT + (fatIndex%512)));
+
+    if (currentCluster % 2 == 0)
+        (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0xF000);
+    else
+        (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0x000F);
+
+    return next_cluster;
+}
+
+void FAT12_FreeClusterChain(uint32_t currentCluster) {
+    bool first_loop = true;
+    uint32_t fatIndex, fatSectorIndex;
+    while (currentCluster < 0xFF8) {
+        fatIndex = currentCluster * 3 / 2;
+        fatSectorIndex = fatIndex/512;
+        if (g_FATLoaded != fatSectorIndex) {
+            if (!first_loop) {FAT12_WriteActiveFATSector(fatSectorIndex);}
+            FAT12_LoadFATSector(fatSectorIndex);
+        }
+        currentCluster = FAT12_FreeCluster(currentCluster);
+        first_loop = false;
+    }
+    fatIndex = currentCluster * 3 / 2;
+    fatSectorIndex = fatIndex/512;
+    if (g_FATLoaded != fatSectorIndex) {
+        if (!first_loop) {FAT12_WriteActiveFATSector(fatSectorIndex);}
+        FAT12_LoadFATSector(fatSectorIndex);
+    }
+    FAT12_FreeCluster(currentCluster);
+    FAT12_WriteActiveFATSector(fatSectorIndex);
+}
 
 uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
 
@@ -208,22 +247,25 @@ uint32_t FAT12_WriteGetAnotherCluster(uint32_t currentCluster) {
 
 void FAT12_WriteFinalCluster(uint32_t currentCluster) {
     
-    uint32_t current_cluster_val = FAT12_NextCluster(currentCluster);
-    if (current_cluster_val != 0 && current_cluster_val < 0xFF8) {
-        // TODO: Set this cluster to 0xFF8, then follow through the rest of the clusters in the preexisting chain and set them all to 0
-    }
+    uint32_t next_cluster = FAT12_NextCluster(currentCluster);
 
     uint32_t fatIndex = currentCluster * 3 / 2;
     uint32_t fatSectorIndex = fatIndex/512; // Figure out which sector of the fat needs to be loaded
     if (g_FATLoaded != fatSectorIndex) {FAT12_LoadFATSector(fatSectorIndex);}
     uint16_t FAT_val = (*(uint16_t*)(g_FAT + (fatIndex%512)));
 
-    if (currentCluster % 2 == 0)
+    if (currentCluster % 2 == 0) {
         (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0xF000) | (0x0FF8);
-    else
+    }
+    else {
         (*(uint16_t*)(g_FAT + (fatIndex%512))) = (FAT_val & 0x000F) | (0xFF80);
+    }
 
     FAT12_WriteActiveFATSector(fatSectorIndex);
+
+    if (next_cluster != 0 && next_cluster < 0xFF8) {
+        FAT12_FreeClusterChain(next_cluster);
+    }
 }
 
 
@@ -326,6 +368,10 @@ bool FAT12_ReadEntry(FAT12_File* file, FAT12_DirectoryEntry* entry_out) {
 }
 
 void FAT12_Close(FAT12_File* file) {
+    if (file == NULL) {
+        printf("Error, can't close null file!\n");
+        return;
+    }
     if (file->Handle == ROOT_DIRECTORY_HANDLE) {
         file->Position = 0;
         g_FatData.RootDirectory.CurrentCluster = g_FatData.RootDirectory.FirstCluster;
@@ -423,7 +469,7 @@ FAT12_File* FAT12_Open(const char* path) {
         else
         {
             FAT12_Close(current);
-            printf("FAT12: %s not found\n", name);
+            //printf("FAT12: %s not found\n", name);
             return NULL;
         }
     }
@@ -440,6 +486,13 @@ FAT12_File* FAT12_Open(const char* path) {
 //    ii. If more data remains, find a new cluster from the FAT, put that cluster index into the FAT entry for the first cluster, and write the sector to disk
 // 5. When all data has been written, write the 0xFF8 signature to the found cluster's entry in the FAT and write the sector to disk.
 uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src) {
+
+    FAT12_File* test = FAT12_Open(path);
+    if (test != NULL) {
+        printf("FAT12: Error, file already exists!\n");
+        FAT12_Close(test);
+        return 0; // Error, file already exists
+    }
     
     char *parent_dir_path, *file_name, *final_slash_pos = (char*)0xFFFFFFFF;
     char* c = path;
@@ -527,5 +580,255 @@ uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src) {
     FAT12_Write(file, byte_count, src);
     FAT12_Close(file);
 
-    return 0;
+    return 1;
+}
+
+
+uint32_t FAT12_MKDIR(char* path) {
+
+    FAT12_File* test = FAT12_Open(path);
+    if (test != NULL) {
+        printf("FAT12: Error, file already exists!\n");
+        FAT12_Close(test);
+        return 0; // Error, file already exists
+    }
+    
+    char *parent_dir_path, *file_name, *final_slash_pos = (char*)0xFFFFFFFF;
+    char* c = path;
+    uint8_t DirectoryBuffer[512];
+    //printf("Parsing names from path...\n");
+    while (*c) {
+        if (*c == '/') {final_slash_pos = c;}
+        c++;
+    }
+
+    if (final_slash_pos == (char*)0xFFFFFFFF) {
+        return -1; // Error, no slash found so invalid path (all paths should be absolute and from root so should have at least a leading slash)
+    }
+
+    *final_slash_pos = '\0';
+    parent_dir_path = path; file_name = final_slash_pos + 1;
+    FAT12_File*  parent_dir = FAT12_Open(parent_dir_path);
+
+    // Save the first cluster of the parent directory for later use
+    uint32_t parent_dir_FirstCluster = g_FatData.OpenedFiles[parent_dir->Handle].FirstCluster;
+
+
+    // Read directory information into memory
+    // TODO: Include support for directories where size is greater than / equal to 512 bytes
+    uint32_t bytes_read = FAT12_Read(parent_dir, 512, DirectoryBuffer);
+    FAT12_DirectoryEntry* DirectoryEntries = (FAT12_DirectoryEntry*)DirectoryBuffer;
+    uint32_t offset = 0;
+    for (int i=0; i<16; i++) {
+        if (DirectoryEntries[i].Name[0] == '\0') {
+            offset = i * sizeof(FAT12_DirectoryEntry);
+            break;
+        }
+    }
+
+    //printf("Directory bytes: %d  |  Directory entries: %d\n", offset, offset/sizeof(FAT12_DirectoryEntry));
+    // Set up a pointer to write information for new file entry
+    FAT12_DirectoryEntry* NewFileEntry = (FAT12_DirectoryEntry*)(&DirectoryBuffer[offset]);
+
+    // Parse the file name from the path to 8.3 format for the FAT12 Entry
+    //FAT12_PathName2FATName(NewFileEntry->Name, file_name);
+    for (int i = 0; i<11; i++) {NewFileEntry->Name[i] = ' ';}
+    int src_idx = 0;
+    for (int i = 0; i<8; i++) {
+        if (file_name[src_idx] != '\0') {
+            NewFileEntry->Name[i] = toupper(file_name[src_idx]);
+            src_idx++;
+        }
+        else {
+            NewFileEntry->Name[i] = ' ';
+        }
+    }
+    for (int i = 8; i < 11; i++) {
+        NewFileEntry->Name[i] = ' ';
+    }
+
+    // Find a free cluster and save its index to the file entry
+    uint32_t first_free_cluster = FAT12_FindFreeCluster(2);
+    NewFileEntry->FirstClusterHigh = first_free_cluster >> 16;
+    NewFileEntry->FirstClusterLow = first_free_cluster & 0xFFFF;
+    NewFileEntry->Attributes = FAT12_ATTRIBUTE_DIRECTORY;
+    NewFileEntry->Size = 512;
+
+    // All file entry data is now recorded, we can safely rewrite the directory data to the disk
+    //printf("Writing directory information back to disk...\n");
+    // Close and reopen file to reset position data for reading/writing
+    FAT12_Close(parent_dir);
+    parent_dir = FAT12_Open(parent_dir_path);
+    FAT12_Write(parent_dir, 512, DirectoryBuffer);
+    FAT12_Close(parent_dir);
+
+    // Next, add the special . and .. directory entries
+    memset(DirectoryBuffer, 0, 512); // Empty the directory buffer
+    FAT12_DirectoryEntry* SelfFileEntry = (FAT12_DirectoryEntry*)(&DirectoryBuffer[0]);
+    FAT12_DirectoryEntry* PrevFileEntry = (FAT12_DirectoryEntry*)(&DirectoryBuffer[sizeof(FAT12_DirectoryEntry)]);
+
+    SelfFileEntry->Name[0] = '.'; for (int i = 1; i<11; i++) {SelfFileEntry->Name[i] = ' ';}
+    PrevFileEntry->Name[0] = '.'; PrevFileEntry->Name[1] = '.';
+    for (int i = 2; i<11; i++) {PrevFileEntry->Name[i] = ' ';}
+
+    SelfFileEntry->FirstClusterHigh = first_free_cluster >> 16;
+    SelfFileEntry->FirstClusterLow = first_free_cluster & 0xFFFF;
+
+    PrevFileEntry->FirstClusterHigh = parent_dir_FirstCluster >> 16;
+    PrevFileEntry->FirstClusterLow = parent_dir_FirstCluster & 0xFFFF;
+
+    SelfFileEntry->Attributes = FAT12_ATTRIBUTE_DIRECTORY; PrevFileEntry->Attributes = FAT12_ATTRIBUTE_DIRECTORY;
+    SelfFileEntry->Size = 512; PrevFileEntry->Size = 512;
+
+    // Lastly, write directory information to the directory sector that is now pointed to in the directory
+    *final_slash_pos = '/';
+    FAT12_File* file = FAT12_Open(path);
+    FAT12_Write(file, 512, DirectoryBuffer);
+    FAT12_Close(file);
+
+    return 1;
+
+}
+
+
+uint32_t FAT12_RM(const char* path) {
+
+    FAT12_File* file = FAT12_Open(path);
+    if (file == NULL) {printf("Error: can't find file!\n"); return 1;}
+
+    FAT12_DirectoryEntry DirectoryBuffer[512/sizeof(FAT12_DirectoryEntry)];
+    /*
+    if (file->IsDirectory) {
+        FAT12_Read(file, 512, DirectoryBuffer);
+        if (DirectoryBuffer[0].Name[0] != ' ' && DirectoryBuffer[0].Name[0] != '\0') { // If the directory is not empty, cancel operation
+            FAT12_Close(file);
+            printf("Error: Directory is not empty!\n");
+            return 0;
+        }
+    }
+    */
+
+    FAT12_FreeClusterChain(g_FatData.OpenedFiles[file->Handle].FirstCluster);
+    FAT12_Close(file);
+
+    char *parent_dir_path, *file_name, *final_slash_pos = (char*)0xFFFFFFFF;
+    char* c = (char*)path;
+
+    while (*c) {
+        if (*c == '/') {final_slash_pos = c;}
+        c++;
+    }
+
+    if (final_slash_pos == (char*)0xFFFFFFFF) {
+        return 0; // Error, no slash found so invalid path (all paths should be absolute and from root so should have at least a leading slash)
+    }
+
+    *final_slash_pos = '\0';
+    parent_dir_path = (char*)path; file_name = final_slash_pos + 1;
+    char fat_name[11];
+
+    for (int i = 0; i<11; i++) {fat_name[i] = ' ';}
+    int src_idx = 0;
+    for (int i = 0; i<8; i++) {
+        if (file_name[src_idx] != '.' && file_name[src_idx] != '\0') {
+            fat_name[i] = toupper(file_name[src_idx]);
+            src_idx++;
+        }
+        else {
+            fat_name[i] = ' ';
+        }
+    }
+    if (file_name[src_idx] == '.') {src_idx++;}
+    for (int i = 8; i < 11; i++) {
+        if (file_name[src_idx] != '\0') {
+            fat_name[i] = toupper(file_name[src_idx]);
+            src_idx++;
+        }
+        else {
+            fat_name[i] = ' ';
+        }
+    }
+
+    FAT12_File* parent_dir = FAT12_Open(parent_dir_path);
+
+    uint32_t bytes_read = FAT12_Read(parent_dir, 512, DirectoryBuffer);
+
+    int idx_to_remove = -1;
+
+    for (int i = 0; i<16; i++) {
+        // Iterate until the file entry is found
+        if (memcmp(DirectoryBuffer[i].Name, fat_name, 11) == 0) {
+            idx_to_remove = i;
+            break;
+        }
+    }
+
+    // Copy all data after the removed entry to the removed entry, and append a null entry to the end
+    const uint32_t bytes_to_transfer = (16-idx_to_remove-1)*sizeof(FAT12_DirectoryEntry);
+    memcpy(&DirectoryBuffer[idx_to_remove], &DirectoryBuffer[idx_to_remove+1], bytes_to_transfer);
+    memset(&DirectoryBuffer[15], 0, sizeof(FAT12_DirectoryEntry));
+
+    FAT12_Close(parent_dir);
+    parent_dir = FAT12_Open(parent_dir_path);
+    FAT12_Write(parent_dir, 512, DirectoryBuffer);
+    FAT12_Close(parent_dir);
+
+    return 1;
+}
+
+
+
+void FAT12_RM_REC(const char* path) {
+
+    FAT12_File* dir = FAT12_Open(path);
+
+    if (dir == NULL) {return; /* File does not exist, job technically done */}
+    if (!dir->IsDirectory) {FAT12_Close(dir); FAT12_RM(path);} // If this is a file, just delete it
+
+    char FilePathBuffer[256]; char* file_name = FilePathBuffer;
+    strcpy(FilePathBuffer, path);
+    while (*file_name) {file_name++;}
+    *file_name = '/'; file_name++;
+
+    FAT12_DirectoryEntry DirectoryBuffer[512/sizeof(FAT12_DirectoryEntry)];
+    FAT12_Read(dir, 512, DirectoryBuffer);
+    FAT12_Close(dir);
+
+
+    for (int i = 0; i < 512/sizeof(FAT12_DirectoryEntry); i++) {
+
+        FAT12_DirectoryEntry* entry = &DirectoryBuffer[i];
+
+        if (entry->Name[0] == ' ' || entry->Name[0] == '\0') {break;}
+
+        memset(file_name, '\0', 12);
+        char* name_chr = file_name;
+
+        for (int j = 0; j < 8; j++) {
+            if (entry->Name[j] != ' '){
+                *name_chr = entry->Name[j]; name_chr++;
+            }
+        }
+        bool has_extension = false;
+        *name_chr = '.'; name_chr++;
+        for (int j = 8; j < 11; j++) {
+            if (entry->Name[j] != ' '){
+                has_extension = true;
+                *name_chr = entry->Name[j]; name_chr++;
+            }
+        }
+        if (!has_extension) {name_chr--; *name_chr = '\0';}
+
+        if ((memcmp(file_name, "..", 3) == 0) || (memcmp(file_name, ".", 2) == 0)) {
+            memset(entry, '\0', sizeof(FAT12_DirectoryEntry));
+            continue;
+        }
+
+        FAT12_RM_REC(FilePathBuffer);
+        memset(entry, '\0', sizeof(FAT12_DirectoryEntry));
+
+    }
+
+    FAT12_RM(path);
+
 }

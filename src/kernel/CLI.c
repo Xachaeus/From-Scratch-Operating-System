@@ -20,9 +20,25 @@
 #define MEM_ID 5
 #define TSTW_ID 6
 #define ECHO_ID 7
+#define MKDIR_ID 8
+#define RM_ID 9
+#define RMDIR_ID 10
 
 CMDHandler g_CMDHandlers[256];
-char CurrentPath[256];
+char g_CurrentPath[256];
+
+
+
+void GetAbsolutePath(char* dest_buffer, char* rel_path) {
+    if (rel_path[0] != '/') { // Relative, non-absolute path
+        strcpy(dest_buffer, g_CurrentPath);
+        dest_buffer[strlen(g_CurrentPath)] = '/';
+        strcpy(dest_buffer+strlen(g_CurrentPath)+1, rel_path);
+    }
+    else {
+        strcpy(dest_buffer, rel_path+1);
+    }
+}
 
 
 
@@ -31,8 +47,9 @@ int GetCMD(const char* command) {
     switch (command_len) {
         case 2:
             if (memcmp(command, "ls", 2) == 0) {return LS_ID;}
-            else if (memcmp(command, "cd", 2) == 0) {return CD_ID;}
-            else if (memcmp(command, "ps", 2) == 0) {return PS_ID;}
+            if (memcmp(command, "cd", 2) == 0) {return CD_ID;}
+            if (memcmp(command, "ps", 2) == 0) {return PS_ID;}
+            if (memcmp(command, "rm", 2) == 0) {return RM_ID;}
             break;
         case 3:
             if (memcmp(command, "cat", 3) == 0) {return CAT_ID;}
@@ -42,6 +59,10 @@ int GetCMD(const char* command) {
             if (memcmp(command, "exec", 4) == 0) {return EXEC_ID;}
             if (memcmp(command, "tstw", 4) == 0) {return TSTW_ID;}
             if (memcmp(command, "echo", 4) == 0) {return ECHO_ID;}
+            break;
+        case 5:
+            if (memcmp(command, "mkdir", 5) == 0) {return MKDIR_ID;}
+            if (memcmp(command, "rmdir", 5) == 0) {return RMDIR_ID;}
             break;
         default:
             return ERROR_ID;
@@ -62,9 +83,9 @@ void EXEC(int argc, const char** argv) {
         const char* new_path = argv[1];
         char absolute_path[256];
         if (new_path[0] != '/') { // Relative, non-absolute path
-            strcpy(absolute_path, CurrentPath);
-            absolute_path[strlen(CurrentPath)] = '/';
-            strcpy(absolute_path+strlen(CurrentPath)+1, new_path);
+            strcpy(absolute_path, g_CurrentPath);
+            absolute_path[strlen(g_CurrentPath)] = '/';
+            strcpy(absolute_path+strlen(g_CurrentPath)+1, new_path);
         }
         else {
             strcpy(absolute_path, new_path);
@@ -120,7 +141,7 @@ void LS(int argc, const char** argv) {
                 if (argv[i][1] == 'a'){do_hiding = 0;}
             }
         }
-        FAT12_File* dir = FAT12_Open(CurrentPath);
+        FAT12_File* dir = FAT12_Open(g_CurrentPath);
         FAT12_DirectoryEntry entry;
         while (FAT12_ReadEntry(dir, &entry)) {
             if (entry.Name[0] == '\0'){break;}
@@ -142,9 +163,9 @@ void CD(int argc, const char** argv) {
     }
     char absolute_path[256];
     if (new_path[0] != '/') { // Relative, non-absolute path
-        strcpy(absolute_path, CurrentPath);
-        absolute_path[strlen(CurrentPath)] = '/';
-        strcpy(absolute_path+strlen(CurrentPath)+1, new_path);
+        strcpy(absolute_path, g_CurrentPath);
+        absolute_path[strlen(g_CurrentPath)] = '/';
+        strcpy(absolute_path+strlen(g_CurrentPath)+1, new_path);
     }
     else {
         strcpy(absolute_path, new_path);
@@ -164,24 +185,24 @@ void CD(int argc, const char** argv) {
             if (new_path[new_path_len-1] == '.') {
                 // Case for ..
                 if (new_path[new_path_len-2] == '.'){
-                    int current_path_len = strlen(CurrentPath);
+                    int current_path_len = strlen(g_CurrentPath);
                     int count = 0;
                     for (int i = 0; i<current_path_len; i++) {
-                        if (CurrentPath[i] == '/') {count++;}
+                        if (g_CurrentPath[i] == '/') {count++;}
                     }
                     int subcount = 0; 
                     for (int i = 0; i<current_path_len; i++) {
-                        if (CurrentPath[i] == '/') {subcount++;}
+                        if (g_CurrentPath[i] == '/') {subcount++;}
                         if (subcount == count) {
-                            CurrentPath[i] = '\0';
+                            g_CurrentPath[i] = '\0';
                             break;
                         }
                     }
                 }
                 return;
             }
-            memcpy(CurrentPath, new_path, new_path_len);
-            memset(CurrentPath + new_path_len, '\0', 256-new_path_len);
+            memcpy(g_CurrentPath, new_path, new_path_len);
+            memset(g_CurrentPath + new_path_len, '\0', 256-new_path_len);
         }
         FAT12_Close(file);
     }
@@ -194,9 +215,9 @@ void CAT(int argc, const char** argv) {
     const char* file_path = argv[1];
     char absolute_path[256];
     if (file_path[0] != '/') { // Relative, non-absolute path
-        strcpy(absolute_path, CurrentPath);
-        absolute_path[strlen(CurrentPath)] = '/';
-        strcpy(absolute_path+strlen(CurrentPath)+1, file_path);
+        strcpy(absolute_path, g_CurrentPath);
+        absolute_path[strlen(g_CurrentPath)] = '/';
+        strcpy(absolute_path+strlen(g_CurrentPath)+1, file_path);
     }
     else {
         strcpy(absolute_path, file_path);
@@ -246,6 +267,7 @@ void TSTW(int argc, const char** argv) {
 }
 
 void ECHO(int argc, const char** argv) {
+
     bool found_output_file = false;
     int mode;
     if (memcmp(argv[argc-2], ">>", 2) == 0) {mode = 2;}
@@ -271,7 +293,17 @@ void ECHO(int argc, const char** argv) {
                 while (*c) {c++; total_len++;}
                 total_len++; // Write the null terminator as well
             }
-            FAT12_Write_New((char*)argv[argc-1], total_len, (void*)argv[1]);
+            const char* file_path = argv[argc-1];
+            char absolute_path[256];
+            if (file_path[0] != '/') { // Relative, non-absolute path
+                strcpy(absolute_path, g_CurrentPath);
+                absolute_path[strlen(g_CurrentPath)] = '/';
+                strcpy(absolute_path+strlen(g_CurrentPath)+1, file_path);
+            }
+            else {
+                strcpy(absolute_path, file_path);
+            }
+            FAT12_Write_New(absolute_path, total_len, (void*)argv[1]);
             break;
 
         case 2: // Append arguments to file
@@ -280,6 +312,53 @@ void ECHO(int argc, const char** argv) {
     }
 }
 
+void MKDIR(int argc, const char** argv) {
+    if (argc > 1) {
+        const char* file_path = argv[1];
+        char absolute_path[256];
+        if (file_path[0] != '/') { // Relative, non-absolute path
+            strcpy(absolute_path, g_CurrentPath);
+            absolute_path[strlen(g_CurrentPath)] = '/';
+            strcpy(absolute_path+strlen(g_CurrentPath)+1, file_path);
+        }
+        else {
+            strcpy(absolute_path, file_path);
+        }
+        FAT12_MKDIR(absolute_path);
+    }
+}
+
+void RM(int argc, const char** argv) {
+    if (argc > 1) {
+        char absolute_path[256];
+        GetAbsolutePath(absolute_path, (char*)argv[1]);
+        FAT12_File* file = FAT12_Open(absolute_path);
+        if (file == NULL) {printf("Error: /%s does not exist!\n", argv[1]); return;}
+        if (file->IsDirectory) {
+            FAT12_Close(file);
+            printf("Error: %s is a directory!\n", argv[1]);
+            return;
+        }
+        FAT12_Close(file);
+        FAT12_RM(absolute_path);
+    }
+}
+
+void RMDIR(int argc, const char** argv) {
+    if (argc > 1) {
+        char absolute_path[256];
+        GetAbsolutePath(absolute_path, (char*)argv[1]);
+        FAT12_File* file = FAT12_Open(absolute_path);
+        if (file == NULL) { printf("Error: /%s does not exist!\n", argv[1]); return;}
+        if (!file->IsDirectory) {
+            FAT12_Close(file);
+            printf("Error: %s is a file, not a directory!\n", argv[1]);
+            return;
+        }
+        FAT12_Close(file);
+        FAT12_RM_REC(absolute_path);
+    }
+}
 
 
 
@@ -297,12 +376,15 @@ int CLI_Mainloop() {
     RegisterCMDHandler(MEM_ID, MEM);
     //RegisterCMDHandler(TSTW_ID, TSTW);
     RegisterCMDHandler(ECHO_ID, ECHO);
+    RegisterCMDHandler(MKDIR_ID, MKDIR);
+    RegisterCMDHandler(RM_ID, RM);
+    RegisterCMDHandler(RMDIR_ID, RMDIR);
 
     char DriveLetter = 'A';
     char CommandBuffer[256];
     const char* ARGV_Base[256];
 
-    memset(CurrentPath, '\0', 256);
+    memset(g_CurrentPath, '\0', 256);
 
     while(true) {
 
@@ -311,7 +393,7 @@ int CLI_Mainloop() {
             ARGV_Base[i] = NULL;
         }
 
-        printf("user@machine::%c:/%s$ ", DriveLetter, CurrentPath);
+        printf("user@machine::%c:/%s$ ", DriveLetter, g_CurrentPath);
         getline(CommandBuffer, 256);
 
         int command_len = strlen(CommandBuffer);

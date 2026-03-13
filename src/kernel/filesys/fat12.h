@@ -118,6 +118,9 @@ uint32_t FAT12_Read(FAT12_File* file, uint32_t byte_count, void* dest);
 bool FAT12_ReadEntry(FAT12_File* file, FAT12_DirectoryEntry* entry);
 uint32_t FAT12_Write(FAT12_File* file, uint32_t byte_count, void* src);
 uint32_t FAT12_Write_New(char* path, uint32_t byte_count, void* src);
+uint32_t FAT12_MKDIR(char* path);
+uint32_t FAT12_RM(const char* path);
+void FAT12_RM_REC(const char* path);
 void FAT12_Close(FAT12_File* file);
 
 #endif
